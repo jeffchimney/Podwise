@@ -12,4 +12,8 @@ import UIKit
 class PodcastCell: UITableViewCell {
     
     @IBOutlet weak var artImageView: UIImageView!
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var descriptionLabel: UILabel!
+    var feedID: String!
+    
 }
