@@ -15,6 +15,8 @@
 		BEE0A1431FBE57C200AA111F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BEE0A1411FBE57C200AA111F /* LaunchScreen.storyboard */; };
 		BEE0A14E1FBE57C300AA111F /* PodwiseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A14D1FBE57C300AA111F /* PodwiseTests.swift */; };
 		BEE0A1591FBE57C300AA111F /* PodwiseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1581FBE57C300AA111F /* PodwiseUITests.swift */; };
+		BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */; };
+		BEE0A16A1FBE5EBA00AA111F /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,8 @@
 		BEE0A1541FBE57C300AA111F /* PodwiseUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PodwiseUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE0A1581FBE57C300AA111F /* PodwiseUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodwiseUITests.swift; sourceTree = "<group>"; };
 		BEE0A15A1FBE57C300AA111F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
+		BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,9 +103,11 @@
 		BEE0A1351FBE57C200AA111F /* Podwise */ = {
 			isa = PBXGroup;
 			children = (
+				BEE0A1661FBE5C2E00AA111F /* New Group */,
 				BEE0A1361FBE57C200AA111F /* AppDelegate.swift */,
 				BEE0A1381FBE57C200AA111F /* FirstViewController.swift */,
 				BEE0A13A1FBE57C200AA111F /* SecondViewController.swift */,
+				BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */,
 				BEE0A13C1FBE57C200AA111F /* Main.storyboard */,
 				BEE0A13F1FBE57C200AA111F /* Assets.xcassets */,
 				BEE0A1411FBE57C200AA111F /* LaunchScreen.storyboard */,
@@ -126,6 +132,14 @@
 				BEE0A15A1FBE57C300AA111F /* Info.plist */,
 			);
 			path = PodwiseUITests;
+			sourceTree = "<group>";
+		};
+		BEE0A1661FBE5C2E00AA111F /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+				BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */,
+			);
+			path = "New Group";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,7 +278,9 @@
 			files = (
 				BEE0A13B1FBE57C200AA111F /* SecondViewController.swift in Sources */,
 				BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */,
+				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* FirstViewController.swift in Sources */,
+				BEE0A16A1FBE5EBA00AA111F /* BrowseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
