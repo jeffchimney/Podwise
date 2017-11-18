@@ -16,6 +16,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     @IBOutlet weak var searchBarBottomConstraint: NSLayoutConstraint!
     var podcastResults: [[String: Any]] = []
     var searchBarBottomConstraintInitialValue: CGFloat = 0
+    var feedURL: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -80,6 +81,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
             let jResult: NSDictionary = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as! NSDictionary
             let results = jResult["results"] as! [[String: Any]]
             if jResult.count > 0 && results.count > 0 {
+                print(results)
                 self.podcastResults = results
                 DispatchQueue.main.async {
                     self.tableView.reloadData()
@@ -107,8 +109,8 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         cell.feedID = rowData["collectionId"] as? String
         let urlString: String = rowData["artworkUrl60"] as! String
         let url: URL = URL(string: urlString)!
-        let request: URLRequest = URLRequest(url: url)//NSURLRequest(URL: url as URL)
-        let session: URLSession = URLSession.shared // NSURLConnection(request: rqst, delegate: self, startImmediately: false)!
+        let request: URLRequest = URLRequest(url: url)
+        let session: URLSession = URLSession.shared
         let task: URLSessionDataTask = session.dataTask(with: request, completionHandler: { (data, response, error) in
             // Download representation of the image as NSData at the URL
             do {
@@ -127,5 +129,21 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         cell.artImageView.layer.masksToBounds = true
 
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let rowData: [String: Any] = self.podcastResults[indexPath.row]
+        print(rowData)
+        feedURL = rowData["feedUrl"] as! String
+        
+        performSegue(withIdentifier: "toPodcast", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "toPodcast" {
+            let controller = segue.destination as! PodcastHistoryViewController
+            
+            controller.feedURL = feedURL
+        }
     }
 }
