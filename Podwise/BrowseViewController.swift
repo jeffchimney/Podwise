@@ -133,17 +133,10 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let rowData: [String: Any] = self.podcastResults[indexPath.row]
-        print(rowData)
         feedURL = rowData["feedUrl"] as! String
         
-        performSegue(withIdentifier: "toPodcast", sender: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "toPodcast" {
-            let controller = segue.destination as! PodcastHistoryViewController
-            
-            controller.feedURL = feedURL
-        }
+        let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "resultViewController") as! PodcastHistoryViewController
+        resultViewController.feedURL = feedURL
+        self.navigationController?.pushViewController(resultViewController, animated: true)
     }
 }

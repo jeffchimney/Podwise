@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA71A5E1FBF9DDC001B42FC /* PodcastHistoryViewController.swift */; };
 		BEA71A611FBFAE5B001B42FC /* RSSParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA71A601FBFAE5B001B42FC /* RSSParser.swift */; };
+		BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3B81FC389EF00A140AC /* Channel.swift */; };
+		BEA9D3BB1FC38A0D00A140AC /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3BA1FC38A0D00A140AC /* Episode.swift */; };
 		BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1361FBE57C200AA111F /* AppDelegate.swift */; };
 		BEE0A1391FBE57C200AA111F /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1381FBE57C200AA111F /* FirstViewController.swift */; };
 		BEE0A13B1FBE57C200AA111F /* SecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A13A1FBE57C200AA111F /* SecondViewController.swift */; };
@@ -41,6 +43,8 @@
 /* Begin PBXFileReference section */
 		BEA71A5E1FBF9DDC001B42FC /* PodcastHistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastHistoryViewController.swift; sourceTree = "<group>"; };
 		BEA71A601FBFAE5B001B42FC /* RSSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSParser.swift; sourceTree = "<group>"; };
+		BEA9D3B81FC389EF00A140AC /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		BEA9D3BA1FC38A0D00A140AC /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		BEE0A1331FBE57C200AA111F /* Podwise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podwise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE0A1361FBE57C200AA111F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BEE0A1381FBE57C200AA111F /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
@@ -84,6 +88,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BEA9D3B71FC389BC00A140AC /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				BEA9D3B81FC389EF00A140AC /* Channel.swift */,
+				BEA9D3BA1FC38A0D00A140AC /* Episode.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
 		BEE0A12A1FBE57C200AA111F = {
 			isa = PBXGroup;
 			children = (
@@ -107,7 +120,8 @@
 		BEE0A1351FBE57C200AA111F /* Podwise */ = {
 			isa = PBXGroup;
 			children = (
-				BEE0A1661FBE5C2E00AA111F /* New Group */,
+				BEA9D3B71FC389BC00A140AC /* Classes */,
+				BEE0A1661FBE5C2E00AA111F /* Cells */,
 				BEE0A1361FBE57C200AA111F /* AppDelegate.swift */,
 				BEE0A1381FBE57C200AA111F /* FirstViewController.swift */,
 				BEE0A13A1FBE57C200AA111F /* SecondViewController.swift */,
@@ -140,12 +154,12 @@
 			path = PodwiseUITests;
 			sourceTree = "<group>";
 		};
-		BEE0A1661FBE5C2E00AA111F /* New Group */ = {
+		BEE0A1661FBE5C2E00AA111F /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */,
 			);
-			path = "New Group";
+			path = Cells;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -283,11 +297,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEE0A13B1FBE57C200AA111F /* SecondViewController.swift in Sources */,
+				BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */,
 				BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */,
 				BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */,
 				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* FirstViewController.swift in Sources */,
 				BEA71A611FBFAE5B001B42FC /* RSSParser.swift in Sources */,
+				BEA9D3BB1FC38A0D00A140AC /* Episode.swift in Sources */,
 				BEE0A16A1FBE5EBA00AA111F /* BrowseViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
