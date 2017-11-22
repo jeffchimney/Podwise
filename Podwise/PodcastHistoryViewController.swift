@@ -22,6 +22,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var episodes: [Episode] = []
     var episodeTitle: String = String()
     var episodeDescription = String()
+    var episodeDuration = String()
     var imageSet: Bool = false
     
     var feedURL: String!
@@ -29,12 +30,13 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        channelDescriptionTextView = UITextView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50))
+        channelDescriptionTextView = UITextView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 100))
         activityIndicator.startAnimating()
         print(feedURL)
         
         channelLabel.text! = ""
         channelDescriptionTextView.text! = ""
+        channelDescriptionTextView.font = UIFont(name: "Helvetica", size: 15)
         
         let urlString: String = feedURL
         let url: URL = URL(string: urlString)!
@@ -61,14 +63,33 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath) as! EpisodeCell
         
         let episode = episodes[indexPath.row]
+        var hours = 0
+        var minutes = 0
+        if let optionalHours = Int(episode.itunesDuration) {
+            hours = (optionalHours/60)/60
+        }
+        if let optionalMinutes = Int(episode.itunesDuration) {
+            minutes = (optionalMinutes/60)%60
+        }
         
-        cell.textLabel?.text = episode.title
-        cell.detailTextLabel?.text = episode.description
+        cell.titleLabel.text = episode.title
+        cell.descriptionLabel.text = episode.description
+        if hours == 0 && minutes == 0 {
+            cell.durationLabel.text = ""
+        } else if hours == 0 {
+            cell.durationLabel.text = "\(minutes)m"
+        } else {
+            cell.durationLabel.text = "\(hours)h \(minutes)m"
+        }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
     
     // XMLParser Delegate Methods
@@ -106,6 +127,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         if elementName == "item" {
             episodeTitle = String()
             episodeDescription = String()
+            episodeDuration = String()
         }
     }
     
@@ -115,6 +137,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             let episode = Episode()
             episode.title = episodeTitle
             episode.description = episodeDescription
+            episode.itunesDuration = episodeDuration
             
             episodes.append(episode)
         }
@@ -137,6 +160,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 } else {
                     episodeDescription += data
                 }
+            case "itunes:duration":
+                episodeDuration = data
             default:
                 break
             }
