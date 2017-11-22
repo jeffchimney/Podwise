@@ -106,7 +106,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         print(rowData)
         cell.titleLabel.text = rowData["trackName"] as? String
         cell.descriptionLabel.text = rowData["artistName"] as? String
-        cell.feedID = rowData["collectionId"] as? String
+        cell.collectionID = rowData["collectionId"] as? String
         let urlString: String = rowData["artworkUrl60"] as! String
         let url: URL = URL(string: urlString)!
         let request: URLRequest = URLRequest(url: url)
@@ -137,6 +137,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         
         let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "resultViewController") as! PodcastHistoryViewController
         resultViewController.feedURL = feedURL
+        resultViewController.collectionID = rowData["collectionId"] as! Int
         self.navigationController?.pushViewController(resultViewController, animated: true)
     }
 }

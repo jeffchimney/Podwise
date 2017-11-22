@@ -12,7 +12,8 @@ class Episode {
     var title: String = String()
     var description: String = String()
     var pubDate: String = String()
-    var audioUrl: String = String()
+    var audioUrl: URL!
+    var localURL: URL!
     var audioType: String = String()
     var episodeLink: String = String()
     var itunesAuthor: String = String()

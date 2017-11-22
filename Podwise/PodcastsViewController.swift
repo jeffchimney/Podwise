@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  SecondViewController.swift
 //  Podwise
 //
 //  Created by Jeff Chimney on 2017-11-16.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
+class PodcastsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
