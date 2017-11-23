@@ -12,6 +12,7 @@ import AVFoundation
 
 var audioPlayer:AVAudioPlayer!
 var downloads: [CDEpisode]!
+var nowPlayingArt: UIImage!
 
 class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -22,11 +23,22 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     var isTimerRunning: Bool = false
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var miniPlayerView: MiniPlayerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        
+        miniPlayerView.artImageView.layer.cornerRadius = 10
+        miniPlayerView.artImageView.layer.masksToBounds = true
+        
+        if audioPlayer != nil {
+            showMiniPlayer(animated: false)
+        } else {
+            hideMiniPlayer(animated: false)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,6 +61,12 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         if !isTimerRunning {
             runTimer()
+        }
+        
+        if audioPlayer != nil {
+            showMiniPlayer(animated: false)
+        } else {
+            hideMiniPlayer(animated: false)
         }
     }
 
@@ -114,6 +132,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         playDownload(at: episodes[indexPath.row].localURL!)
+        nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
+        miniPlayerView.artImageView.image = nowPlayingArt
     }
     
     func playDownload(at: URL) {
@@ -129,6 +149,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             
             player.prepareToPlay()
             player.play()
+            miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+            showMiniPlayer(animated: true)
         } catch let error {
             print(error.localizedDescription)
         }
@@ -140,6 +162,38 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @objc func checkDownloads() {
         tableView.reloadData()
+    }
+    
+    func hideMiniPlayer(animated: Bool) {
+        if animated {
+            UIView.animate(withDuration: 1, animations: {
+                self.miniPlayerHeightConstraint.constant = 0
+                self.miniPlayerView.alpha = 0
+            })
+        } else {
+            self.miniPlayerHeightConstraint.constant = 0
+            self.miniPlayerView.alpha = 0
+        }
+    }
+    
+    func showMiniPlayer(animated: Bool) {
+        if audioPlayer != nil {
+            miniPlayerView.artImageView.image = nowPlayingArt
+            if audioPlayer.isPlaying {
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+            } else {
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+            }
+        }
+        if animated {
+            UIView.animate(withDuration: 1, animations: {
+                self.miniPlayerHeightConstraint.constant = 70
+                self.miniPlayerView.alpha = 1
+            })
+        } else {
+            self.miniPlayerHeightConstraint.constant = 70
+            self.miniPlayerView.alpha = 1
+        }
     }
 }
 

@@ -17,6 +17,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     var podcastResults: [[String: Any]] = []
     var searchBarBottomConstraintInitialValue: CGFloat = 0
     var feedURL: String = ""
+    var authorName: String = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -149,6 +150,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "resultViewController") as! PodcastHistoryViewController
         resultViewController.feedURL = feedURL
         resultViewController.collectionID = rowData["collectionId"] as! Int
+        resultViewController.authorName = rowData["artistName"] as? String
         self.navigationController?.pushViewController(resultViewController, animated: true)
     }
 }
