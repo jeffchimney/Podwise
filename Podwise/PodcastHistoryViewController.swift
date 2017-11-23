@@ -21,6 +21,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var channelLabel: UILabel!
     var channelDescriptionTextView: UITextView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var subscribeButton: UIButton!
+    var subscribeButtonSet: Bool = false
     
     var eName: String = String()
     var episodes: [Episode] = []
@@ -54,6 +56,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             parser.parse()
         }
         print("Looking for: \(url)")
+        
+        subscribeButton.layer.cornerRadius = 15
+        subscribeButton.layer.masksToBounds = true
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -102,7 +107,42 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = episodes[indexPath.row]
-        downloadFile(at: episode.audioUrl, relatedTo: episode, playNow: false)
+        downloadFile(at: episode.audioUrl, relatedTo: episode, playNow: true)
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let closeAction = UIContextualAction(style: .normal, title:  "Close", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("OK, marked as Closed")
+            success(true)
+        })
+        closeAction.image = UIImage(named: "tick")
+        closeAction.backgroundColor = .purple
+        
+        return UISwipeActionsConfiguration(actions: [closeAction])
+        
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Downloading...")
+            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], playNow: false)
+            success(true)
+        })
+        let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Update action ...")
+            success(true)
+        })
+        downloadAction.image = UIImage(named: "downloadIcon")
+        downloadAction.backgroundColor = .green
+        
+        addToPlaylistAction.image = UIImage(named: "playlist")
+        addToPlaylistAction.backgroundColor = .blue
+        
+        return UISwipeActionsConfiguration(actions: [downloadAction, addToPlaylistAction])
     }
     
     // XMLParser Delegate Methods
@@ -162,6 +202,22 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             episode.audioUrl = episodeURL
             print(collectionID)
             episodes.append(episode)
+            if !subscribeButtonSet {
+                subscribeButtonSet = true
+                let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+                if podcast.count > 0 {
+                    if podcast[0].subscribed {
+                        subscribeButton.setTitle("  Unubscribe  ", for: .normal)
+                        subscribeButton.backgroundColor = .red
+                    } else {
+                        subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                        subscribeButton.backgroundColor = .green
+                    }
+                } else {
+                    subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                    subscribeButton.backgroundColor = .green
+                }
+            }
         }
     }
     
@@ -211,8 +267,15 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         } else {
             let podcastsWithId = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
             var podcast: CDPodcast!
+            let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
+            let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
             if podcastsWithId.count > 0 { // episode belongs to retrieved podcast
-                podcast = podcastsWithId[0]
+                episode.title = relatedTo.title
+                episode.subTitle = relatedTo.itunesSubtitle
+                episode.audioURL = relatedTo.audioUrl
+                episode.localURL = relatedTo.localURL
+                episode.duration = relatedTo.itunesDuration
+                episode.podcast = podcastsWithId[0]
             } else { // episode doesn't belong to a previously downloaded or subscribed podcast, create new one
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
                 podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
@@ -220,16 +283,14 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.subTitle = channelDescriptionTextView.text!
                 podcast.image = UIImagePNGRepresentation(imageView.image!)
                 podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
+                
+                episode.title = relatedTo.title
+                episode.subTitle = relatedTo.itunesSubtitle
+                episode.audioURL = relatedTo.audioUrl
+                episode.localURL = relatedTo.localURL
+                episode.duration = relatedTo.itunesDuration
+                episode.podcast = podcast
             }
-            
-            let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
-            let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
-            episode.title = relatedTo.title
-            episode.subTitle = relatedTo.itunesSubtitle
-            episode.audioURL = relatedTo.audioUrl
-            episode.localURL = relatedTo.localURL
-            episode.duration = relatedTo.itunesDuration
-            episode.podcast = podcast
             
             CoreDataHelper.save(context: managedContext!)
             if downloads == nil {
@@ -274,6 +335,42 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             player.play()
         } catch let error {
             print(error.localizedDescription)
+        }
+    }
+    
+    @IBAction func subscribeButtonPressed(_ sender: Any) {
+        if subscribeButton.titleLabel?.text == "  Subscribe  " {
+            subscribeButton.setTitle("  Unubscribe  ", for: .normal)
+            subscribeButton.backgroundColor = .red
+            let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+            if podcast.count > 0 {
+                podcast[0].subscribed = true
+                CoreDataHelper.save(context: managedContext!)
+            } else {
+                let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
+                let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
+                podcast.title = channelLabel.text!
+                podcast.subTitle = channelDescriptionTextView.text!
+                podcast.image = UIImagePNGRepresentation(imageView.image!)
+                podcast.subscribed = true // not subscribed or it would have found the podcast in coredata
+                CoreDataHelper.save(context: managedContext!)
+            }
+        } else {
+            subscribeButton.setTitle("  Subscribe  ", for: .normal)
+            subscribeButton.backgroundColor = .green
+            let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+            if podcast.count > 0 {
+                podcast[0].subscribed = false
+                CoreDataHelper.save(context: managedContext!)
+            } else {
+                let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
+                let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
+                podcast.title = channelLabel.text!
+                podcast.subTitle = channelDescriptionTextView.text!
+                podcast.image = UIImagePNGRepresentation(imageView.image!)
+                podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
+                CoreDataHelper.save(context: managedContext!)
+            }
         }
     }
 }

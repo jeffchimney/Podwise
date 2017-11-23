@@ -15,6 +15,7 @@
 		BEA71A611FBFAE5B001B42FC /* RSSParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA71A601FBFAE5B001B42FC /* RSSParser.swift */; };
 		BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3B81FC389EF00A140AC /* Channel.swift */; };
 		BEA9D3BB1FC38A0D00A140AC /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3BA1FC38A0D00A140AC /* Episode.swift */; };
+		BEDFE6441FC6B60A0084D392 /* PodcastListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */; };
 		BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1361FBE57C200AA111F /* AppDelegate.swift */; };
 		BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */; };
 		BEE0A13B1FBE57C200AA111F /* PodcastsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A13A1FBE57C200AA111F /* PodcastsViewController.swift */; };
@@ -53,6 +54,7 @@
 		BEA71A601FBFAE5B001B42FC /* RSSParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSParser.swift; sourceTree = "<group>"; };
 		BEA9D3B81FC389EF00A140AC /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		BEA9D3BA1FC38A0D00A140AC /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
+		BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastListCell.swift; sourceTree = "<group>"; };
 		BEE0A1331FBE57C200AA111F /* Podwise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podwise.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEE0A1361FBE57C200AA111F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistsViewController.swift; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */,
 				BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */,
 				BE773F851FC61BD00075FB9E /* PlaylistCell.swift */,
+				BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -324,6 +327,7 @@
 				BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */,
 				BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */,
+				BEDFE6441FC6B60A0084D392 /* PodcastListCell.swift in Sources */,
 				BEA71A611FBFAE5B001B42FC /* RSSParser.swift in Sources */,
 				BEA9D3BB1FC38A0D00A140AC /* Episode.swift in Sources */,
 				BE25226C1FC600B300E6B769 /* Podwise.xcdatamodeld in Sources */,

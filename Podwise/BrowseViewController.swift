@@ -41,7 +41,18 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let duration = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! Double
         UIView.animate(withDuration: duration) { () -> Void in
-            self.searchBarBottomConstraint.constant = 85-keyboardFrame.height
+            if UIDevice().userInterfaceIdiom == .phone {
+                switch UIScreen.main.nativeBounds.height {
+                case 1136,1334,2208:
+                    print("Not iPhone X")
+                    self.searchBarBottomConstraint.constant = -keyboardFrame.height
+                case 2436:
+                    print("iPhone X")
+                    self.searchBarBottomConstraint.constant = 85-keyboardFrame.height
+                default:
+                    print("unknown")
+                }
+            }
             self.view.layoutIfNeeded()
         }
     }
