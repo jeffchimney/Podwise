@@ -17,9 +17,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var miniPlayerView: MiniPlayerView!
     @IBOutlet weak var channelLabel: UILabel!
     var channelDescriptionTextView: UITextView!
     @IBOutlet weak var subscribeButton: UIButton!
@@ -69,15 +66,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
         }
-        
-        miniPlayerView.artImageView.layer.cornerRadius = 10
-        miniPlayerView.artImageView.layer.masksToBounds = true
-        
-        if audioPlayer != nil {
-            showMiniPlayer(animated: false)
-        } else {
-            hideMiniPlayer(animated: false)
-        }
     }
     
     // Table View Delegate Methods
@@ -104,7 +92,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         
         cell.titleLabel.text = episode.title
         cell.descriptionLabel.text = episode.subTitle
-        print("subtitle: \(episode.subTitle)")
+
         if hours == 0 && minutes == 0 {
             cell.durationLabel.text = ""
         } else if hours == 0 {
@@ -124,7 +112,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         let episode = downloadedEpisodes[indexPath.row]
         playDownload(at: episode.localURL!)
         nowPlayingArt = UIImage(data: (self.podcast.image)!)
-        self.miniPlayerView.artImageView.image = nowPlayingArt
+        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
         //downloadFile(at: episode.audioURL!, relatedTo: episode, playNow: true)
     }
     
@@ -231,7 +219,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             if playNow {
                 self.playDownload(at: destinationUrl)
                 nowPlayingArt = UIImage(data: (self.podcast.image)!)
-                self.miniPlayerView.artImageView.image = nowPlayingArt
+                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
             }
             // if the file doesn't exist
         } else {
@@ -261,7 +249,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     if playNow {
                         self.playDownload(at: destinationUrl)
                         nowPlayingArt = UIImage(data: (self.podcast.image)!)
-                        self.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
                     }
                     if downloads.contains(episode) {
                         if let episodeIndex = downloads.index(of: episode) {
@@ -289,8 +277,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             player.prepareToPlay()
             player.play()
             
-            miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
-            showMiniPlayer(animated: true)
+            baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+            baseViewController.showMiniPlayer(animated: true)
         } catch let error {
             print(error.localizedDescription)
         }
@@ -307,38 +295,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Unubscribe  ", for: .normal)
             subscribeButton.backgroundColor = .red
             CoreDataHelper.save(context: managedContext!)
-        }
-    }
-    
-    func hideMiniPlayer(animated: Bool) {
-        if animated {
-            UIView.animate(withDuration: 1, animations: {
-                self.miniPlayerHeightConstraint.constant = 0
-                self.miniPlayerView.alpha = 0
-            })
-        } else {
-            self.miniPlayerHeightConstraint.constant = 0
-            self.miniPlayerView.alpha = 0
-        }
-    }
-    
-    func showMiniPlayer(animated: Bool) {
-        if audioPlayer != nil {
-            miniPlayerView.artImageView.image = nowPlayingArt
-            if audioPlayer.isPlaying {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
-            } else {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
-            }
-        }
-        if animated {
-            UIView.animate(withDuration: 1, animations: {
-                self.miniPlayerHeightConstraint.constant = 70
-                self.miniPlayerView.alpha = 1
-            })
-        } else {
-            self.miniPlayerHeightConstraint.constant = 70
-            self.miniPlayerView.alpha = 1
         }
     }
 }

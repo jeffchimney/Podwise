@@ -15,17 +15,12 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
     var managedContext: NSManagedObjectContext?
 
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var miniPlayerView: MiniPlayerView!
-    @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         tableView.dataSource = self
         tableView.delegate = self
-        
-        miniPlayerView.artImageView.layer.cornerRadius = 10
-        miniPlayerView.artImageView.layer.masksToBounds = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,12 +38,6 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
 //                episodes.append(episode)
 //            }
 //        }
-        
-        if audioPlayer != nil {
-            showMiniPlayer(animated: false)
-        } else {
-            hideMiniPlayer(animated: false)
-        }
         
         tableView.reloadData()
     }
@@ -91,38 +80,6 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "episodesViewController") as! EpisodesForPodcastViewController
         resultViewController.podcast = podcast
         self.navigationController?.pushViewController(resultViewController, animated: true)
-    }
-    
-    func hideMiniPlayer(animated: Bool) {
-        if animated {
-            UIView.animate(withDuration: 1, animations: {
-                self.miniPlayerHeightConstraint.constant = 0
-                self.miniPlayerView.alpha = 0
-            })
-        } else {
-            self.miniPlayerHeightConstraint.constant = 0
-            self.miniPlayerView.alpha = 0
-        }
-    }
-    
-    func showMiniPlayer(animated: Bool) {
-        if audioPlayer != nil {
-            miniPlayerView.artImageView.image = nowPlayingArt
-            if audioPlayer.isPlaying {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
-            } else {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
-            }
-        }
-        if animated {
-            UIView.animate(withDuration: 1, animations: {
-                self.miniPlayerHeightConstraint.constant = 70
-                self.miniPlayerView.alpha = 1
-            })
-        } else {
-            self.miniPlayerHeightConstraint.constant = 70
-            self.miniPlayerView.alpha = 1
-        }
     }
 }
 

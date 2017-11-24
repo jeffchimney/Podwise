@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="13529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="pSL-3u-Knh">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -16,11 +16,11 @@
             <objects>
                 <viewController id="9pv-A4-QxB" customClass="PlaylistsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="onW-Li-QBw">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="548"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="EBB-Uc-uJM">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="548"/>
@@ -82,27 +82,14 @@
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IrC-vX-63Q" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="548" width="375" height="70"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="70" id="eoR-4I-aaK"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstItem="IrC-vX-63Q" firstAttribute="leading" secondItem="onW-Li-QBw" secondAttribute="leading" id="4HH-3X-lrm"/>
                                     <constraint firstItem="EBB-Uc-uJM" firstAttribute="top" secondItem="onW-Li-QBw" secondAttribute="top" id="A4r-Hz-clS"/>
                                     <constraint firstAttribute="trailing" secondItem="EBB-Uc-uJM" secondAttribute="trailing" id="OZO-iM-hg8"/>
                                     <constraint firstItem="EBB-Uc-uJM" firstAttribute="leading" secondItem="onW-Li-QBw" secondAttribute="leading" id="S7O-8R-xRW"/>
                                     <constraint firstItem="EBB-Uc-uJM" firstAttribute="leading" secondItem="onW-Li-QBw" secondAttribute="leading" id="ScN-vi-rJb"/>
                                     <constraint firstItem="EBB-Uc-uJM" firstAttribute="top" secondItem="onW-Li-QBw" secondAttribute="top" id="Snn-8A-ZEp"/>
-                                    <constraint firstAttribute="bottom" secondItem="IrC-vX-63Q" secondAttribute="bottom" id="W5F-Pj-zgp"/>
-                                    <constraint firstItem="IrC-vX-63Q" firstAttribute="top" secondItem="EBB-Uc-uJM" secondAttribute="bottom" id="bgU-iV-OHP"/>
-                                    <constraint firstItem="IrC-vX-63Q" firstAttribute="top" secondItem="EBB-Uc-uJM" secondAttribute="bottom" id="iOr-c3-naH"/>
-                                    <constraint firstAttribute="trailing" secondItem="IrC-vX-63Q" secondAttribute="trailing" id="vhh-z7-Vhz"/>
                                     <constraint firstAttribute="trailing" secondItem="EBB-Uc-uJM" secondAttribute="trailing" id="vz0-i4-rq5"/>
-                                    <constraint firstItem="IrC-vX-63Q" firstAttribute="top" secondItem="EBB-Uc-uJM" secondAttribute="bottom" id="xUw-dU-jNP"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -117,8 +104,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="dVt-IB-jDR"/>
                     <connections>
-                        <outlet property="miniPlayerHeightConstraint" destination="eoR-4I-aaK" id="NR1-bk-Xlb"/>
-                        <outlet property="miniPlayerView" destination="IrC-vX-63Q" id="vQ7-4Q-xcx"/>
                         <outlet property="tableView" destination="EBB-Uc-uJM" id="Rn6-v9-rnf"/>
                     </connections>
                 </viewController>
@@ -131,11 +116,11 @@
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="PodcastsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="vnm-ay-MxL">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="618"/>
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="548"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rPx-2G-QZA">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="548"/>
@@ -186,22 +171,11 @@
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eqM-X7-pE9" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="548" width="375" height="70"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="70" id="e8l-0f-8xn"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="rPx-2G-QZA" secondAttribute="trailing" id="6GQ-xr-CYh"/>
-                                    <constraint firstItem="eqM-X7-pE9" firstAttribute="leading" secondItem="vnm-ay-MxL" secondAttribute="leading" id="Fft-vM-mbO"/>
-                                    <constraint firstAttribute="trailing" secondItem="eqM-X7-pE9" secondAttribute="trailing" id="JYX-fY-gNY"/>
-                                    <constraint firstItem="eqM-X7-pE9" firstAttribute="top" secondItem="rPx-2G-QZA" secondAttribute="bottom" id="Y1t-fc-UzS"/>
                                     <constraint firstItem="rPx-2G-QZA" firstAttribute="top" secondItem="vnm-ay-MxL" secondAttribute="top" id="h3V-iO-wMA"/>
                                     <constraint firstItem="rPx-2G-QZA" firstAttribute="leading" secondItem="vnm-ay-MxL" secondAttribute="leading" id="ilW-3Z-Mcd"/>
-                                    <constraint firstAttribute="bottom" secondItem="eqM-X7-pE9" secondAttribute="bottom" id="mZN-YQ-Qsa"/>
                                 </constraints>
                             </stackView>
                         </subviews>
@@ -216,8 +190,6 @@
                     </view>
                     <navigationItem key="navigationItem" id="wHk-hE-t9V"/>
                     <connections>
-                        <outlet property="miniPlayerHeightConstraint" destination="e8l-0f-8xn" id="TPW-iT-OOf"/>
-                        <outlet property="miniPlayerView" destination="eqM-X7-pE9" id="tY4-Od-fDD"/>
                         <outlet property="tableView" destination="rPx-2G-QZA" id="ZvK-AF-LKq"/>
                         <segue destination="65y-0i-8sg" kind="show" identifier="toEpisodes" id="Pcl-eZ-5ft"/>
                     </connections>
@@ -231,15 +203,15 @@
             <objects>
                 <viewController id="6lQ-eH-KPR" customClass="BrowseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="iiU-cV-4RG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="efk-zB-4Gb">
-                                <rect key="frame" x="0.0" y="562" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="492" width="375" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GAl-91-dbA">
-                                <rect key="frame" x="0.0" y="64" width="375" height="498"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="428"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ResultCell" rowHeight="80" id="yIN-E6-8WY" customClass="PodcastCell" customModule="Podwise" customModuleProvider="target">
@@ -323,7 +295,7 @@
             <objects>
                 <viewController restorationIdentifier="resultViewController" storyboardIdentifier="resultViewController" id="zby-4D-EdC" customClass="PodcastHistoryViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LxN-qX-cCx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SPG-ij-3af">
@@ -334,7 +306,7 @@
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fgc-aX-3gM">
-                                <rect key="frame" x="0.0" y="196" width="375" height="422"/>
+                                <rect key="frame" x="0.0" y="196" width="375" height="352"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EpisodeCell" rowHeight="100" id="YvI-iT-Q5V" customClass="EpisodeCell" customModule="Podwise" customModuleProvider="target">
@@ -440,7 +412,7 @@
             <objects>
                 <viewController storyboardIdentifier="episodesViewController" id="65y-0i-8sg" customClass="EpisodesForPodcastViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Teo-VX-RFe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rd5-o7-xUo">
@@ -451,7 +423,7 @@
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="rJC-Kx-VfT">
-                                <rect key="frame" x="0.0" y="196" width="375" height="422"/>
+                                <rect key="frame" x="0.0" y="196" width="375" height="352"/>
                                 <subviews>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="seM-z3-KUl">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="352"/>
@@ -505,22 +477,11 @@
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RPO-Pr-eUb" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="352" width="375" height="70"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="70" id="LZZ-Ww-biS"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="seM-z3-KUl" firstAttribute="leading" secondItem="rJC-Kx-VfT" secondAttribute="leading" id="RME-8W-zeZ"/>
-                                    <constraint firstItem="RPO-Pr-eUb" firstAttribute="leading" secondItem="rJC-Kx-VfT" secondAttribute="leading" id="RxL-HI-NFa"/>
-                                    <constraint firstItem="RPO-Pr-eUb" firstAttribute="top" secondItem="seM-z3-KUl" secondAttribute="bottom" id="VnH-5M-7Fn"/>
                                     <constraint firstAttribute="trailing" secondItem="seM-z3-KUl" secondAttribute="trailing" id="ah6-Wv-zlS"/>
                                     <constraint firstItem="seM-z3-KUl" firstAttribute="top" secondItem="rJC-Kx-VfT" secondAttribute="top" id="jJ0-BR-4t5"/>
-                                    <constraint firstAttribute="bottom" secondItem="RPO-Pr-eUb" secondAttribute="bottom" id="mI6-Wg-SOm"/>
-                                    <constraint firstAttribute="trailing" secondItem="RPO-Pr-eUb" secondAttribute="trailing" id="prw-PW-JIN"/>
                                 </constraints>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AT9-UE-fdc">
@@ -559,8 +520,6 @@
                     <connections>
                         <outlet property="channelLabel" destination="JOa-5s-hbq" id="ci3-Yf-t9S"/>
                         <outlet property="imageView" destination="rd5-o7-xUo" id="FSE-Fd-wfz"/>
-                        <outlet property="miniPlayerHeightConstraint" destination="LZZ-Ww-biS" id="qyV-Y0-ORa"/>
-                        <outlet property="miniPlayerView" destination="RPO-Pr-eUb" id="Ezw-bT-bup"/>
                         <outlet property="subscribeButton" destination="AT9-UE-fdc" id="k8Q-Yj-n03"/>
                         <outlet property="tableView" destination="seM-z3-KUl" id="q6g-yJ-XB5"/>
                     </connections>
@@ -568,6 +527,49 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Kuu-e2-tM0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2308" y="357.57121439280365"/>
+        </scene>
+        <!--Base View Controller-->
+        <scene sceneID="24Y-Pg-Scg">
+            <objects>
+                <viewController id="pSL-3u-Knh" customClass="BaseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="6XK-M5-xq2">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FG3-di-WrS" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="597" width="375" height="70"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="fy0-df-lyC"/>
+                                </constraints>
+                            </view>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="597"/>
+                                <connections>
+                                    <segue destination="49e-Tb-3d3" kind="embed" id="14n-4q-BFl"/>
+                                </connections>
+                            </containerView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="Ngy-NA-oNA" firstAttribute="top" secondItem="6XK-M5-xq2" secondAttribute="top" id="0DO-h1-AHF"/>
+                            <constraint firstItem="Ngy-NA-oNA" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" id="ATe-dZ-11a"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" id="FTl-Re-I0s"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" id="Tto-Nl-Vet"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="bottom" secondItem="sbl-c6-6bU" secondAttribute="bottom" id="b0v-4o-vXU"/>
+                            <constraint firstItem="Ngy-NA-oNA" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" id="iqD-PI-i8c"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="top" secondItem="Ngy-NA-oNA" secondAttribute="bottom" id="s1c-F7-49K"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="sbl-c6-6bU"/>
+                    </view>
+                    <connections>
+                        <outlet property="miniPlayerHeightConstraint" destination="fy0-df-lyC" id="WsA-CY-Of1"/>
+                        <outlet property="miniPlayerView" destination="FG3-di-WrS" id="EEX-Ni-fzR"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tDc-Kk-5Be" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-815" y="4"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">
@@ -586,7 +588,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HuB-VB-40B" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="0.0" y="0.0"/>
+            <point key="canvasLocation" x="-20" y="-27"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zOz-Xj-Cqq">

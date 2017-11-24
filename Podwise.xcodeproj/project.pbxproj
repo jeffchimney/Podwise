@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BE25226C1FC600B300E6B769 /* Podwise.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */; };
 		BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */; };
+		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
 		BE773F861FC61BD00075FB9E /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE773F851FC61BD00075FB9E /* PlaylistCell.swift */; };
 		BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */; };
 		BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */; };
@@ -51,6 +52,7 @@
 /* Begin PBXFileReference section */
 		BE25226B1FC600B300E6B769 /* Podwise.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Podwise.xcdatamodel; sourceTree = "<group>"; };
 		BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		BE773F851FC61BD00075FB9E /* PlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
 		BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MiniPlayer.xib; sourceTree = "<group>"; };
 		BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				BEE0A1441FBE57C200AA111F /* Info.plist */,
 				BEA71A601FBFAE5B001B42FC /* RSSParser.swift */,
 				BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */,
+				BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */,
 			);
 			path = Podwise;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 				BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */,
 				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
 				BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */,
+				BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */,
 				BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */,
 				BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */,
