@@ -110,6 +110,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = downloadedEpisodes[indexPath.row]
+        startAudioSession()
         playDownload(at: episode.localURL!)
         nowPlayingArt = UIImage(data: (self.podcast.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
@@ -217,6 +218,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
             if playNow {
+                startAudioSession()
                 self.playDownload(at: destinationUrl)
                 nowPlayingArt = UIImage(data: (self.podcast.image)!)
                 baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
@@ -247,6 +249,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
                     if playNow {
+                        self.startAudioSession()
                         self.playDownload(at: destinationUrl)
                         nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
@@ -295,6 +298,21 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Unubscribe  ", for: .normal)
             subscribeButton.backgroundColor = .red
             CoreDataHelper.save(context: managedContext!)
+        }
+    }
+    
+    func startAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .interruptSpokenAudioAndMixWithOthers)
+            print("AVAudioSession Category Playback OK")
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("AVAudioSession is Active")
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
         }
     }
 }

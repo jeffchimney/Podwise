@@ -563,13 +563,14 @@
                         <viewLayoutGuide key="safeArea" id="sbl-c6-6bU"/>
                     </view>
                     <connections>
+                        <outlet property="baseView" destination="Ngy-NA-oNA" id="GOc-Ic-bWL"/>
                         <outlet property="miniPlayerHeightConstraint" destination="fy0-df-lyC" id="WsA-CY-Of1"/>
                         <outlet property="miniPlayerView" destination="FG3-di-WrS" id="EEX-Ni-fzR"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tDc-Kk-5Be" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-815" y="4"/>
+            <point key="canvasLocation" x="-809" y="-27"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="yl2-sM-qoP">

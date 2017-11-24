@@ -263,6 +263,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
             if playNow {
+                startAudioSession()
                 self.playDownload(at: destinationUrl)
             }
             // if the file doesn't exist
@@ -311,6 +312,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
                     if playNow {
+                        self.startAudioSession()
                         self.playDownload(at: destinationUrl)
                     }
                     if downloads.contains(episode) {
@@ -382,6 +384,21 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.id = Int64(collectionID)
                 CoreDataHelper.save(context: managedContext!)
             }
+        }
+    }
+    
+    func startAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .interruptSpokenAudioAndMixWithOthers)
+            print("AVAudioSession Category Playback OK")
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("AVAudioSession is Active")
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
         }
     }
 }

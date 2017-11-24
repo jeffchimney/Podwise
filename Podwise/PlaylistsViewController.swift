@@ -110,6 +110,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        startAudioSession()
         playDownload(at: episodes[indexPath.row].localURL!)
         nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
@@ -141,6 +142,21 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     @objc func checkDownloads() {
         tableView.reloadData()
+    }
+    
+    func startAudioSession() {
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .interruptSpokenAudioAndMixWithOthers)
+            print("AVAudioSession Category Playback OK")
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("AVAudioSession is Active")
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
+        }
     }
 }
 
