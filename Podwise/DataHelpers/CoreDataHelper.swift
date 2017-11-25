@@ -32,6 +32,27 @@ class CoreDataHelper {
         return recordList
     }
     
+    static func getEpisodeWith(id: String, in context: NSManagedObjectContext) -> [CDEpisode] {
+        // Get associated images
+        let episodeFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")
+        let predicate = NSPredicate(format: "id = %@", id)
+        episodeFetchRequest.predicate = predicate
+        
+        var episodeRecords: [NSManagedObject] = []
+        do {
+            episodeRecords = try context.fetch(episodeFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var episodeList: [CDEpisode] = []
+        for episode in episodeRecords {
+            let thisEpisode = episode as! CDEpisode
+            
+            episodeList.append(thisEpisode)
+        }
+        return episodeList
+    }
+    
     static func getPodcastWith(id: Int, in context: NSManagedObjectContext) -> [CDPodcast] {
         // Get associated images
         let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")
@@ -101,6 +122,30 @@ class CoreDataHelper {
                 print("Connection error. Try again later.")
             }
             return
+        }
+    }
+    
+    static func delete(episode: CDEpisode, in context: NSManagedObjectContext) {
+        var returnedRecords: [NSManagedObject] = []
+        
+        let fetchRequest =
+            NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")
+        
+        do {
+            returnedRecords = try context.fetch(fetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        
+        for thisRecord in returnedRecords {
+            if episode == thisRecord {
+                context.delete(thisRecord)
+                do {
+                    try context.save()
+                } catch {
+                    print("Error deleting record")
+                }
+            }
         }
     }
 }

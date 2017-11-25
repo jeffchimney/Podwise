@@ -9,6 +9,7 @@
 import Foundation
 
 class Episode {
+    var id: String = String()
     var title: String = String()
     var description: String = String()
     var pubDate: String = String()
@@ -23,4 +24,5 @@ class Episode {
     var itunesDuration: String = String()
     var itunesContent: String = String()
     var itunesImage: String = String()
+    var downloaded: Bool!
 }

@@ -26,6 +26,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     var eName: String = String()
     var episodes: [Episode] = []
+    var episodeID: String = String()
     var episodeTitle: String = String()
     var episodeDescription = String()
     var episodeDuration = String()
@@ -68,6 +69,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         tableView.tableHeaderView = channelDescriptionTextView
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        tableView.reloadData()
+    }
+    
     // Table View Delegate Methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
@@ -100,6 +106,25 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             cell.durationLabel.text = "\(hours)h \(minutes)m"
         }
         
+        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // lets create your destination file url
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.audioUrl.lastPathComponent)
+        
+        // to check if it exists before downloading it
+        if !FileManager.default.fileExists(atPath: destinationUrl.path) {
+            // File doesn't exist in data, make fonts grey
+            cell.titleLabel.textColor = .lightGray
+            cell.descriptionLabel.textColor = .lightGray
+            cell.durationLabel.textColor = .lightGray
+            episode.downloaded = false
+        } else {
+            cell.titleLabel.textColor = .black
+            cell.descriptionLabel.textColor = .black
+            cell.durationLabel.textColor = .black
+            episode.downloaded = true
+        }
+        
         return cell
     }
     
@@ -109,7 +134,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = episodes[indexPath.row]
-        downloadFile(at: episode.audioUrl, relatedTo: episode, playNow: true)
+        
+        downloadFile(at: episode.audioUrl, relatedTo: episode, playNow: true, cellIndexPath: indexPath)
     }
     
     func tableView(_ tableView: UITableView,
@@ -131,20 +157,53 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     {
         let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Downloading...")
-            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], playNow: false)
+            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], playNow: false, cellIndexPath: indexPath)
             success(true)
         })
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Update action ...")
             success(true)
         })
-        downloadAction.image = UIImage(named: "downloadIcon")
-        downloadAction.backgroundColor = UIColor(displayP3Red: 69/255.0, green: 152/255.0, blue: 152/255.0, alpha: 1.0)
+        let deleteEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Delete action ...")
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id, in: self.managedContext!)
+            if cdEpisode.count > 0 {
+                do {
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    if filemanager.fileExists(atPath: destinationPath) {
+                        try! filemanager.removeItem(atPath: destinationPath)
+                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                    } else {
+                        print("not deleted, couldnt find file.")
+                    }
+                }
+            }
+            
+            let cell = tableView.cellForRow(at: indexPath) as! EpisodeCell
+            cell.titleLabel.textColor = .lightGray
+            cell.descriptionLabel.textColor = .lightGray
+            cell.durationLabel.textColor = .lightGray
+            self.episodes[indexPath.row].downloaded = false
+            success(true)
+        })
         
-        addToPlaylistAction.image = UIImage(named: "playlist")
-        addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-        
-        return UISwipeActionsConfiguration(actions: [downloadAction, addToPlaylistAction])
+        if !episodes[indexPath.row].downloaded{
+            downloadAction.image = UIImage(named: "downloadIcon")
+            downloadAction.backgroundColor = UIColor(displayP3Red: 69/255.0, green: 152/255.0, blue: 152/255.0, alpha: 1.0)
+            
+            addToPlaylistAction.image = UIImage(named: "playlist")
+            addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+            return UISwipeActionsConfiguration(actions: [downloadAction, addToPlaylistAction])
+        } else {
+            deleteEpisodeAction.image = UIImage(named: "trash")
+            deleteEpisodeAction.backgroundColor = .red
+            
+            addToPlaylistAction.image = UIImage(named: "playlist")
+            addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+            return UISwipeActionsConfiguration(actions: [deleteEpisodeAction, addToPlaylistAction])
+        }
     }
     
     // XMLParser Delegate Methods
@@ -188,6 +247,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         
         eName = elementName
         if elementName == "item" {
+            episodeID = String()
             episodeTitle = String()
             episodeDescription = String()
             episodeDuration = String()
@@ -198,6 +258,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         if elementName == "item" {
             
             let episode = Episode()
+            episode.id = episodeID
             episode.title = episodeTitle
             episode.itunesSubtitle = episodeDescription
             episode.itunesDuration = episodeDuration
@@ -240,6 +301,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 } else {
                     episodeDescription += data
                 }
+            case "guid":
+                episodeID = data
             case "itunes:duration":
                 episodeDuration = data
             default:
@@ -250,7 +313,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool) {
+    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool, cellIndexPath: IndexPath?) {
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -264,6 +327,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
+                nowPlayingArt = self.imageView.image
+                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                
+                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                baseViewController.miniPlayerView.backgroundColor = backgroundColor
+                
                 self.playDownload(at: destinationUrl)
             }
             // if the file doesn't exist
@@ -273,6 +342,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
             let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
             if podcastsWithId.count > 0 { // episode belongs to retrieved podcast
+                episode.id = relatedTo.id
                 episode.title = relatedTo.title
                 episode.subTitle = relatedTo.itunesSubtitle
                 episode.audioURL = relatedTo.audioUrl
@@ -290,6 +360,13 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
                 
+                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundCIColor = backgroundColor.coreImageColor
+                podcast.backgroundR = Float(backgroundCIColor.components[0])
+                podcast.backgroundG = Float(backgroundCIColor.components[1])
+                podcast.backgroundB = Float(backgroundCIColor.components[2])
+                
+                episode.id = relatedTo.id
                 episode.title = relatedTo.title
                 episode.subTitle = relatedTo.itunesSubtitle
                 episode.audioURL = relatedTo.audioUrl
@@ -313,11 +390,28 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
+                        nowPlayingArt = self.imageView.image
+                        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        
+                        let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                        baseViewController.miniPlayerView.backgroundColor = backgroundColor
+                        
                         self.playDownload(at: destinationUrl)
                     }
                     if downloads.contains(episode) {
                         if let episodeIndex = downloads.index(of: episode) {
                             downloads.remove(at: episodeIndex)
+                        }
+                    }
+                    
+                    if let indexPath = cellIndexPath {
+                        DispatchQueue.main.async {
+                            let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
+                            cell.titleLabel.textColor = .lightGray
+                            cell.descriptionLabel.textColor = .lightGray
+                            cell.durationLabel.textColor = .lightGray
+                            self.episodes[indexPath.row].downloaded = true
+                            self.tableView.reloadData()
                         }
                     }
                 } catch let error as NSError {
@@ -340,6 +434,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             
             player.prepareToPlay()
             player.play()
+            
+            DispatchQueue.main.async {
+                baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                baseViewController.showMiniPlayer(animated: true)
+            }
         } catch let error {
             print(error.localizedDescription)
         }
@@ -359,11 +458,20 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
                 podcast.image = UIImagePNGRepresentation(imageView.image!)
-                podcast.subscribed = true // not subscribed or it would have found the podcast in coredata
+                podcast.subscribed = true
                 podcast.author = authorName
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                
+                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundCIColor = backgroundColor.coreImageColor
+                podcast.backgroundR = Float(backgroundCIColor.components[0])
+                podcast.backgroundG = Float(backgroundCIColor.components[1])
+                podcast.backgroundB = Float(backgroundCIColor.components[2])
                 CoreDataHelper.save(context: managedContext!)
+            }
+            if episodes.count > 0 {
+                downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
             }
         } else {
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
@@ -382,6 +490,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.author = authorName
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                
+                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundCIColor = backgroundColor.coreImageColor
+                podcast.backgroundR = Float(backgroundCIColor.components[0])
+                podcast.backgroundG = Float(backgroundCIColor.components[1])
+                podcast.backgroundB = Float(backgroundCIColor.components[2])
                 CoreDataHelper.save(context: managedContext!)
             }
         }
@@ -400,5 +514,15 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         } catch {
             print(error)
         }
+    }
+}
+
+extension UIColor {
+    var coreImageColor: CIColor {
+        return CIColor(color: self)
+    }
+    var components: (red: CGFloat, green: CGFloat, blue: CGFloat, alpha: CGFloat) {
+        let coreImageColor = self.coreImageColor
+        return (coreImageColor.red, coreImageColor.green, coreImageColor.blue, coreImageColor.alpha)
     }
 }

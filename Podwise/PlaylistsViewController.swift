@@ -111,9 +111,50 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         startAudioSession()
-        playDownload(at: episodes[indexPath.row].localURL!)
         nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(episodes[indexPath.row].podcast!.backgroundB))
+        playDownload(at: episodes[indexPath.row].localURL!)
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Update action ...")
+            success(true)
+        })
+        
+        let deleteEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Delete action ...")
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id!, in: self.managedContext!)
+            if cdEpisode.count > 0 {
+                do {
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    if filemanager.fileExists(atPath: destinationPath) {
+                        try! filemanager.removeItem(atPath: destinationPath)
+                        tableView.beginUpdates()
+                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                        self.episodes.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.endUpdates()
+                    } else {
+                        print("not deleted, couldnt find file.")
+                    }
+                }
+            }
+            success(true)
+        })
+        
+        deleteEpisodeAction.image = UIImage(named: "trash")
+        deleteEpisodeAction.backgroundColor = .red
+        
+        addToPlaylistAction.image = UIImage(named: "playlist")
+        addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+        
+        return UISwipeActionsConfiguration(actions: [deleteEpisodeAction, addToPlaylistAction])
     }
     
     func playDownload(at: URL) {

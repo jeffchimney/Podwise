@@ -20,12 +20,16 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     @IBOutlet weak var channelLabel: UILabel!
     var channelDescriptionTextView: UITextView!
     @IBOutlet weak var subscribeButton: UIButton!
+    @IBOutlet weak var segmentedViewController: UISegmentedControl!
     var subscribeButtonSet: Bool = false
+    var hasParsedXML = false
+    var skippedChannelDescription = false
     
     var podcast: CDPodcast!
     var eName: String = String()
     var downloadedEpisodes: [CDEpisode] = []
     var unDownloadedEpisodes: [Episode] = []
+    var episodeID: String = String()
     var episodeTitle: String = String()
     var episodeDescription = String()
     var episodeDuration = String()
@@ -41,12 +45,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         downloadedEpisodes = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
         
         channelLabel.text! = ""
-        
-        if let parser = XMLParser(contentsOf: podcast.feedURL!) {
-            parser.delegate = self
-            parser.parse()
-        }
-        print("Looking for: \(podcast.feedURL!)")
         
         subscribeButton.layer.cornerRadius = 15
         subscribeButton.layer.masksToBounds = true
@@ -68,30 +66,80 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        managedContext = appDelegate.persistentContainer.viewContext
+        downloadedEpisodes = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+        
+        tableView.reloadData()
+    }
+    
     // Table View Delegate Methods
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return downloadedEpisodes.count
+        if segmentedViewController.selectedSegmentIndex == 0 {
+            return downloadedEpisodes.count
+        } else {
+            return unDownloadedEpisodes.count
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath) as! EpisodeCell
-        
-        let episode = downloadedEpisodes[indexPath.row]
         var hours = 0
         var minutes = 0
-        if let optionalHours = Int(episode.duration!) {
-            hours = (optionalHours/60)/60
+        if segmentedViewController.selectedSegmentIndex == 0 { // already downloaded
+            let episode = downloadedEpisodes[indexPath.row]
+            if let optionalHours = Int(episode.duration!) {
+                hours = (optionalHours/60)/60
+            }
+            if let optionalMinutes = Int(episode.duration!) {
+                minutes = (optionalMinutes/60)%60
+            }
+            
+            cell.titleLabel.text = episode.title
+            cell.descriptionLabel.text = episode.subTitle
+            
+            cell.titleLabel.textColor = .black
+            cell.descriptionLabel.textColor = .black
+            cell.durationLabel.textColor = .black
+        } else { // all episodes in feed
+            let episode = unDownloadedEpisodes[indexPath.row]
+            if let optionalHours = Int(episode.itunesDuration) {
+                hours = (optionalHours/60)/60
+            }
+            if let optionalMinutes = Int(episode.itunesDuration) {
+                minutes = (optionalMinutes/60)%60
+            }
+            
+            cell.titleLabel.text = episode.title
+            cell.descriptionLabel.text = episode.itunesSubtitle
+            
+            let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+            
+            // lets create your destination file url
+            let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.audioUrl.lastPathComponent)
+            
+            // to check if it exists before downloading it
+            if !FileManager.default.fileExists(atPath: destinationUrl.path) {
+                // File doesn't exist in data, make fonts grey
+                cell.titleLabel.textColor = .lightGray
+                cell.descriptionLabel.textColor = .lightGray
+                cell.durationLabel.textColor = .lightGray
+                episode.downloaded = false
+            } else {
+                cell.titleLabel.textColor = .black
+                cell.descriptionLabel.textColor = .black
+                cell.durationLabel.textColor = .black
+                episode.downloaded = true
+            }
         }
-        if let optionalMinutes = Int(episode.duration!) {
-            minutes = (optionalMinutes/60)%60
-        }
-        
-        cell.titleLabel.text = episode.title
-        cell.descriptionLabel.text = episode.subTitle
 
         if hours == 0 && minutes == 0 {
             cell.durationLabel.text = ""
@@ -111,10 +159,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = downloadedEpisodes[indexPath.row]
         startAudioSession()
-        playDownload(at: episode.localURL!)
         nowPlayingArt = UIImage(data: (self.podcast.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-        //downloadFile(at: episode.audioURL!, relatedTo: episode, playNow: true)
+        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
+        playDownload(at: episode.localURL!)
     }
     
     func tableView(_ tableView: UITableView,
@@ -134,22 +182,89 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     func tableView(_ tableView: UITableView,
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
-//        let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-//            print("Downloading...")
-//            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], playNow: false)
-//            success(true)
-//        })
+        let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Downloading...")
+            self.downloadFile(at: self.unDownloadedEpisodes[indexPath.row].audioUrl, relatedTo: self.unDownloadedEpisodes[indexPath.row], playNow: false, cellIndexPath: indexPath)
+            success(true)
+        })
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Update action ...")
             success(true)
         })
-//        downloadAction.image = UIImage(named: "downloadIcon")
-//        downloadAction.backgroundColor = UIColor(displayP3Red: 69/255.0, green: 152/255.0, blue: 152/255.0, alpha: 1.0)
+        
+        let deleteFromDownloadedEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Delete action ...")
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.downloadedEpisodes[indexPath.row].id!, in: self.managedContext!)
+            if cdEpisode.count > 0 {
+                do {
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    if filemanager.fileExists(atPath: destinationPath) {
+                        try! filemanager.removeItem(atPath: destinationPath)
+                        tableView.beginUpdates()
+                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                        self.downloadedEpisodes.remove(at: indexPath.row)
+                        tableView.deleteRows(at: [indexPath], with: .automatic)
+                        tableView.endUpdates()
+                    } else {
+                        print("not deleted, couldnt find file.")
+                    }
+                }
+            }
+            success(true)
+        })
+        
+        let deleteFromUndownloadedEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+            print("Delete action ...")
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.unDownloadedEpisodes[indexPath.row].id, in: self.managedContext!)
+            if cdEpisode.count > 0 {
+                do {
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    if filemanager.fileExists(atPath: destinationPath) {
+                        try! filemanager.removeItem(atPath: destinationPath)
+                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                        if self.downloadedEpisodes.contains(cdEpisode[0]) {
+                            let indexToDelete = self.downloadedEpisodes.index(of: cdEpisode[0])
+                            self.downloadedEpisodes.remove(at: indexToDelete!)
+                        }
+                    } else {
+                        print("not deleted, couldnt find file.")
+                    }
+                }
+            }
+            
+            let cell = tableView.cellForRow(at: indexPath) as! EpisodeCell
+            cell.titleLabel.textColor = .lightGray
+            cell.descriptionLabel.textColor = .lightGray
+            cell.durationLabel.textColor = .lightGray
+            self.unDownloadedEpisodes[indexPath.row].downloaded = false
+            success(true)
+        })
+        
+        downloadAction.image = UIImage(named: "downloadIcon")
+        downloadAction.backgroundColor = UIColor(displayP3Red: 69/255.0, green: 152/255.0, blue: 152/255.0, alpha: 1.0)
+        
+        deleteFromUndownloadedEpisodeAction.image = UIImage(named: "trash")
+        deleteFromUndownloadedEpisodeAction.backgroundColor = .red
+        
+        deleteFromDownloadedEpisodeAction.image = UIImage(named: "trash")
+        deleteFromDownloadedEpisodeAction.backgroundColor = .red
         
         addToPlaylistAction.image = UIImage(named: "playlist")
         addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
         
-        return UISwipeActionsConfiguration(actions: [addToPlaylistAction])
+        if segmentedViewController.selectedSegmentIndex == 0 {
+            return UISwipeActionsConfiguration(actions: [deleteFromDownloadedEpisodeAction, addToPlaylistAction])
+        } else {
+            if unDownloadedEpisodes[indexPath.row].downloaded {
+                return UISwipeActionsConfiguration(actions: [deleteFromUndownloadedEpisodeAction, addToPlaylistAction])
+            } else {
+                return UISwipeActionsConfiguration(actions: [downloadAction, addToPlaylistAction])
+            }
+        }
     }
     
     // XMLParser Delegate Methods
@@ -165,6 +280,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         
         eName = elementName
         if elementName == "item" {
+            episodeID = String()
             episodeTitle = String()
             episodeDescription = String()
             episodeDuration = String()
@@ -175,12 +291,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         if elementName == "item" {
             
             let episode = Episode()
+            episode.id = episodeID
             episode.title = episodeTitle
             episode.itunesSubtitle = episodeDescription
             episode.itunesDuration = episodeDuration
             episode.audioUrl = episodeURL
 
             unDownloadedEpisodes.append(episode)
+            tableView.reloadData()
         }
     }
     
@@ -195,6 +313,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 } else {
                     episodeTitle += data
                 }
+            case "description":
+                if skippedChannelDescription == false {
+                    skippedChannelDescription = true
+                } else {
+                    episodeDescription += data
+                }
+            case "guid":
+                episodeID = data
             case "itunes:duration":
                 episodeDuration = data
             default:
@@ -205,7 +331,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
-    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool) {
+    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool, cellIndexPath: IndexPath?) {
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -219,15 +345,17 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
-                self.playDownload(at: destinationUrl)
                 nowPlayingArt = UIImage(data: (self.podcast.image)!)
                 baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
+                self.playDownload(at: destinationUrl)
             }
             // if the file doesn't exist
         } else {
             let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
             let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
-
+            
+            episode.id = relatedTo.id
             episode.title = relatedTo.title
             episode.subTitle = relatedTo.itunesSubtitle
             episode.audioURL = relatedTo.audioUrl
@@ -250,13 +378,25 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
-                        self.playDownload(at: destinationUrl)
                         nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
+                        self.playDownload(at: destinationUrl)
                     }
                     if downloads.contains(episode) {
                         if let episodeIndex = downloads.index(of: episode) {
                             downloads.remove(at: episodeIndex)
+                        }
+                    }
+                    
+                    if let indexPath = cellIndexPath {
+                        DispatchQueue.main.async {
+                            let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
+                            cell.titleLabel.textColor = .lightGray
+                            cell.descriptionLabel.textColor = .lightGray
+                            cell.durationLabel.textColor = .lightGray
+                            self.unDownloadedEpisodes[indexPath.row].downloaded = true
+                            self.tableView.reloadData()
                         }
                     }
                 } catch let error as NSError {
@@ -313,6 +453,23 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             }
         } catch {
             print(error)
+        }
+    }
+    
+    @IBAction func segmentChanged(_ sender: Any) {
+        if segmentedViewController.selectedSegmentIndex == 0 {
+            
+            tableView.reloadData()
+        } else {
+            if !hasParsedXML {
+                if let parser = XMLParser(contentsOf: podcast.feedURL!) {
+                    parser.delegate = self
+                    parser.parse()
+                }
+                print("Looking for: \(podcast.feedURL!)")
+                hasParsedXML = true
+            }
+            tableView.reloadData()
         }
     }
 }
