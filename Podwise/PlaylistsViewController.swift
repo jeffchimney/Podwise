@@ -113,7 +113,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         startAudioSession()
         nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(episodes[indexPath.row].podcast!.backgroundB))
+        baseViewController.setProgressBarColor(red: CGFloat(episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(episodes[indexPath.row].podcast!.backgroundB))
         playDownload(at: episodes[indexPath.row].localURL!)
     }
     

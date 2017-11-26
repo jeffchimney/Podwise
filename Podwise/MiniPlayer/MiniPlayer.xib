@@ -23,7 +23,11 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="BGX-fv-1rH">
-                    <rect key="frame" x="162" y="607" width="50" height="50"/>
+                    <rect key="frame" x="167" y="612" width="40" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="40" id="60c-5H-mfI"/>
+                        <constraint firstAttribute="width" constant="40" id="9aJ-yi-kjU"/>
+                    </constraints>
                     <state key="normal" image="play-50"/>
                     <connections>
                         <action selector="playPauseButtonPressed:" destination="-1" eventType="touchUpInside" id="UWb-8E-YdM"/>
@@ -36,19 +40,47 @@
                         <constraint firstAttribute="width" constant="60" id="fRr-rS-k3Y"/>
                     </constraints>
                 </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DB7-rB-zkn">
+                    <rect key="frame" x="102" y="617" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="30" id="Bwx-Ql-5dv"/>
+                        <constraint firstAttribute="height" constant="30" id="LoR-Iw-UZz"/>
+                    </constraints>
+                    <state key="normal" image="replay-10-50"/>
+                    <connections>
+                        <action selector="skipBack:" destination="-1" eventType="touchUpInside" id="wlR-v3-djJ"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nyq-TU-q6d">
+                    <rect key="frame" x="242" y="617" width="30" height="30"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="30" id="8aX-wC-r6I"/>
+                        <constraint firstAttribute="width" constant="30" id="scd-Q3-qof"/>
+                    </constraints>
+                    <state key="normal" image="forward-30-50"/>
+                    <connections>
+                        <action selector="skipForward:" destination="-1" eventType="touchUpInside" id="Mfi-WI-Hh4"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="BGX-fv-1rH" secondAttribute="bottom" constant="10" id="IXP-uc-LvI"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="BGX-fv-1rH" secondAttribute="bottom" constant="15" id="IXP-uc-LvI"/>
+                <constraint firstItem="BGX-fv-1rH" firstAttribute="leading" secondItem="DB7-rB-zkn" secondAttribute="trailing" constant="35" id="JXx-Po-Wf0"/>
                 <constraint firstItem="eTb-XH-AMW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="JvU-Ex-mZG"/>
                 <constraint firstItem="BGX-fv-1rH" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="cgt-wP-q2o"/>
+                <constraint firstItem="Nyq-TU-q6d" firstAttribute="leading" secondItem="BGX-fv-1rH" secondAttribute="trailing" constant="35" id="iPB-Bd-fme"/>
                 <constraint firstItem="eTb-XH-AMW" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" constant="-5" id="jXN-Bv-NAp"/>
+                <constraint firstItem="DB7-rB-zkn" firstAttribute="centerY" secondItem="BGX-fv-1rH" secondAttribute="centerY" id="pVz-iI-Ase"/>
+                <constraint firstItem="Nyq-TU-q6d" firstAttribute="centerY" secondItem="BGX-fv-1rH" secondAttribute="centerY" id="zgG-34-sm1"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="-76.5" y="-51.5"/>
         </view>
     </objects>
     <resources>
+        <image name="forward-30-50" width="50" height="50"/>
         <image name="play-50" width="50" height="50"/>
+        <image name="replay-10-50" width="50" height="50"/>
     </resources>
 </document>

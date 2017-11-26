@@ -74,6 +74,27 @@ class CoreDataHelper {
         return podcastList
     }
     
+    static func getPodcastsWhere(subscribed: Bool, in context: NSManagedObjectContext) -> [CDPodcast] {
+        // Get associated images
+        let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")
+        let predicate = NSPredicate(format: "subscribed = \(subscribed)")
+        podcastFetchRequest.predicate = predicate
+        
+        var podcastRecords: [NSManagedObject] = []
+        do {
+            podcastRecords = try context.fetch(podcastFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var podcastList: [CDPodcast] = []
+        for podcast in podcastRecords {
+            let thisPodcast = podcast as! CDPodcast
+            
+            podcastList.append(thisPodcast)
+        }
+        return podcastList
+    }
+    
     static func fetchAllPodcasts(in context: NSManagedObjectContext) -> [CDPodcast] {
         // Get associated images
         let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")

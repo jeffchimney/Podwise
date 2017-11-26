@@ -161,7 +161,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         startAudioSession()
         nowPlayingArt = UIImage(data: (self.podcast.image)!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
+        baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episode.localURL!)
     }
     
@@ -347,7 +347,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 startAudioSession()
                 nowPlayingArt = UIImage(data: (self.podcast.image)!)
                 baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
+                baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
                 self.playDownload(at: destinationUrl)
             }
             // if the file doesn't exist
@@ -380,7 +380,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                         self.startAudioSession()
                         nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                        baseViewController.miniPlayerView.setBackgroundColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
+                        baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
                         self.playDownload(at: destinationUrl)
                     }
                     if downloads.contains(episode) {

@@ -330,8 +330,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 nowPlayingArt = self.imageView.image
                 baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
                 
-                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: nowPlayingArt.cgImage!)
-                baseViewController.miniPlayerView.backgroundColor = backgroundColor
+                let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                 
                 self.playDownload(at: destinationUrl)
             }
@@ -360,7 +360,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
                 
-                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
                 podcast.backgroundR = Float(backgroundCIColor.components[0])
                 podcast.backgroundG = Float(backgroundCIColor.components[1])
@@ -393,8 +393,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                         nowPlayingArt = self.imageView.image
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
                         
-                        let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: nowPlayingArt.cgImage!)
-                        baseViewController.miniPlayerView.backgroundColor = backgroundColor
+                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                        baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                         
                         self.playDownload(at: destinationUrl)
                     }
@@ -463,7 +463,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
                 
-                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
                 podcast.backgroundR = Float(backgroundCIColor.components[0])
                 podcast.backgroundG = Float(backgroundCIColor.components[1])
@@ -491,7 +491,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
                 
-                let backgroundColor = baseViewController.miniPlayerView.getAverageColorOf(image: (imageView.image?.cgImage)!)
+                let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
                 podcast.backgroundR = Float(backgroundCIColor.components[0])
                 podcast.backgroundG = Float(backgroundCIColor.components[1])

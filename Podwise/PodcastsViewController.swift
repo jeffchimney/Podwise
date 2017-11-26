@@ -11,7 +11,8 @@ import CoreData
 
 class PodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var podcasts: [CDPodcast] = []
+    var subscribedPodcasts: [CDPodcast] = []
+    var unSubscribedPodcasts: [CDPodcast] = []
     var managedContext: NSManagedObjectContext?
 
     @IBOutlet weak var tableView: UITableView!
@@ -30,14 +31,18 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         managedContext = appDelegate.persistentContainer.viewContext
         
-        podcasts = CoreDataHelper.fetchAllPodcasts(in: managedContext!)
-//        episodes = []
-//        for podcast in podcasts {
-//            let episodesForPodcase = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
-//            for episode in episodesForPodcase {
-//                episodes.append(episode)
-//            }
-//        }
+        subscribedPodcasts = CoreDataHelper.getPodcastsWhere(subscribed: true, in: managedContext!)
+        subscribedPodcasts.sort(by: { $0.title! < $1.title!})
+        
+        let unSubscribedPodcastsUnfiltered = CoreDataHelper.getPodcastsWhere(subscribed: false, in: managedContext!)
+        unSubscribedPodcasts = []
+        for podcast in unSubscribedPodcastsUnfiltered {
+            let episodesForPodcast = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+            if episodesForPodcast.count > 0 {
+                unSubscribedPodcasts.append(podcast)
+            }
+        }
+        unSubscribedPodcasts.sort(by: { $0.title! < $1.title!})
         
         tableView.reloadData()
     }
@@ -48,11 +53,15 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return 2
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return podcasts.count
+        if section == 0 {
+            return subscribedPodcasts.count
+        } else {
+            return unSubscribedPodcasts.count
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -60,11 +69,18 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var podcastListForSection: [CDPodcast] = []
+        if indexPath.section == 0 {
+            podcastListForSection = subscribedPodcasts
+        } else {
+            podcastListForSection = unSubscribedPodcasts
+        }
+    
         let cell = tableView.dequeueReusableCell(withIdentifier: "PodcastCell", for: indexPath as IndexPath) as! PodcastListCell
         
-        cell.titleLabel.text = podcasts[indexPath.row].title
-        cell.authorLabel.text = podcasts[indexPath.row].author
-        if let imageData = podcasts[indexPath.row].image {
+        cell.titleLabel.text = podcastListForSection[indexPath.row].title
+        cell.authorLabel.text = podcastListForSection[indexPath.row].author
+        if let imageData = podcastListForSection[indexPath.row].image {
             cell.artImageView.image = UIImage(data: imageData)
         }
         
@@ -75,11 +91,26 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let podcast: CDPodcast = self.podcasts[indexPath.row]
+        var podcastListForSection: [CDPodcast] = []
+        if indexPath.section == 0 {
+            podcastListForSection = subscribedPodcasts
+        } else {
+            podcastListForSection = unSubscribedPodcasts
+        }
+        
+        let podcast: CDPodcast = podcastListForSection[indexPath.row]
         
         let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "episodesViewController") as! EpisodesForPodcastViewController
         resultViewController.podcast = podcast
         self.navigationController?.pushViewController(resultViewController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return  "Subscribed"
+        } else {
+            return  "Not Subscribed"
+        }
     }
 }
 
