@@ -135,7 +135,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = episodes[indexPath.row]
         
-        downloadFile(at: episode.audioUrl, relatedTo: episode, playNow: true, cellIndexPath: indexPath)
+        downloadFile(at: episode.audioUrl, relatedTo: episode, addTo: nil, playNow: true, cellIndexPath: indexPath)
     }
     
     func tableView(_ tableView: UITableView,
@@ -157,11 +157,26 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     {
         let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Downloading...")
-            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], playNow: false, cellIndexPath: indexPath)
+            self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], addTo: nil, playNow: false, cellIndexPath: indexPath)
             success(true)
         })
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Update action ...")
+            print("Adding to playlist...")
+            let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
+            
+            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+            
+            for eachPlaylist in playlists {
+                alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+                    //execute some code when this option is selected
+                    self.downloadFile(at: self.episodes[indexPath.row].audioUrl, relatedTo: self.episodes[indexPath.row], addTo: eachPlaylist, playNow: false, cellIndexPath: indexPath)
+                }))
+            }
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
+            
             success(true)
         })
         let deleteEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
@@ -313,7 +328,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool, cellIndexPath: IndexPath?) {
+    func downloadFile(at: URL, relatedTo: Episode, addTo: CDPlaylist?, playNow: Bool, cellIndexPath: IndexPath?) {
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -334,6 +349,13 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                 
                 self.playDownload(at: destinationUrl)
+            } else { // add to playlist
+                let podcastsWithId = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+                if let playlistToAddTo = addTo {
+                    if podcastsWithId.count > 0 {
+                        add(podcast: podcastsWithId[0], to: playlistToAddTo)
+                    }
+                }
             }
             // if the file doesn't exist
         } else {
@@ -380,6 +402,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 downloads = []
             }
             downloads.append(episode)
+            if let playlistToAddTo = addTo {
+                add(podcast: episode.podcast!, to: playlistToAddTo)
+            }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
             URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
@@ -471,7 +496,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 CoreDataHelper.save(context: managedContext!)
             }
             if episodes.count > 0 {
-                downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
+                downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], addTo: nil, playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
             }
         } else {
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
@@ -499,6 +524,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 CoreDataHelper.save(context: managedContext!)
             }
         }
+    }
+    
+    func add(podcast: CDPodcast, to playlist: CDPlaylist) {
+        podcast.playlist = playlist
+        CoreDataHelper.save(context: managedContext!)
     }
     
     func startAudioSession() {

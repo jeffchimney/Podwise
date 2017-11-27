@@ -14,6 +14,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
 
     var podcasts: [CDPodcast] = []
     var episodes: [CDEpisode] = []
+    var playlists: [CDPlaylist] = []
+    var episodesForPlaylists: [[CDEpisode]] = [[CDEpisode]]()
     var managedContext: NSManagedObjectContext?
     var timer: Timer = Timer()
     var isTimerRunning: Bool = false
@@ -36,10 +38,24 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         podcasts = CoreDataHelper.fetchAllPodcasts(in: managedContext!)
         episodes = []
         for podcast in podcasts {
-            let episodesForPodcase = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
-            for episode in episodesForPodcase {
+            let episodesForPodcast = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+            for episode in episodesForPodcast {
                 episodes.append(episode)
             }
+        }
+        
+        episodesForPlaylists = []
+        playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+        playlists.sort(by: { $0.name! < $1.name!})
+        
+        for playlist in playlists {
+            let podcastsForPlaylist = CoreDataHelper.fetchPodcastsFor(playlist: playlist, in: managedContext!)
+            var episodesForPlaylist:[CDEpisode] = []
+            for podcast in podcastsForPlaylist {
+                let episodesForPodcastInPlaylist = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+                episodesForPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
+            }
+            episodesForPlaylists.append(episodesForPlaylist)
         }
         
         tableView.reloadData()
@@ -55,28 +71,47 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return playlists.count + 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return episodes.count
+        if section == 0 {
+            return episodes.count
+        }
+        return episodesForPlaylists[section-1].count // section-1 to account for episodes with no playlist being put first
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 80
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        if section == 0 {
+            return ""
+        } else {
+            return playlists[section-1].name!
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
         
-        cell.titleLabel.text = episodes[indexPath.row].title
+        let thisEpisode: CDEpisode!
+        if indexPath.section == 0 {
+            thisEpisode = episodes[indexPath.row]
+        } else {
+            thisEpisode = episodesForPlaylists[indexPath.section-1][indexPath.row]
+        }
+        
+        
+        cell.titleLabel.text = thisEpisode.title
         
         var hours = 0
         var minutes = 0
-        if let optionalHours = Int(episodes[indexPath.row].duration!) {
+        if let optionalHours = Int(thisEpisode.duration!) {
             hours = (optionalHours/60)/60
         }
-        if let optionalMinutes = Int(episodes[indexPath.row].duration!) {
+        if let optionalMinutes = Int(thisEpisode.duration!) {
             minutes = (optionalMinutes/60)%60
         }
         if hours == 0 && minutes == 0 {
@@ -87,7 +122,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.durationLabel.text = "\(hours)h \(minutes)m"
         }
         
-        if let imageData = episodes[indexPath.row].podcast?.image {
+        if let imageData = thisEpisode.podcast?.image {
             cell.artImageView.image = UIImage(data: imageData)
         }
         
@@ -95,7 +130,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         cell.artImageView.layer.masksToBounds = true
         cell.activityIndicator.isHidden = true
         if downloads != nil {
-            if downloads.contains(episodes[indexPath.row]) {
+            if downloads.contains(thisEpisode) {
                 cell.activityIndicator.startAnimating()
                 cell.activityIndicator.isHidden = false
                 cell.isUserInteractionEnabled = false
@@ -199,5 +234,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             print(error)
         }
     }
+    
+    @IBAction func addPlaylistButtonPressed(_ sender: Any) {
+        
+    }
+    
 }
 

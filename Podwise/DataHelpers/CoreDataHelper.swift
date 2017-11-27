@@ -51,6 +51,25 @@ class CoreDataHelper {
         return recordList
     }
     
+    static func fetchAllPlaylists(in context: NSManagedObjectContext) -> [CDPlaylist] {
+        // Get associated images
+        let playlistFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPlaylist")
+        
+        var playlistRecords: [NSManagedObject] = []
+        do {
+            playlistRecords = try context.fetch(playlistFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var playlistList: [CDPlaylist] = []
+        for playlist in playlistRecords {
+            let thisPlaylist = playlist as! CDPlaylist
+            
+            playlistList.append(thisPlaylist)
+        }
+        return playlistList
+    }
+    
     static func getEpisodeWith(id: String, in context: NSManagedObjectContext) -> [CDEpisode] {
         // Get associated images
         let episodeFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")
@@ -151,6 +170,26 @@ class CoreDataHelper {
             episodeList.append(thisEpisode)
         }
         return episodeList
+    }
+    
+    static func fetchPodcastsFor(playlist: CDPlaylist, in context: NSManagedObjectContext) -> [CDPodcast] {
+        let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")
+        let predicate = NSPredicate(format: "playlist = %@", playlist)
+        podcastFetchRequest.predicate = predicate
+        
+        var podcasts: [NSManagedObject] = []
+        do {
+            podcasts = try context.fetch(podcastFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var podcastList: [CDPodcast] = []
+        for podcast in podcasts {
+            let thisPodcast = podcast as! CDPodcast
+            
+            podcastList.append(thisPodcast)
+        }
+        return podcastList
     }
     
     static func save(context: NSManagedObjectContext) {

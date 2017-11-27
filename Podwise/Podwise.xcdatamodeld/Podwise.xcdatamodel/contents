@@ -13,6 +13,9 @@
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDPodcast" syncable="YES"/>
     </entity>
+    <entity name="CDPlaylist" representedClassName="CDPlaylist" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="CDPodcast" representedClassName="CDPodcast" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="backgroundB" optional="YES" attributeType="Float" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
@@ -26,10 +29,12 @@
         <attribute name="subTitle" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="episodes" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDEpisode" syncable="YES"/>
+        <relationship name="playlist" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDPlaylist" syncable="YES"/>
     </entity>
     <elements>
-        <element name="CDEpisode" positionX="-63" positionY="-18" width="128" height="165"/>
-        <element name="CDPodcast" positionX="-54" positionY="-9" width="128" height="225"/>
         <element name="CDAPNSToken" positionX="-54" positionY="81" width="128" height="60"/>
+        <element name="CDEpisode" positionX="-63" positionY="-18" width="128" height="165"/>
+        <element name="CDPodcast" positionX="-54" positionY="-9" width="128" height="240"/>
+        <element name="CDPlaylist" positionX="-54" positionY="81" width="128" height="60"/>
     </elements>
 </model>

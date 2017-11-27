@@ -184,11 +184,32 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     {
         let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Downloading...")
-            self.downloadFile(at: self.unDownloadedEpisodes[indexPath.row].audioUrl, relatedTo: self.unDownloadedEpisodes[indexPath.row], playNow: false, cellIndexPath: indexPath)
+            self.downloadFile(at: self.unDownloadedEpisodes[indexPath.row].audioUrl, relatedTo: self.unDownloadedEpisodes[indexPath.row], addTo: nil, playNow: false, cellIndexPath: indexPath)
             success(true)
         })
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Update action ...")
+            print("Adding to playlist...")
+            let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
+            
+            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+            
+            for eachPlaylist in playlists {
+                if self.segmentedViewController.selectedSegmentIndex == 0 {
+                    alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+                        //execute some code when this option is selected
+                        self.add(podcast: self.downloadedEpisodes[indexPath.row].podcast!, to: eachPlaylist)
+                    }))
+                } else {
+                    alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+                        //execute some code when this option is selected
+                        self.downloadFile(at: self.unDownloadedEpisodes[indexPath.row].audioUrl, relatedTo: self.unDownloadedEpisodes[indexPath.row], addTo: eachPlaylist, playNow: false, cellIndexPath: indexPath)
+                    }))
+                }
+            }
+            
+            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            
+            self.present(alert, animated: true, completion: nil)
             success(true)
         })
         
@@ -331,7 +352,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
-    func downloadFile(at: URL, relatedTo: Episode, playNow: Bool, cellIndexPath: IndexPath?) {
+    func downloadFile(at: URL, relatedTo: Episode, addTo: CDPlaylist?, playNow: Bool, cellIndexPath: IndexPath?) {
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -368,6 +389,9 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 downloads = []
             }
             downloads.append(episode)
+            if let playlistToAddTo = addTo {
+                add(podcast: episode.podcast!, to: playlistToAddTo)
+            }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
             URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
@@ -454,6 +478,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         } catch {
             print(error)
         }
+    }
+    
+    func add(podcast: CDPodcast, to playlist: CDPlaylist) {
+        podcast.playlist = playlist
+        CoreDataHelper.save(context: managedContext!)
     }
     
     @IBAction func segmentChanged(_ sender: Any) {
