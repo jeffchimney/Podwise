@@ -13,6 +13,25 @@ import EventKit
 
 class CoreDataHelper {
     
+    static func getAPNSToken(context: NSManagedObjectContext) -> [CDAPNSToken] {
+        // Get associated images
+        let tokenFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDAPNSToken")
+        
+        var tokenRecords: [NSManagedObject] = []
+        do {
+            tokenRecords = try context.fetch(tokenFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var tokenList: [CDAPNSToken] = []
+        for token in tokenRecords {
+            let thisToken = token as! CDAPNSToken
+            
+            tokenList.append(thisToken)
+        }
+        return tokenList
+    }
+    
     static func fetchAllEpisodes(in context: NSManagedObjectContext) -> [CDEpisode] {
         // Get associated images
         let recordFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")

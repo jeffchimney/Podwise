@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17B48" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CDAPNSToken" representedClassName="CDAPNSToken" syncable="YES" codeGenerationType="class">
+        <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="CDEpisode" representedClassName="CDEpisode" syncable="YES" codeGenerationType="class">
         <attribute name="audioURL" optional="YES" attributeType="URI" syncable="YES"/>
         <attribute name="duration" optional="YES" attributeType="String" syncable="YES"/>
@@ -27,5 +30,6 @@
     <elements>
         <element name="CDEpisode" positionX="-63" positionY="-18" width="128" height="165"/>
         <element name="CDPodcast" positionX="-54" positionY="-9" width="128" height="225"/>
+        <element name="CDAPNSToken" positionX="-54" positionY="81" width="128" height="60"/>
     </elements>
 </model>
