@@ -11,11 +11,18 @@ import CoreData
 import AVFoundation
 
 class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
+    struct PlaylistEpisodes {
+        var name : String!
+        var episodes : [CDEpisode]
+    }
 
     var podcasts: [CDPodcast] = []
     var episodes: [CDEpisode] = []
+    var misfitEpisodes: [CDEpisode] = []
     var playlists: [CDPlaylist] = []
-    var episodesForPlaylists: [[CDEpisode]] = [[CDEpisode]]()
+    var episodesForPlaylists: [String: [CDEpisode]] = [String: [CDEpisode]]()
+    var playlistStructArray = [PlaylistEpisodes]()
     var managedContext: NSManagedObjectContext?
     var timer: Timer = Timer()
     var isTimerRunning: Bool = false
@@ -38,24 +45,50 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         podcasts = CoreDataHelper.fetchAllPodcasts(in: managedContext!)
         episodes = []
         for podcast in podcasts {
-            let episodesForPodcast = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+            let episodesForPodcast = CoreDataHelper.getEpisodesForPodcastWithNoPlaylist(podcast: podcast, in: managedContext!)
             for episode in episodesForPodcast {
                 episodes.append(episode)
             }
         }
         
-        episodesForPlaylists = []
+        episodesForPlaylists = [:]
+        playlistStructArray = [PlaylistEpisodes]()
         playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         playlists.sort(by: { $0.name! < $1.name!})
         
+        misfitEpisodes = []
         for playlist in playlists {
             let podcastsForPlaylist = CoreDataHelper.fetchPodcastsFor(playlist: playlist, in: managedContext!)
             var episodesForPlaylist:[CDEpisode] = []
             for podcast in podcastsForPlaylist {
-                let episodesForPodcastInPlaylist = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+                var episodesForPodcastInPlaylist = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+                for podcastEpisode in episodesForPodcastInPlaylist {
+                    if podcastEpisode.playlist != nil {
+                        misfitEpisodes.append(podcastEpisode)
+                    }
+                }
+                for episode in misfitEpisodes {
+                    if episodesForPodcastInPlaylist.contains(episode) {
+                        let index = episodesForPodcastInPlaylist.index(of: episode)
+                        episodesForPodcastInPlaylist.remove(at: index!)
+                    }
+                }
                 episodesForPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
             }
-            episodesForPlaylists.append(episodesForPlaylist)
+            
+            episodesForPlaylists[playlist.name!] = episodesForPlaylist
+        }
+        
+        // assign misfit episodes into their proper playlist
+        for misfit in misfitEpisodes {
+            episodesForPlaylists[misfit.playlist!.name!]?.append(misfit)
+        }
+        
+        for (key, value) in episodesForPlaylists {
+            print("\(key) -> \(value)")
+            if episodes.count > 0 {
+                playlistStructArray.append(PlaylistEpisodes(name: key, episodes: value))
+            }
         }
         
         tableView.reloadData()
@@ -78,7 +111,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         if section == 0 {
             return episodes.count
         }
-        return episodesForPlaylists[section-1].count // section-1 to account for episodes with no playlist being put first
+        return playlistStructArray[section-1].episodes.count // section-1 to account for episodes with no playlist being put first
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -87,7 +120,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 {
-            return ""
+            return "Unsorted"
         } else {
             return playlists[section-1].name!
         }
@@ -100,7 +133,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         if indexPath.section == 0 {
             thisEpisode = episodes[indexPath.row]
         } else {
-            thisEpisode = episodesForPlaylists[indexPath.section-1][indexPath.row]
+            thisEpisode = playlistStructArray[indexPath.section-1].episodes[indexPath.row]
         }
         
         
@@ -146,10 +179,18 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         startAudioSession()
-        nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
-        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-        baseViewController.setProgressBarColor(red: CGFloat(episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(episodes[indexPath.row].podcast!.backgroundB))
-        playDownload(at: episodes[indexPath.row].localURL!)
+        
+        if indexPath.section == 0 {
+            nowPlayingArt = UIImage(data: (episodes[indexPath.row].podcast?.image)!)
+            baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+            baseViewController.setProgressBarColor(red: CGFloat(episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(episodes[indexPath.row].podcast!.backgroundB))
+            playDownload(at: episodes[indexPath.row].localURL!)
+        } else {
+            nowPlayingArt = UIImage(data: (playlistStructArray[indexPath.section-1].episodes[indexPath.row].podcast?.image)!)
+            baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+            baseViewController.setProgressBarColor(red: CGFloat(playlistStructArray[indexPath.section-1].episodes[indexPath.row].podcast!.backgroundR), green: CGFloat(playlistStructArray[indexPath.section-1].episodes[indexPath.row].podcast!.backgroundG), blue: CGFloat(playlistStructArray[indexPath.section-1].episodes[indexPath.row].podcast!.backgroundB))
+            playDownload(at: playlistStructArray[indexPath.section-1].episodes[indexPath.row].localURL!)
+        }
     }
     
     func tableView(_ tableView: UITableView,
@@ -162,7 +203,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         let deleteEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Delete action ...")
-            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id!, in: self.managedContext!)
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.playlistStructArray[indexPath.section-1].episodes[indexPath.row].id!, in: self.managedContext!)
             if cdEpisode.count > 0 {
                 do {
                     let filemanager = FileManager.default
@@ -172,7 +213,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                         try! filemanager.removeItem(atPath: destinationPath)
                         tableView.beginUpdates()
                         CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
-                        self.episodes.remove(at: indexPath.row)
+                        self.playlistStructArray[indexPath.section-1].episodes.remove(at: indexPath.row)
                         tableView.deleteRows(at: [indexPath], with: .automatic)
                         tableView.endUpdates()
                     } else {

@@ -350,10 +350,10 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 
                 self.playDownload(at: destinationUrl)
             } else { // add to playlist
-                let podcastsWithId = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+                let episodeWithID = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if let playlistToAddTo = addTo {
-                    if podcastsWithId.count > 0 {
-                        add(podcast: podcastsWithId[0], to: playlistToAddTo)
+                    if episodeWithID.count > 0 {
+                        add(episode: episodeWithID[0], to: playlistToAddTo)
                     }
                 }
             }
@@ -403,7 +403,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             }
             downloads.append(episode)
             if let playlistToAddTo = addTo {
-                add(podcast: episode.podcast!, to: playlistToAddTo)
+                add(episode: episode, to: playlistToAddTo)
             }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
@@ -528,6 +528,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {
         podcast.playlist = playlist
+        CoreDataHelper.save(context: managedContext!)
+    }
+    
+    func add(episode: CDEpisode, to playlist: CDPlaylist) {
+        episode.playlist = playlist
         CoreDataHelper.save(context: managedContext!)
     }
     

@@ -20,6 +20,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     @IBOutlet weak var channelLabel: UILabel!
     var channelDescriptionTextView: UITextView!
     @IBOutlet weak var subscribeButton: UIButton!
+    @IBOutlet weak var playlistButton: UIButton!
     @IBOutlet weak var segmentedViewController: UISegmentedControl!
     var subscribeButtonSet: Bool = false
     var hasParsedXML = false
@@ -44,10 +45,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         managedContext = appDelegate.persistentContainer.viewContext
         downloadedEpisodes = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
         
-        channelLabel.text! = ""
+        channelLabel.text! = podcast.title!
         
         subscribeButton.layer.cornerRadius = 15
         subscribeButton.layer.masksToBounds = true
+        
+        playlistButton.layer.cornerRadius = 15
+        playlistButton.layer.masksToBounds = true
+        playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -73,6 +78,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
         managedContext = appDelegate.persistentContainer.viewContext
         downloadedEpisodes = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+        
+        if let playlist = podcast.playlist {
+            playlistButton.setTitle("  \(playlist.name!)  ", for: .normal)
+        }
         
         tableView.reloadData()
     }
@@ -197,7 +206,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 if self.segmentedViewController.selectedSegmentIndex == 0 {
                     alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
                         //execute some code when this option is selected
-                        self.add(podcast: self.downloadedEpisodes[indexPath.row].podcast!, to: eachPlaylist)
+                        self.add(episode: self.downloadedEpisodes[indexPath.row], to: eachPlaylist)
                     }))
                 } else {
                     alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
@@ -390,7 +399,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             }
             downloads.append(episode)
             if let playlistToAddTo = addTo {
-                add(podcast: episode.podcast!, to: playlistToAddTo)
+                add(episode: episode, to: playlistToAddTo)
             }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
@@ -483,6 +492,31 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {
         podcast.playlist = playlist
         CoreDataHelper.save(context: managedContext!)
+    }
+    
+    func add(episode: CDEpisode, to playlist: CDPlaylist) {
+        episode.playlist = playlist
+        CoreDataHelper.save(context: managedContext!)
+    }
+    
+    @IBAction func playlistButtonPressed(_ sender: Any) {
+        let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
+        
+        let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+        
+        for eachPlaylist in playlists {
+            alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+                //execute some code when this option is selected
+                self.add(podcast: self.podcast!, to: eachPlaylist)
+                DispatchQueue.main.async {
+                    self.playlistButton.setTitle("  \(eachPlaylist.name!)  ", for: .normal)
+                }
+            }))
+        }
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
     }
     
     @IBAction func segmentChanged(_ sender: Any) {

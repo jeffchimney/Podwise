@@ -608,6 +608,16 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fxt-bP-6fc">
+                                <rect key="frame" x="221" y="151" width="83" height="29"/>
+                                <color key="backgroundColor" red="0.0" green="0.97680455450000003" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <state key="normal" title="  No Playlist  "/>
+                                <connections>
+                                    <action selector="playlistButtonPressed:" destination="65y-0i-8sg" eventType="touchUpInside" id="kf4-zW-ZRA"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -616,6 +626,9 @@
                             <constraint firstItem="JOa-5s-hbq" firstAttribute="leading" secondItem="rd5-o7-xUo" secondAttribute="trailing" constant="16" id="ADI-On-YUU"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="bottom" secondItem="jdf-1N-VHZ" secondAttribute="bottom" id="Bvx-Tm-T5b"/>
                             <constraint firstItem="jdf-1N-VHZ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="JOa-5s-hbq" secondAttribute="trailing" constant="16" id="HZr-PY-Kac"/>
+                            <constraint firstItem="fxt-bP-6fc" firstAttribute="leading" secondItem="AT9-UE-fdc" secondAttribute="trailing" constant="8" id="Hxy-l0-pyp"/>
+                            <constraint firstItem="fxt-bP-6fc" firstAttribute="centerY" secondItem="AT9-UE-fdc" secondAttribute="centerY" id="IqY-c4-Io5"/>
+                            <constraint firstItem="jdf-1N-VHZ" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="fxt-bP-6fc" secondAttribute="trailing" constant="16" id="KwG-0a-2vd"/>
                             <constraint firstItem="AT9-UE-fdc" firstAttribute="top" secondItem="JOa-5s-hbq" secondAttribute="bottom" constant="11" id="TI1-qb-PHK"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="top" secondItem="u9J-WY-F3m" secondAttribute="bottom" constant="8" id="W7J-0T-t8z"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="trailing" secondItem="jdf-1N-VHZ" secondAttribute="trailing" id="f3c-YQ-owH"/>
@@ -623,6 +636,7 @@
                             <constraint firstItem="AT9-UE-fdc" firstAttribute="bottom" secondItem="rd5-o7-xUo" secondAttribute="bottom" id="gFa-Oy-CwW"/>
                             <constraint firstItem="u9J-WY-F3m" firstAttribute="leading" secondItem="jdf-1N-VHZ" secondAttribute="leading" constant="-10" id="gRj-vq-gt7"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="leading" secondItem="jdf-1N-VHZ" secondAttribute="leading" id="lEE-do-vVl"/>
+                            <constraint firstItem="jdf-1N-VHZ" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="fxt-bP-6fc" secondAttribute="trailing" constant="71" id="otB-jL-1V0"/>
                             <constraint firstItem="u9J-WY-F3m" firstAttribute="top" secondItem="rd5-o7-xUo" secondAttribute="bottom" constant="8" id="xAK-ga-4oe"/>
                             <constraint firstItem="AT9-UE-fdc" firstAttribute="leading" secondItem="rd5-o7-xUo" secondAttribute="trailing" constant="16" id="zHs-lF-NVn"/>
                         </constraints>
@@ -631,6 +645,7 @@
                     <connections>
                         <outlet property="channelLabel" destination="JOa-5s-hbq" id="ci3-Yf-t9S"/>
                         <outlet property="imageView" destination="rd5-o7-xUo" id="FSE-Fd-wfz"/>
+                        <outlet property="playlistButton" destination="fxt-bP-6fc" id="0zd-b3-OfD"/>
                         <outlet property="segmentedViewController" destination="u9J-WY-F3m" id="5Ve-HD-5db"/>
                         <outlet property="subscribeButton" destination="AT9-UE-fdc" id="k8Q-Yj-n03"/>
                         <outlet property="tableView" destination="seM-z3-KUl" id="q6g-yJ-XB5"/>
