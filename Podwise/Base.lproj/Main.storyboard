@@ -34,7 +34,7 @@
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Id-CW-1ge">
-                                                            <rect key="frame" x="82" y="16" width="40" height="24"/>
+                                                            <rect key="frame" x="82" y="16" width="278" height="24"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="24" id="qCF-H9-Qau"/>
                                                             </constraints>
@@ -62,6 +62,7 @@
                                                     <constraints>
                                                         <constraint firstItem="0rH-D2-ukx" firstAttribute="leading" secondItem="wS9-5f-K42" secondAttribute="leadingMargin" constant="-3" id="82N-Q2-voL"/>
                                                         <constraint firstItem="0rH-D2-ukx" firstAttribute="centerY" secondItem="wS9-5f-K42" secondAttribute="centerY" id="P7E-wz-seu"/>
+                                                        <constraint firstItem="1Id-CW-1ge" firstAttribute="trailing" secondItem="wS9-5f-K42" secondAttribute="trailingMargin" id="ScV-Ht-Y8K"/>
                                                         <constraint firstItem="G4m-5t-hfp" firstAttribute="leading" secondItem="0rH-D2-ukx" secondAttribute="trailing" constant="11" id="UcO-vF-Ulb"/>
                                                         <constraint firstItem="eh2-15-zGU" firstAttribute="centerY" secondItem="wS9-5f-K42" secondAttribute="centerY" id="a9i-RO-gjf"/>
                                                         <constraint firstItem="G4m-5t-hfp" firstAttribute="bottom" secondItem="wS9-5f-K42" secondAttribute="bottomMargin" id="sHV-Pu-rFD"/>
