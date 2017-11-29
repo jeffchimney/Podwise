@@ -28,6 +28,8 @@ class BaseViewController: UIViewController {
         
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
+        miniPlayerView.layer.cornerRadius = 15
+        miniPlayerView.layer.masksToBounds = true
         
         sliderView.setValue(0, animated: false)
         sliderView.maximumTrackTintColor = .clear
@@ -37,6 +39,8 @@ class BaseViewController: UIViewController {
         } else {
             hideMiniPlayer(animated: false)
         }
+        
+        self.view.backgroundColor = .black
         
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
     }

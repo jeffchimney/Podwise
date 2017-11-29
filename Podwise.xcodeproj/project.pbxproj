@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE0FC0B41FCE3B9300AC2505 /* GroupedView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */; };
+		BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */; };
 		BE25226C1FC600B300E6B769 /* Podwise.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */; };
 		BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
@@ -53,6 +55,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedView.xib; sourceTree = "<group>"; };
+		BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedViewController.swift; sourceTree = "<group>"; };
 		BE25226B1FC600B300E6B769 /* Podwise.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Podwise.xcdatamodel; sourceTree = "<group>"; };
 		BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +117,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		BE0FC0B21FCE3B2500AC2505 /* GroupedView */ = {
+			isa = PBXGroup;
+			children = (
+				BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */,
+				BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */,
+			);
+			path = GroupedView;
+			sourceTree = "<group>";
+		};
 		BE25226D1FC607D900E6B769 /* DataHelpers */ = {
 			isa = PBXGroup;
 			children = (
@@ -164,6 +177,7 @@
 			children = (
 				BED4B0111FCBDA0C00B818A9 /* Podwise.entitlements */,
 				BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */,
+				BE0FC0B21FCE3B2500AC2505 /* GroupedView */,
 				BE8DE4691FC7679C00426F2A /* MiniPlayer */,
 				BE25226D1FC607D900E6B769 /* DataHelpers */,
 				BEA9D3B71FC389BC00A140AC /* Classes */,
@@ -334,6 +348,7 @@
 				BEE0A1431FBE57C200AA111F /* LaunchScreen.storyboard in Resources */,
 				BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */,
 				BEE0A1401FBE57C200AA111F /* Assets.xcassets in Resources */,
+				BE0FC0B41FCE3B9300AC2505 /* GroupedView.xib in Resources */,
 				BEE0A13E1FBE57C200AA111F /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -361,6 +376,7 @@
 			files = (
 				BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */,
 				BEE0A13B1FBE57C200AA111F /* PodcastsViewController.swift in Sources */,
+				BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */,
 				BEE7BA6B1FC77C22005345FB /* EpisodesForPodcastViewController.swift in Sources */,
 				BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */,
 				BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */,

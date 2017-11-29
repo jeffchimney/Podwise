@@ -105,9 +105,9 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func numberOfSections(in tableView: UITableView) -> Int {
         if episodes.count > 0 {
-            return playlists.count + 1
+            return playlistStructArray.count + 1
         } else {
-            return playlists.count
+            return playlistStructArray.count
         }
     }
     
@@ -131,10 +131,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             if section == 0 {
                 return "Unsorted"
             } else {
-                return playlists[section-1].name!
+                return playlistStructArray[section-1].name!
             }
         } else {
-            return playlists[section].name!
+            return playlistStructArray[section].name!
         }
     }
     

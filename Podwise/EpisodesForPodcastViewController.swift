@@ -14,6 +14,7 @@ import AVFoundation
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
     var managedContext: NSManagedObjectContext?
+    weak var reloadTableViewDelegate: reloadTableViewDelegate?
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
@@ -534,6 +535,42 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             }
             tableView.reloadData()
         }
+    }
+    
+    override var previewActionItems: [UIPreviewActionItem] {
+        let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+        var playlistActionList: [UIPreviewAction] = []
+        for eachPlaylist in playlists {
+            let addToPlaylist = UIPreviewAction(title: "\(eachPlaylist.name!)", style: .default, handler: {_,_ in
+                self.add(podcast: self.podcast, to: eachPlaylist)
+            })
+            playlistActionList.append(addToPlaylist)
+        }
+        
+        let subscribe: UIPreviewAction!
+        if podcast.subscribed {
+            subscribe = UIPreviewAction(title: "Unsubscribe", style: .default, handler: {_,_ in
+                self.podcast.subscribed = false
+                CoreDataHelper.save(context: self.managedContext!)
+                self.reloadTableViewDelegate?.reloadTableView()
+            })
+        } else {
+            subscribe = UIPreviewAction(title: "Subscribe", style: .default, handler: {_,_ in
+                self.podcast.subscribed = true
+                CoreDataHelper.save(context: self.managedContext!)
+                self.reloadTableViewDelegate?.reloadTableView()
+            })
+        }
+        
+        let cancel = UIPreviewAction(title: "Cancel", style: .destructive) { (action, controller) in
+            print("Cancel Action Selected")
+        }
+        
+        let playlistGroup = UIPreviewActionGroup(title: "Add to Playlist", style: .default, actions: playlistActionList)
+        playlistActionList.append(subscribe)
+        playlistActionList.append(cancel)
+        
+        return [playlistGroup, subscribe, cancel]
     }
 }
 
