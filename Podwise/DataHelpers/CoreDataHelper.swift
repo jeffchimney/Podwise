@@ -113,6 +113,31 @@ class CoreDataHelper {
         return episodeList
     }
     
+    static func getAllEpisodesWithNoPlaylist(in context: NSManagedObjectContext) -> [CDEpisode] {
+        var episodeList: [CDEpisode] = []
+        let podcastList: [CDPodcast] = fetchAllPodcasts(in: context)
+        for podcast in podcastList {
+            if podcast.playlist == nil {
+                let episodeFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")
+                let predicate = NSPredicate(format: "podcast = %@ && playlist == nil", podcast)
+                episodeFetchRequest.predicate = predicate
+                
+                var episodeRecords: [NSManagedObject] = []
+                do {
+                    episodeRecords = try context.fetch(episodeFetchRequest)
+                } catch let error as NSError {
+                    print("Could not fetch. \(error), \(error.userInfo)")
+                }
+                for episode in episodeRecords {
+                    let thisEpisode = episode as! CDEpisode
+                    
+                    episodeList.append(thisEpisode)
+                }
+            }
+        }
+        return episodeList
+    }
+    
     static func getPodcastWith(id: Int, in context: NSManagedObjectContext) -> [CDPodcast] {
         // Get associated images
         let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")

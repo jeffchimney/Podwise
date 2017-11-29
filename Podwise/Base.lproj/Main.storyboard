@@ -26,56 +26,27 @@
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="510"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <prototypes>
-                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PlaylistCell" rowHeight="80" id="W42-wj-PRz" customClass="PlaylistCell" customModule="Podwise" customModuleProvider="target">
-                                                <rect key="frame" x="0.0" y="28" width="375" height="80"/>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PlaylistCell" rowHeight="186" id="W42-wj-PRz" customClass="GroupedViewCell" customModule="Podwise" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="28" width="375" height="186"/>
                                                 <autoresizingMask key="autoresizingMask"/>
                                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="W42-wj-PRz" id="wS9-5f-K42">
-                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="185.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1Id-CW-1ge">
-                                                            <rect key="frame" x="82" y="16" width="278" height="24"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="height" constant="24" id="qCF-H9-Qau"/>
-                                                            </constraints>
-                                                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0rH-D2-ukx">
-                                                            <rect key="frame" x="12" y="9" width="60" height="60"/>
-                                                            <constraints>
-                                                                <constraint firstAttribute="width" constant="60" id="BIR-dq-QdV"/>
-                                                                <constraint firstAttribute="height" constant="60" id="Mzj-Ox-esa"/>
-                                                            </constraints>
-                                                        </imageView>
-                                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G4m-5t-hfp">
-                                                            <rect key="frame" x="83" y="48" width="65.5" height="21"/>
-                                                            <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
-                                                            <nil key="textColor"/>
-                                                            <nil key="highlightedColor"/>
-                                                        </label>
-                                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="eh2-15-zGU">
-                                                            <rect key="frame" x="177.5" y="29" width="20" height="20"/>
-                                                        </activityIndicatorView>
+                                                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="I5d-2z-7ul" customClass="GroupedViewController" customModule="Podwise" customModuleProvider="target">
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="186"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        </tableView>
                                                     </subviews>
                                                     <constraints>
-                                                        <constraint firstItem="0rH-D2-ukx" firstAttribute="leading" secondItem="wS9-5f-K42" secondAttribute="leadingMargin" constant="-3" id="82N-Q2-voL"/>
-                                                        <constraint firstItem="0rH-D2-ukx" firstAttribute="centerY" secondItem="wS9-5f-K42" secondAttribute="centerY" id="P7E-wz-seu"/>
-                                                        <constraint firstItem="1Id-CW-1ge" firstAttribute="trailing" secondItem="wS9-5f-K42" secondAttribute="trailingMargin" id="ScV-Ht-Y8K"/>
-                                                        <constraint firstItem="G4m-5t-hfp" firstAttribute="leading" secondItem="0rH-D2-ukx" secondAttribute="trailing" constant="11" id="UcO-vF-Ulb"/>
-                                                        <constraint firstItem="eh2-15-zGU" firstAttribute="centerY" secondItem="wS9-5f-K42" secondAttribute="centerY" id="a9i-RO-gjf"/>
-                                                        <constraint firstItem="G4m-5t-hfp" firstAttribute="bottom" secondItem="wS9-5f-K42" secondAttribute="bottomMargin" id="sHV-Pu-rFD"/>
-                                                        <constraint firstItem="1Id-CW-1ge" firstAttribute="top" secondItem="wS9-5f-K42" secondAttribute="topMargin" constant="5" id="sYY-D2-xe4"/>
-                                                        <constraint firstItem="eh2-15-zGU" firstAttribute="centerX" secondItem="wS9-5f-K42" secondAttribute="centerX" id="tXQ-aK-QZZ"/>
-                                                        <constraint firstItem="1Id-CW-1ge" firstAttribute="leading" secondItem="0rH-D2-ukx" secondAttribute="trailing" constant="10" id="vXe-V8-2sr"/>
+                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="top" secondItem="wS9-5f-K42" secondAttribute="top" id="DKK-8B-vpp"/>
+                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="leading" secondItem="wS9-5f-K42" secondAttribute="leading" id="Gzx-Xg-3yH"/>
+                                                        <constraint firstAttribute="trailing" secondItem="I5d-2z-7ul" secondAttribute="trailing" id="h3o-UA-l56"/>
+                                                        <constraint firstAttribute="bottom" secondItem="I5d-2z-7ul" secondAttribute="bottom" id="lBj-sc-AXg"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <connections>
-                                                    <outlet property="activityIndicator" destination="eh2-15-zGU" id="tRw-xC-UFj"/>
-                                                    <outlet property="artImageView" destination="0rH-D2-ukx" id="hBB-ik-rwA"/>
-                                                    <outlet property="durationLabel" destination="G4m-5t-hfp" id="DWX-Dm-86n"/>
-                                                    <outlet property="titleLabel" destination="1Id-CW-1ge" id="34z-av-dG7"/>
+                                                    <outlet property="playlistGroupTableView" destination="I5d-2z-7ul" id="kSj-Up-vEQ"/>
                                                 </connections>
                                             </tableViewCell>
                                         </prototypes>
