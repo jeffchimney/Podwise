@@ -70,6 +70,43 @@ class CoreDataHelper {
         return playlistList
     }
     
+    static func fetchAllPlaylists(with name: String, in context: NSManagedObjectContext) -> [CDPlaylist] {
+        // Get associated images
+        let playlistFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPlaylist")
+        let predicate = NSPredicate(format: "name = %@", name)
+        playlistFetchRequest.predicate = predicate
+        
+        var playlistRecords: [NSManagedObject] = []
+        do {
+            playlistRecords = try context.fetch(playlistFetchRequest)
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
+        var playlistList: [CDPlaylist] = []
+        for playlist in playlistRecords {
+            let thisPlaylist = playlist as! CDPlaylist
+            
+            playlistList.append(thisPlaylist)
+        }
+        return playlistList
+    }
+    
+    static func getHighestPlaylistSortIndex(in context: NSManagedObjectContext) -> Int {
+        // Get associated images
+        let playlistFetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "CDPlaylist")
+        
+        playlistFetchRequest.fetchLimit = 1
+        let sortDescriptor = NSSortDescriptor(key: "sortIndex", ascending: false)
+        playlistFetchRequest.sortDescriptors = [sortDescriptor]
+        do {
+            let playlists = try context.fetch(playlistFetchRequest)
+            let max = playlists.first as! CDPlaylist
+            return Int(max.sortIndex)
+        } catch _ {
+            return 0
+        }
+    }
+    
     static func getEpisodeWith(id: String, in context: NSManagedObjectContext) -> [CDEpisode] {
         // Get associated images
         let episodeFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDEpisode")

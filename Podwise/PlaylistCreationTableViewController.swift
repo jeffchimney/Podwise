@@ -105,6 +105,9 @@ class PlaylistCreationTableViewController: UITableViewController {
         
         let titleCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! PlaylistTitleCell
         playlist.name = titleCell.titleTextField.text
+        let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
+        playlist.sortIndex = (Int64(sortIndex + Int(1)))
+        playlist.id = UUID().uuidString
         
         for podcast in selectedPodcasts {
             podcast.playlist = playlist

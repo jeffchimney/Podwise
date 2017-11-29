@@ -33,21 +33,30 @@
                                                     <rect key="frame" x="0.0" y="0.0" width="375" height="185.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <subviews>
-                                                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="I5d-2z-7ul" customClass="GroupedViewController" customModule="Podwise" customModuleProvider="target">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="186"/>
+                                                        <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="I5d-2z-7ul" customClass="GroupedViewController" customModule="Podwise" customModuleProvider="target">
+                                                            <rect key="frame" x="4" y="4" width="367" height="177.5"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         </tableView>
                                                     </subviews>
+                                                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
-                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="top" secondItem="wS9-5f-K42" secondAttribute="top" id="DKK-8B-vpp"/>
-                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="leading" secondItem="wS9-5f-K42" secondAttribute="leading" id="Gzx-Xg-3yH"/>
-                                                        <constraint firstAttribute="trailing" secondItem="I5d-2z-7ul" secondAttribute="trailing" id="h3o-UA-l56"/>
-                                                        <constraint firstAttribute="bottom" secondItem="I5d-2z-7ul" secondAttribute="bottom" id="lBj-sc-AXg"/>
+                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="leading" secondItem="wS9-5f-K42" secondAttribute="leading" constant="4" id="00v-pY-Knt"/>
+                                                        <constraint firstAttribute="bottom" secondItem="I5d-2z-7ul" secondAttribute="bottom" constant="4" id="7iW-uG-kjJ"/>
+                                                        <constraint firstItem="I5d-2z-7ul" firstAttribute="top" secondItem="wS9-5f-K42" secondAttribute="top" constant="4" id="AHs-yz-pLb"/>
+                                                        <constraint firstAttribute="trailing" secondItem="I5d-2z-7ul" secondAttribute="trailing" constant="4" id="Y5w-hx-hN9"/>
                                                     </constraints>
                                                 </tableViewCellContentView>
                                                 <connections>
                                                     <outlet property="playlistGroupTableView" destination="I5d-2z-7ul" id="kSj-Up-vEQ"/>
                                                 </connections>
+                                            </tableViewCell>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" rowHeight="80" id="SGf-Sr-K0N">
+                                                <rect key="frame" x="0.0" y="214" width="375" height="80"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="SGf-Sr-K0N" id="ssY-8P-9a3">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="79.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
                                             </tableViewCell>
                                         </prototypes>
                                     </tableView>

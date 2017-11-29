@@ -15,7 +15,9 @@
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDPodcast" syncable="YES"/>
     </entity>
     <entity name="CDPlaylist" representedClassName="CDPlaylist" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sortIndex" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
     </entity>
     <entity name="CDPodcast" representedClassName="CDPodcast" syncable="YES" codeGenerationType="class">
         <attribute name="author" optional="YES" attributeType="String" syncable="YES"/>
@@ -35,7 +37,7 @@
     <elements>
         <element name="CDAPNSToken" positionX="-54" positionY="81" width="128" height="60"/>
         <element name="CDEpisode" positionX="-63" positionY="-18" width="128" height="180"/>
-        <element name="CDPlaylist" positionX="-54" positionY="81" width="128" height="60"/>
+        <element name="CDPlaylist" positionX="-54" positionY="81" width="128" height="90"/>
         <element name="CDPodcast" positionX="-54" positionY="-9" width="128" height="240"/>
     </elements>
 </model>

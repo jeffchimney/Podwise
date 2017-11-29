@@ -337,6 +337,21 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
+        let playlists = CoreDataHelper.fetchAllPlaylists(with: "unsorted", in: managedContext!)
+        var playlist: CDPlaylist!
+        if playlists.count == 0 {
+            let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
+            let playlistObject = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
+            
+            playlistObject.id = "unsorted"
+            playlistObject.name = "Unsorted"
+            playlistObject.sortIndex = 0
+            CoreDataHelper.save(context: managedContext!)
+            playlist = playlistObject
+        } else {
+            playlist = playlists[0]
+        }
+        
         // to check if it exists before downloading it
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
@@ -381,6 +396,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.author = authorName!
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                podcast.playlist = playlist
                 
                 let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor

@@ -43,8 +43,81 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         managedContext = appDelegate.persistentContainer.viewContext
         
-        misfitEpisodes = CoreDataHelper.getAllEpisodesWithNoPlaylist(in: managedContext!)
+//        misfitEpisodes = CoreDataHelper.getAllEpisodesWithNoPlaylist(in: managedContext!)
+//        playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+//        
+//        misfitEpisodes = []
+//        self.episodesInPlaylist = []
+//        let podcastsInPlaylist: [CDPodcast] = CoreDataHelper.fetchPodcastsFor(playlist: self.playlist!, in: self.managedContext!)
+//        for podcast in podcastsInPlaylist {
+//            let episodesForPodcastInPlaylist: [CDEpisode] = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: self.managedContext!)
+//            for episode in episodesForPodcastInPlaylist {
+//                if episode.playlist != nil {
+//                    self.misfitEpisodes.append(episode)
+//                }
+//            }
+//            self.episodesInPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
+//        }
+//        // for episodes that have been assigned another playlist, remove them from this playlist
+//        for episode in self.misfitEpisodes {
+//            if self.episodesInPlaylist.contains(episode) {
+//                let index = self.episodesInPlaylist.index(of: episode)
+//                self.episodesInPlaylist.remove(at: index!)
+//            }
+//        }
+        
+        podcasts = CoreDataHelper.fetchAllPodcasts(in: managedContext!)
+        episodes = []
+        for podcast in podcasts {
+            let episodesForPodcast = CoreDataHelper.getEpisodesForPodcastWithNoPlaylist(podcast: podcast, in: managedContext!)
+            for episode in episodesForPodcast {
+                episodes.append(episode)
+            }
+        }
+        
+        episodesForPlaylists = [:]
+        playlistStructArray = [PlaylistEpisodes]()
         playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+        playlists.sort(by: { $0.name! < $1.name!})
+        
+        misfitEpisodes = []
+        for playlist in playlists {
+            let podcastsForPlaylist = CoreDataHelper.fetchPodcastsFor(playlist: playlist, in: managedContext!)
+            var episodesForPlaylist:[CDEpisode] = []
+            for podcast in podcastsForPlaylist {
+                var episodesForPodcastInPlaylist = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: managedContext!)
+                for podcastEpisode in episodesForPodcastInPlaylist {
+                    if podcastEpisode.playlist != nil {
+                        misfitEpisodes.append(podcastEpisode)
+                    }
+                }
+                for episode in misfitEpisodes {
+                    if episodesForPodcastInPlaylist.contains(episode) {
+                        let index = episodesForPodcastInPlaylist.index(of: episode)
+                        episodesForPodcastInPlaylist.remove(at: index!)
+                    }
+                }
+                episodesForPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
+            }
+            
+            episodesForPlaylists[playlist.name!] = episodesForPlaylist
+        }
+        
+        // assign misfit episodes into their proper playlist
+        for misfit in misfitEpisodes {
+            episodesForPlaylists[misfit.playlist!.name!]?.append(misfit)
+        }
+        
+        for (key, value) in episodesForPlaylists {
+            print("\(key) -> \(value)")
+            if value.count > 0 {
+                playlistStructArray.append(PlaylistEpisodes(name: key, episodes: value))
+            }
+        }
+        
+        tableView.backgroundColor = .black
+        tableView.separatorStyle = .none
+        tableView.backgroundView?.backgroundColor = .black
         
         tableView.reloadData()
         
@@ -59,7 +132,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return playlists.count
+        print(playlistStructArray.count)
+        return playlistStructArray.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -67,7 +141,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 260
+        return CGFloat(playlistStructArray[indexPath.section].episodes.count * 80 + 55)
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -75,11 +149,11 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         cell.playlistGroupTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
         cell.playlistGroupTableView.frame = cell.bounds
-        cell.playlistGroupTableView.playlist = playlists[indexPath.section]
-        cell.playlistGroupTableView.loadPlaylist()
+        cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.section].episodes
+        cell.playlistGroupTableView.reloadPlaylist()
         
-        cell.layer.cornerRadius = 15
-        cell.layer.masksToBounds = true
+        cell.playlistGroupTableView.layer.cornerRadius = 15
+        cell.playlistGroupTableView.layer.masksToBounds = true
         
         return cell
     }
@@ -146,7 +220,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
 //    }
     
     @IBAction func addPlaylistButtonPressed(_ sender: Any) {
-        tableView.reloadData()
+        
     }
     
 }

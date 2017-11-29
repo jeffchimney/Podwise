@@ -12,8 +12,6 @@ import AVFoundation
 
 class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate {
     
-    var playlist: CDPlaylist?
-    var misfitEpisodes: [CDEpisode] = []
     var episodesInPlaylist: [CDEpisode] = []
     var managedContext: NSManagedObjectContext!
     
@@ -38,6 +36,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         
         self.dataSource = self
         self.delegate = self
+        self.isScrollEnabled = false
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -57,7 +56,13 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return playlist?.name!
+        if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
+            return podcastPlaylist.name!
+        }
+        if let playlist = episodesInPlaylist[0].playlist {
+            return playlist.name!
+        }
+        return "Unsorted"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -144,30 +149,30 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         }
     }
     
-    func loadPlaylist() {
-        DispatchQueue.main.async() {
-            self.misfitEpisodes = []
-            self.episodesInPlaylist = []
-            let podcastsInPlaylist: [CDPodcast] = CoreDataHelper.fetchPodcastsFor(playlist: self.playlist!, in: self.managedContext!)
-            for podcast in podcastsInPlaylist {
-                let episodesForPodcastInPlaylist: [CDEpisode] = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: self.managedContext!)
-                for episode in episodesForPodcastInPlaylist {
-                    if episode.playlist != nil {
-                        self.misfitEpisodes.append(episode)
-                    }
-                }
-                self.episodesInPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
-            }
-            // for episodes that have been assigned another playlist, remove them from this playlist
-            for episode in self.misfitEpisodes {
-                if self.episodesInPlaylist.contains(episode) {
-                    let index = self.episodesInPlaylist.index(of: episode)
-                    self.episodesInPlaylist.remove(at: index!)
-                }
-            }
-            
+    func reloadPlaylist() {
+//        DispatchQueue.main.async() {
+//            self.misfitEpisodes = []
+//            self.episodesInPlaylist = []
+//            let podcastsInPlaylist: [CDPodcast] = CoreDataHelper.fetchPodcastsFor(playlist: self.playlist!, in: self.managedContext!)
+//            for podcast in podcastsInPlaylist {
+//                let episodesForPodcastInPlaylist: [CDEpisode] = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: self.managedContext!)
+//                for episode in episodesForPodcastInPlaylist {
+//                    if episode.playlist != nil {
+//                        self.misfitEpisodes.append(episode)
+//                    }
+//                }
+//                self.episodesInPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
+//            }
+//            // for episodes that have been assigned another playlist, remove them from this playlist
+//            for episode in self.misfitEpisodes {
+//                if self.episodesInPlaylist.contains(episode) {
+//                    let index = self.episodesInPlaylist.index(of: episode)
+//                    self.episodesInPlaylist.remove(at: index!)
+//                }
+//            }
+//
             self.reloadData()
-        }
+//        }
     }
 }
 
