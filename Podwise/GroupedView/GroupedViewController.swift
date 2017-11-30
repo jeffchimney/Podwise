@@ -56,13 +56,15 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
-            return podcastPlaylist.name!
+        if episodesInPlaylist.count > 0 {
+            if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
+                return podcastPlaylist.name!
+            } else {
+                return ""
+            }
+        } else {
+            return ""
         }
-        if let playlist = episodesInPlaylist[0].playlist {
-            return playlist.name!
-        }
-        return "Unsorted"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

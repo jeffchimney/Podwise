@@ -30,6 +30,8 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         searchBarBottomConstraintInitialValue = searchBarBottomConstraint.constant
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

@@ -108,7 +108,7 @@ class PlaylistCreationTableViewController: UITableViewController {
         let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
         playlist.sortIndex = (Int64(sortIndex + Int(1)))
         playlist.id = UUID().uuidString
-        
+        print(playlist.sortIndex)
         for podcast in selectedPodcasts {
             podcast.playlist = playlist
         }

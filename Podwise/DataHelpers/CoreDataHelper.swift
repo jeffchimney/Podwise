@@ -73,7 +73,7 @@ class CoreDataHelper {
     static func fetchAllPlaylists(with name: String, in context: NSManagedObjectContext) -> [CDPlaylist] {
         // Get associated images
         let playlistFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPlaylist")
-        let predicate = NSPredicate(format: "name = %@", name)
+        let predicate = NSPredicate(format: "name == %@", name)
         playlistFetchRequest.predicate = predicate
         
         var playlistRecords: [NSManagedObject] = []

@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class GroupedViewCell: UITableViewCell {
+class GroupedViewCell: UICollectionViewCell {
     
     @IBOutlet weak var playlistGroupTableView: GroupedViewController!
     

@@ -337,9 +337,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
-        let playlists = CoreDataHelper.fetchAllPlaylists(with: "unsorted", in: managedContext!)
-        var playlist: CDPlaylist!
-        if playlists.count == 0 {
+        let unSortedPlaylists = CoreDataHelper.fetchAllPlaylists(with: "unsorted", in: managedContext!)
+        var unSortedPlaylist: CDPlaylist!
+        if unSortedPlaylists.count == 0 {
             let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
             let playlistObject = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
             
@@ -347,11 +347,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             playlistObject.name = "Unsorted"
             playlistObject.sortIndex = 0
             CoreDataHelper.save(context: managedContext!)
-            playlist = playlistObject
+            unSortedPlaylist = playlistObject
         } else {
-            playlist = playlists[0]
+            unSortedPlaylist = unSortedPlaylists[0]
         }
         
+        var podcast: CDPodcast!
         // to check if it exists before downloading it
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
@@ -375,7 +376,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             // if the file doesn't exist
         } else {
             let podcastsWithId = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
-            var podcast: CDPodcast!
             let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
             let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
             if podcastsWithId.count > 0 { // episode belongs to retrieved podcast
@@ -386,6 +386,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 episode.localURL = relatedTo.localURL
                 episode.duration = relatedTo.itunesDuration
                 episode.podcast = podcastsWithId[0]
+                podcast = podcastsWithId[0]
             } else { // episode doesn't belong to a previously downloaded or subscribed podcast, create new one
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
                 podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
@@ -396,7 +397,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.author = authorName!
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
-                podcast.playlist = playlist
                 
                 let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
@@ -419,7 +419,14 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             }
             downloads.append(episode)
             if let playlistToAddTo = addTo {
+                print(playlistToAddTo.name!)
                 add(episode: episode, to: playlistToAddTo)
+            }
+            
+            if podcast != nil {
+                if podcast.playlist == nil {
+                    add(podcast: podcast, to: unSortedPlaylist)
+                }
             }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously

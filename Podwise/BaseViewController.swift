@@ -17,6 +17,10 @@ var baseViewController: BaseViewController!
 
 class BaseViewController: UIViewController {
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+    
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var miniPlayerView: MiniPlayerView!
     @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!

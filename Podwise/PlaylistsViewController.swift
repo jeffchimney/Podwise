@@ -10,29 +10,36 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     
     struct PlaylistEpisodes {
-        var name : String!
+        var name : CDPlaylist
         var episodes : [CDEpisode]
     }
+    
+    fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
 
     var podcasts: [CDPodcast] = []
     var episodes: [CDEpisode] = []
     var misfitEpisodes: [CDEpisode] = []
     var playlists: [CDPlaylist] = []
-    var episodesForPlaylists: [String: [CDEpisode]] = [String: [CDEpisode]]()
+    var episodesForPlaylists: [CDPlaylist: [CDEpisode]] = [CDPlaylist: [CDEpisode]]()
     var playlistStructArray = [PlaylistEpisodes]()
     var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
     
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.delegate = self
-        tableView.dataSource = self
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        
+        let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
+        collectionView.addGestureRecognizer(longPressGesture)
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -42,29 +49,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         managedContext = appDelegate.persistentContainer.viewContext
-        
-//        misfitEpisodes = CoreDataHelper.getAllEpisodesWithNoPlaylist(in: managedContext!)
-//        playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
-//        
-//        misfitEpisodes = []
-//        self.episodesInPlaylist = []
-//        let podcastsInPlaylist: [CDPodcast] = CoreDataHelper.fetchPodcastsFor(playlist: self.playlist!, in: self.managedContext!)
-//        for podcast in podcastsInPlaylist {
-//            let episodesForPodcastInPlaylist: [CDEpisode] = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: self.managedContext!)
-//            for episode in episodesForPodcastInPlaylist {
-//                if episode.playlist != nil {
-//                    self.misfitEpisodes.append(episode)
-//                }
-//            }
-//            self.episodesInPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
-//        }
-//        // for episodes that have been assigned another playlist, remove them from this playlist
-//        for episode in self.misfitEpisodes {
-//            if self.episodesInPlaylist.contains(episode) {
-//                let index = self.episodesInPlaylist.index(of: episode)
-//                self.episodesInPlaylist.remove(at: index!)
-//            }
-//        }
         
         podcasts = CoreDataHelper.fetchAllPodcasts(in: managedContext!)
         episodes = []
@@ -78,7 +62,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         episodesForPlaylists = [:]
         playlistStructArray = [PlaylistEpisodes]()
         playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
-        playlists.sort(by: { $0.name! < $1.name!})
         
         misfitEpisodes = []
         for playlist in playlists {
@@ -100,26 +83,26 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 episodesForPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
             }
             
-            episodesForPlaylists[playlist.name!] = episodesForPlaylist
+            episodesForPlaylists[playlist] = episodesForPlaylist
         }
         
         // assign misfit episodes into their proper playlist
         for misfit in misfitEpisodes {
-            episodesForPlaylists[misfit.playlist!.name!]?.append(misfit)
+            episodesForPlaylists[misfit.playlist!]?.append(misfit)
         }
         
         for (key, value) in episodesForPlaylists {
-            print("\(key) -> \(value)")
             if value.count > 0 {
                 playlistStructArray.append(PlaylistEpisodes(name: key, episodes: value))
             }
         }
         
-        tableView.backgroundColor = .black
-        tableView.separatorStyle = .none
-        tableView.backgroundView?.backgroundColor = .black
+        playlistStructArray.sort(by: { $0.name.sortIndex < $1.name.sortIndex})
         
-        tableView.reloadData()
+        collectionView.backgroundColor = .black
+        collectionView.backgroundView?.backgroundColor = .black
+        
+        collectionView.reloadData()
         
 //        if !isTimerRunning {
 //            runTimer()
@@ -129,33 +112,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        print(playlistStructArray.count)
-        return playlistStructArray.count
-    }
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return CGFloat(playlistStructArray[indexPath.section].episodes.count * 80 + 55)
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! GroupedViewCell
-        
-        cell.playlistGroupTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
-        cell.playlistGroupTableView.frame = cell.bounds
-        cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.section].episodes
-        cell.playlistGroupTableView.reloadPlaylist()
-        
-        cell.playlistGroupTableView.layer.cornerRadius = 15
-        cell.playlistGroupTableView.layer.masksToBounds = true
-        
-        return cell
     }
     
 //    func tableView(_ tableView: UITableView,
@@ -218,6 +174,116 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
 //    @objc func checkDownloads() {
 //        tableView.reloadData()
 //    }
+    
+    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+        if indexPath.row == playlistStructArray.count + 1 {
+            return false
+        }
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let movedObject = playlistStructArray[sourceIndexPath.row]
+        playlistStructArray.remove(at: sourceIndexPath.row)
+        playlistStructArray.insert(movedObject, at: destinationIndexPath.row)
+
+        var sortIndex = 0
+        for item in playlistStructArray {
+            let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
+            if thisPlaylist.count > 0 {
+                thisPlaylist[0].sortIndex = Int64(sortIndex)
+            }
+
+            item.name.sortIndex = Int64(sortIndex)
+            CoreDataHelper.save(context: managedContext!)
+            sortIndex += 1
+        }
+        self.collectionView.reloadData()
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return playlistStructArray.count + 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.row == playlistStructArray.count {
+            return CGSize(width: collectionView.frame.width-16, height: 75)
+        } else {
+            let height = CGFloat(playlistStructArray[indexPath.row].episodes.count * 80 + 55)
+            return CGSize(width: collectionView.frame.width-16, height: height)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
+    }
+    
+    // 4
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        if indexPath.row == playlistStructArray.count {
+             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
+            
+            cell.playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+            cell.playlistButton.layer.cornerRadius = 25
+            cell.playlistButton.layer.masksToBounds = true
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistCell", for: indexPath) as! GroupedViewCell
+
+            cell.playlistGroupTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
+            cell.playlistGroupTableView.frame = cell.bounds
+            cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.row].episodes
+            cell.playlistGroupTableView.reloadPlaylist()
+            
+            cell.playlistGroupTableView.layer.cornerRadius = 15
+            cell.playlistGroupTableView.layer.masksToBounds = true
+            
+            return cell
+        }
+    }
+    
+    @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
+        switch(gesture.state) {
+        case .began:
+            let point: CGPoint = gesture.location(in: collectionView)
+            var pointInCell: CGPoint?
+            var cell: GroupedViewCell?
+            if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
+                cell = (collectionView.cellForItem(at: indexPath) as! GroupedViewCell)
+                pointInCell = cell?.convert(point, from: collectionView)
+                
+                if cell != nil && pointInCell != nil {
+                    if (cell!.playlistGroupTableView.headerView(forSection: 0)?.frame.contains(pointInCell!))! {
+                        if let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) {
+                            self.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+                        }
+                    }
+                }
+            } else {
+                print("long press on table view but not on a row");
+            }
+        case .changed:
+            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
+        case .ended:
+            collectionView.endInteractiveMovement()
+        default:
+            collectionView.cancelInteractiveMovement()
+        }
+    }
     
     @IBAction func addPlaylistButtonPressed(_ sender: Any) {
         

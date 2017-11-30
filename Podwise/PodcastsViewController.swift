@@ -30,6 +30,8 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         if( traitCollection.forceTouchCapability == .available){
             registerForPreviewing(with: self, sourceView: view)
         }
+        
+        navigationController?.setNavigationBarHidden(true, animated: false)
     }
     
     override func viewWillAppear(_ animated: Bool) {
