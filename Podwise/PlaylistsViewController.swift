@@ -199,7 +199,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                 CoreDataHelper.save(context: managedContext!)
                 sortIndex += 1
             }
-            collectionView.reloadData()
+            collectionView.collectionViewLayout.invalidateLayout()
         }
     }
     
