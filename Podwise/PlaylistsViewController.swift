@@ -176,45 +176,62 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
 //    }
     
     func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == playlistStructArray.count + 1 {
+        if indexPath.section == 1 {
             return false
         }
         return true
     }
     
     func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let movedObject = playlistStructArray[sourceIndexPath.row]
-        playlistStructArray.remove(at: sourceIndexPath.row)
-        playlistStructArray.insert(movedObject, at: destinationIndexPath.row)
-
-        var sortIndex = 0
-        for item in playlistStructArray {
-            let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
-            if thisPlaylist.count > 0 {
-                thisPlaylist[0].sortIndex = Int64(sortIndex)
+        if destinationIndexPath.section == 0 {
+            let movedObject = playlistStructArray[sourceIndexPath.row]
+            playlistStructArray.remove(at: sourceIndexPath.row)
+            playlistStructArray.insert(movedObject, at: destinationIndexPath.row)
+            
+            var sortIndex = 0
+            for item in playlistStructArray {
+                let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
+                if thisPlaylist.count > 0 {
+                    thisPlaylist[0].sortIndex = Int64(sortIndex)
+                }
+                
+                item.name.sortIndex = Int64(sortIndex)
+                CoreDataHelper.save(context: managedContext!)
+                sortIndex += 1
             }
-
-            item.name.sortIndex = Int64(sortIndex)
-            CoreDataHelper.save(context: managedContext!)
-            sortIndex += 1
+            collectionView.reloadData()
         }
-        self.collectionView.reloadData()
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        if( originalIndexPath.section != proposedIndexPath.section )
+        {
+            return originalIndexPath;
+        }
+        else
+        {
+            return proposedIndexPath;
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return playlistStructArray.count + 1
+        if section == 0 {
+            return playlistStructArray.count
+        } else {
+            return 1
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.row == playlistStructArray.count {
-            return CGSize(width: collectionView.frame.width-16, height: 75)
-        } else {
+        if indexPath.section == 0 {
             let height = CGFloat(playlistStructArray[indexPath.row].episodes.count * 80 + 55)
             return CGSize(width: collectionView.frame.width-16, height: height)
+        } else {
+            return CGSize(width: collectionView.frame.width-16, height: 75)
         }
     }
     
@@ -232,18 +249,10 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        
-        if indexPath.row == playlistStructArray.count {
-             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
-            
-            cell.playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-            cell.playlistButton.layer.cornerRadius = 25
-            cell.playlistButton.layer.masksToBounds = true
-            
-            return cell
-        } else {
+        print(playlistStructArray.count)
+        if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistCell", for: indexPath) as! GroupedViewCell
-
+            
             cell.playlistGroupTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
             cell.playlistGroupTableView.frame = cell.bounds
             cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.row].episodes
@@ -251,6 +260,14 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             
             cell.playlistGroupTableView.layer.cornerRadius = 15
             cell.playlistGroupTableView.layer.masksToBounds = true
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
+            
+            cell.playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+            cell.playlistButton.layer.cornerRadius = 25
+            cell.playlistButton.layer.masksToBounds = true
             
             return cell
         }
@@ -279,6 +296,16 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         case .changed:
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
         case .ended:
+            let point: CGPoint = gesture.location(in: collectionView)
+            var pointInCell: CGPoint?
+            var cell: GroupedViewCell?
+            if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
+                if indexPath.section == 0 {
+                    collectionView.endInteractiveMovement()
+                } else {
+                    collectionView.cancelInteractiveMovement()
+                }
+            }
             collectionView.endInteractiveMovement()
         default:
             collectionView.cancelInteractiveMovement()
@@ -288,6 +315,5 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     @IBAction func addPlaylistButtonPressed(_ sender: Any) {
         
     }
-    
 }
 

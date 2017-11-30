@@ -27,6 +27,8 @@ class PlaylistCreationTableViewController: UITableViewController {
         podcasts = CoreDataHelper.getPodcastsWhere(subscribed: true, in: managedContext!)
         podcasts.sort(by: { $0.title! < $1.title!})
         
+        navigationController?.setNavigationBarHidden(false, animated: true)
+        
         tableView.reloadData()
     }
     
