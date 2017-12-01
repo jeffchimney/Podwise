@@ -31,7 +31,7 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
             registerForPreviewing(with: self, sourceView: view)
         }
         
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {

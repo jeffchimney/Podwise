@@ -31,7 +31,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         
         searchBarBottomConstraintInitialValue = searchBarBottomConstraint.constant
         
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(false, animated: false)
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

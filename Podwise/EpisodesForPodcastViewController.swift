@@ -70,6 +70,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
         }
+        
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -256,13 +258,13 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
-                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
-                        if self.downloadedEpisodes.contains(cdEpisode[0]) {
-                            let indexToDelete = self.downloadedEpisodes.index(of: cdEpisode[0])
-                            self.downloadedEpisodes.remove(at: indexToDelete!)
-                        }
                     } else {
                         print("not deleted, couldnt find file.")
+                    }
+                    CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                    if self.downloadedEpisodes.contains(cdEpisode[0]) {
+                        let indexToDelete = self.downloadedEpisodes.index(of: cdEpisode[0])
+                        self.downloadedEpisodes.remove(at: indexToDelete!)
                     }
                 }
             }
@@ -371,6 +373,23 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
+        let unSortedPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+        var unSortedPlaylist: CDPlaylist!
+        for playlist in unSortedPlaylists {
+            if playlist.id == "unsorted123" {
+                unSortedPlaylist = playlist
+            }
+        }
+        if unSortedPlaylist == nil {
+            let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
+            let playlistObject = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
+            
+            playlistObject.id = "unsorted123"
+            playlistObject.name = "Unsorted"
+            playlistObject.sortIndex = 0
+            unSortedPlaylist = playlistObject
+        }
+        
         // to check if it exists before downloading it
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
@@ -403,11 +422,18 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 add(episode: episode, to: playlistToAddTo)
             }
             
+            if podcast != nil {
+                if podcast.playlist == nil {
+                    add(podcast: podcast, to: unSortedPlaylist)
+                }
+            }
+            
             // you can use NSURLSession.sharedSession to download the data asynchronously
             URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
                 guard let location = location, error == nil else { return }
                 do {
                     // after downloading your file you need to move it to your destination url
+                    print("Target Path: \(destinationUrl)")
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
                     if playNow {

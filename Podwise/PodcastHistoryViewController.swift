@@ -189,10 +189,10 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
-                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
                     } else {
                         print("not deleted, couldnt find file.")
                     }
+                    CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
                 }
             }
             
@@ -337,19 +337,21 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
-        let unSortedPlaylists = CoreDataHelper.fetchAllPlaylists(with: "unsorted", in: managedContext!)
+        let unSortedPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         var unSortedPlaylist: CDPlaylist!
-        if unSortedPlaylists.count == 0 {
+        for playlist in unSortedPlaylists {
+            if playlist.id == "unsorted123" {
+                unSortedPlaylist = playlist
+            }
+        }
+        if unSortedPlaylist == nil {
             let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
             let playlistObject = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
             
-            playlistObject.id = "unsorted"
+            playlistObject.id = "unsorted123"
             playlistObject.name = "Unsorted"
             playlistObject.sortIndex = 0
-            CoreDataHelper.save(context: managedContext!)
             unSortedPlaylist = playlistObject
-        } else {
-            unSortedPlaylist = unSortedPlaylists[0]
         }
         
         var podcast: CDPodcast!

@@ -10,7 +10,11 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+public protocol relayoutSectionDelegate: class {
+    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist)
+}
+
+class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, relayoutSectionDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -39,7 +43,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPressGesture)
         
-        navigationController?.setNavigationBarHidden(true, animated: false)
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -114,63 +118,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         // Dispose of any resources that can be recreated.
     }
     
-//    func tableView(_ tableView: UITableView,
-//                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-//    {
-//        let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-//            print("Update action ...")
-//            success(true)
-//        })
-//
-//        let deleteEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-//            print("Delete action ...")
-//            var cdEpisode: [CDEpisode]
-//            if self.episodes.count > 0 {
-//                if indexPath.section == 0 {
-//                    cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id!, in: self.managedContext!)
-//                } else {
-//                    cdEpisode = CoreDataHelper.getEpisodeWith(id: self.playlistStructArray[indexPath.section-1].episodes[indexPath.row].id!, in: self.managedContext!)
-//                }
-//            } else {
-//                cdEpisode = CoreDataHelper.getEpisodeWith(id: self.playlistStructArray[indexPath.section].episodes[indexPath.row].id!, in: self.managedContext!)
-//            }
-//            if cdEpisode.count > 0 {
-//                do {
-//                    let filemanager = FileManager.default
-//                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-//                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
-//                    if filemanager.fileExists(atPath: destinationPath) {
-//                        try! filemanager.removeItem(atPath: destinationPath)
-//                        tableView.beginUpdates()
-//                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
-//                        if self.episodes.count > 0 {
-//                            self.playlistStructArray[indexPath.section-1].episodes.remove(at: indexPath.row)
-//                        } else {
-//                            self.playlistStructArray[indexPath.section].episodes.remove(at: indexPath.row)
-//                        }
-//                        tableView.deleteRows(at: [indexPath], with: .automatic)
-//                        tableView.endUpdates()
-//                    } else {
-//                        print("not deleted, couldnt find file.")
-//                    }
-//                }
-//            }
-//            success(true)
-//        })
-//
-//        deleteEpisodeAction.image = UIImage(named: "trash")
-//        deleteEpisodeAction.backgroundColor = .red
-//
-//        addToPlaylistAction.image = UIImage(named: "playlist")
-//        addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-//
-//        return UISwipeActionsConfiguration(actions: [deleteEpisodeAction, addToPlaylistAction])
-//    }
-    
-//    func runTimer() {
-//        timer = Timer.scheduledTimer(timeInterval: 1, target: self,   selector: (#selector(checkDownloads)), userInfo: nil, repeats: true)
-//    }
-//
 //    @objc func checkDownloads() {
 //        tableView.reloadData()
 //    }
@@ -258,6 +205,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.row].episodes
             cell.playlistGroupTableView.reloadPlaylist()
             
+            cell.playlistGroupTableView.rowInTableView = indexPath.row
+            cell.playlistGroupTableView.relayoutSectionDelegate = self
             cell.playlistGroupTableView.layer.cornerRadius = 15
             cell.playlistGroupTableView.layer.masksToBounds = true
             
@@ -314,6 +263,16 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     
     @IBAction func addPlaylistButtonPressed(_ sender: Any) {
         
+    }
+    
+    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist) {
+        if playlistStructArray[row].episodes.contains(deleted) {
+            let indexToDelete = playlistStructArray[row].episodes.index(of: deleted)
+            playlistStructArray[row].episodes.remove(at: indexToDelete!)
+            
+            collectionView.reloadItems(at: [IndexPath(row: row, section: 0)])
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: collectionView.layoutSubviews, completion: nil)
+        }
     }
 }
 
