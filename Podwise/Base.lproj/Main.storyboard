@@ -16,11 +16,11 @@
             <objects>
                 <viewController id="9pv-A4-QxB" customClass="PlaylistsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8SN-dq-vqt">
-                                <rect key="frame" x="0.0" y="20" width="375" height="490"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="498"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="GBp-vb-e3y">
                                     <size key="itemSize" width="348" height="119"/>
@@ -106,7 +106,7 @@
             <objects>
                 <tableViewController id="dgf-kG-jLc" customClass="PlaylistCreationTableViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="mMO-69-dQA">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -124,10 +124,7 @@
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="New Playlist" textAlignment="right" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="pTo-YG-Lb6">
-                                            <rect key="frame" x="219" y="10.5" width="140" height="21"/>
-                                            <constraints>
-                                                <constraint firstAttribute="width" constant="140" id="00M-vc-DbU"/>
-                                            </constraints>
+                                            <rect key="frame" x="262.5" y="10.5" width="96.5" height="21"/>
                                             <nil key="textColor"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <textInputTraits key="textInputTraits"/>
@@ -137,6 +134,7 @@
                                         <constraint firstItem="7cJ-5y-04c" firstAttribute="centerY" secondItem="Q4S-Rf-5vl" secondAttribute="centerY" id="5g4-xH-GgP"/>
                                         <constraint firstItem="pTo-YG-Lb6" firstAttribute="centerY" secondItem="Q4S-Rf-5vl" secondAttribute="centerY" id="CLP-EX-aCi"/>
                                         <constraint firstAttribute="trailing" secondItem="pTo-YG-Lb6" secondAttribute="trailing" constant="16" id="Mm6-F8-eRQ"/>
+                                        <constraint firstItem="pTo-YG-Lb6" firstAttribute="leading" relation="lessThanOrEqual" secondItem="7cJ-5y-04c" secondAttribute="trailing" constant="212.5" id="Xbf-FT-b6a"/>
                                         <constraint firstItem="7cJ-5y-04c" firstAttribute="leading" secondItem="Q4S-Rf-5vl" secondAttribute="leadingMargin" id="c1l-6d-vgn"/>
                                     </constraints>
                                 </tableViewCellContentView>
@@ -210,11 +208,11 @@
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="PodcastsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="rPx-2G-QZA">
-                                <rect key="frame" x="0.0" y="64" width="375" height="446"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="454"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="PodcastCell" rowHeight="80" id="Dpj-3V-xpC" customClass="PodcastListCell" customModule="Podwise" customModuleProvider="target">
@@ -287,15 +285,15 @@
             <objects>
                 <viewController id="6lQ-eH-KPR" customClass="BrowseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="iiU-cV-4RG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="efk-zB-4Gb">
-                                <rect key="frame" x="0.0" y="454" width="375" height="56"/>
+                                <rect key="frame" x="0.0" y="462" width="375" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GAl-91-dbA">
-                                <rect key="frame" x="0.0" y="64" width="375" height="390"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="398"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ResultCell" rowHeight="80" id="yIN-E6-8WY" customClass="PodcastCell" customModule="Podwise" customModuleProvider="target">
@@ -306,7 +304,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GJ6-Uj-OYv">
-                                                    <rect key="frame" x="83" y="16" width="277" height="24"/>
+                                                    <rect key="frame" x="83" y="16" width="88" height="24"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -319,9 +317,9 @@
                                                     </constraints>
                                                 </imageView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Description" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nr5-hk-f0g">
-                                                    <rect key="frame" x="83" y="48" width="277" height="21"/>
+                                                    <rect key="frame" x="83" y="48" width="88" height="21"/>
                                                     <constraints>
-                                                        <constraint firstAttribute="width" constant="277" id="PJQ-yt-43g"/>
+                                                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="277" id="PJQ-yt-43g"/>
                                                     </constraints>
                                                     <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
                                                     <nil key="textColor"/>
@@ -379,7 +377,7 @@
             <objects>
                 <viewController restorationIdentifier="resultViewController" storyboardIdentifier="resultViewController" id="zby-4D-EdC" customClass="PodcastHistoryViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LxN-qX-cCx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SPG-ij-3af">
@@ -390,7 +388,7 @@
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fgc-aX-3gM">
-                                <rect key="frame" x="0.0" y="196" width="375" height="314"/>
+                                <rect key="frame" x="0.0" y="196" width="375" height="322"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EpisodeCell" rowHeight="100" id="YvI-iT-Q5V" customClass="EpisodeCell" customModule="Podwise" customModuleProvider="target">
@@ -454,7 +452,7 @@
                                     <action selector="subscribeButtonPressed:" destination="zby-4D-EdC" eventType="touchUpInside" id="EqO-hT-ogR"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-EX-Uym">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uIb-EX-Uym">
                                 <rect key="frame" x="132" y="110" width="59.5" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <nil key="textColor"/>
@@ -496,7 +494,7 @@
             <objects>
                 <viewController storyboardIdentifier="episodesViewController" id="65y-0i-8sg" customClass="EpisodesForPodcastViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Teo-VX-RFe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rd5-o7-xUo">
@@ -516,7 +514,7 @@
                                     <action selector="subscribeButtonPressed:" destination="65y-0i-8sg" eventType="touchUpInside" id="zQv-8k-rhl"/>
                                 </connections>
                             </button>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JOa-5s-hbq">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JOa-5s-hbq">
                                 <rect key="frame" x="132" y="110" width="59.5" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                 <nil key="textColor"/>
@@ -533,7 +531,7 @@
                                 </connections>
                             </segmentedControl>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="seM-z3-KUl">
-                                <rect key="frame" x="0.0" y="224" width="375" height="286"/>
+                                <rect key="frame" x="0.0" y="224" width="375" height="294"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EpisodeCell" rowHeight="100" id="xz2-SI-btZ" customClass="EpisodeCell" customModule="Podwise" customModuleProvider="target">
@@ -646,8 +644,8 @@
                                     <constraint firstAttribute="height" constant="70" id="fy0-df-lyC"/>
                                 </constraints>
                             </view>
-                            <containerView opaque="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="559"/>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                                 <connections>
                                     <segue destination="49e-Tb-3d3" kind="embed" id="14n-4q-BFl"/>
                                 </connections>

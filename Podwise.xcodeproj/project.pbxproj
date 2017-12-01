@@ -26,6 +26,7 @@
 		BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3B81FC389EF00A140AC /* Channel.swift */; };
 		BEA9D3BB1FC38A0D00A140AC /* Episode.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA9D3BA1FC38A0D00A140AC /* Episode.swift */; };
 		BEB04D171FCF898D0052BCBF /* AddPlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB04D161FCF898D0052BCBF /* AddPlaylistCell.swift */; };
+		BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */; };
 		BEDFE6441FC6B60A0084D392 /* PodcastListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */; };
 		BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1361FBE57C200AA111F /* AppDelegate.swift */; };
 		BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */; };
@@ -77,6 +78,8 @@
 		BEA9D3B81FC389EF00A140AC /* Channel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
 		BEA9D3BA1FC38A0D00A140AC /* Episode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Episode.swift; sourceTree = "<group>"; };
 		BEB04D161FCF898D0052BCBF /* AddPlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPlaylistCell.swift; sourceTree = "<group>"; };
+		BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MicrosoftAzureMobile.framework; sourceTree = "<group>"; };
+		BEB608D11FD13433004FE0ED /* Podwise-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Podwise-Bridging-Header.h"; sourceTree = "<group>"; };
 		BED4B0111FCBDA0C00B818A9 /* Podwise.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Podwise.entitlements; sourceTree = "<group>"; };
 		BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastListCell.swift; sourceTree = "<group>"; };
 		BEE0A1331FBE57C200AA111F /* Podwise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podwise.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -103,6 +106,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -158,13 +162,23 @@
 			path = Classes;
 			sourceTree = "<group>";
 		};
+		BEB608CE1FD133CF004FE0ED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		BEE0A12A1FBE57C200AA111F = {
 			isa = PBXGroup;
 			children = (
+				BEB608D11FD13433004FE0ED /* Podwise-Bridging-Header.h */,
 				BEE0A1351FBE57C200AA111F /* Podwise */,
 				BEE0A14C1FBE57C300AA111F /* PodwiseTests */,
 				BEE0A1571FBE57C300AA111F /* PodwiseUITests */,
 				BEE0A1341FBE57C200AA111F /* Products */,
+				BEB608CE1FD133CF004FE0ED /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -182,13 +196,13 @@
 			isa = PBXGroup;
 			children = (
 				BED4B0111FCBDA0C00B818A9 /* Podwise.entitlements */,
+				BEE0A1361FBE57C200AA111F /* AppDelegate.swift */,
 				BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */,
 				BE0FC0B21FCE3B2500AC2505 /* GroupedView */,
 				BE8DE4691FC7679C00426F2A /* MiniPlayer */,
 				BE25226D1FC607D900E6B769 /* DataHelpers */,
 				BEA9D3B71FC389BC00A140AC /* Classes */,
 				BEE0A1661FBE5C2E00AA111F /* Cells */,
-				BEE0A1361FBE57C200AA111F /* AppDelegate.swift */,
 				BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */,
 				BEE0A13A1FBE57C200AA111F /* PodcastsViewController.swift */,
 				BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */,
@@ -200,7 +214,6 @@
 				BEE0A1441FBE57C200AA111F /* Info.plist */,
 				BEA71A601FBFAE5B001B42FC /* RSSParser.swift */,
 				BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */,
-				BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */,
 			);
 			path = Podwise;
 			sourceTree = "<group>";
@@ -229,6 +242,7 @@
 				BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */,
 				BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */,
 				BE773F851FC61BD00075FB9E /* PlaylistCell.swift */,
+				BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */,
 				BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */,
 				BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */,
 				BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */,
@@ -575,10 +589,15 @@
 				CODE_SIGN_ENTITLEMENTS = Podwise/Podwise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSZY8AYXNH;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Podwise/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JeffsApps.Podwise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Podwise-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -591,10 +610,15 @@
 				CODE_SIGN_ENTITLEMENTS = Podwise/Podwise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSZY8AYXNH;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = Podwise/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.JeffsApps.Podwise;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Podwise-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

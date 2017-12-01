@@ -9,15 +9,20 @@
 import UIKit
 import CoreData
 import UserNotifications
+import WebKit
+import SafariServices
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
+    var client: MSClient!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         registerForPushNotifications()
+        
+        client = MSClient(applicationURLString: "https://podwise.azurewebsites.net")
         
         return true
     }
@@ -113,6 +118,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
         apnsToken.token = token
         CoreDataHelper.save(context: managedContext)
+        
+        registerDeviceTokenWithMicrosoft(deviceToken: token)
+        
         print("Device Token: \(token)")
     }
     
@@ -127,6 +135,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             guard settings.authorizationStatus == .authorized else { return }
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
+            }
+        }
+    }
+    
+    func registerDeviceTokenWithMicrosoft(deviceToken: String) {
+        //let delegate = UIApplication.sharedApplication().delegate as AppDelegate
+        //let client = delegate.client!
+        let token = ["deviceToken":deviceToken]
+        let devicesTable = client.table(withName: "Devices")
+        devicesTable.insert(token) {
+            (insertedItem, error) in
+            if (error != nil) {
+                print("Error \(error!.localizedDescription)");
+            } else {
+                print("Item inserted, id: \(String(describing: insertedItem!["id"])) deviceToken: \(String(describing: insertedItem!["deviceToken"]))")
             }
         }
     }
