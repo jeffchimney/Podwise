@@ -34,7 +34,6 @@ class BaseViewController: UIViewController {
         baseView.layer.shadowOpacity = 0.75
         baseView.layer.shadowOffset = CGSize.zero
         baseView.layer.shadowRadius = 5
-        baseView.layer.shouldRasterize = true
         
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
