@@ -140,18 +140,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func registerDeviceTokenWithMicrosoft(deviceToken: String) {
-        //let delegate = UIApplication.sharedApplication().delegate as AppDelegate
-        //let client = delegate.client!
-        let token = ["deviceToken":deviceToken]
-        let devicesTable = client.table(withName: "Devices")
-        devicesTable.insert(token) {
-            (insertedItem, error) in
-            if (error != nil) {
-                print("Error \(error!.localizedDescription)");
-            } else {
-                print("Item inserted, id: \(String(describing: insertedItem!["id"])) deviceToken: \(String(describing: insertedItem!["deviceToken"]))")
-            }
-        }
+        AzureDBDataHelper.registerDeviceTokenWithMicrosoft(deviceToken: deviceToken, using: client)
     }
     
     //  Tags that can be send from server in a push notification:

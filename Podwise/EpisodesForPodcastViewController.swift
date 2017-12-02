@@ -493,11 +493,13 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
             CoreDataHelper.save(context: managedContext!)
+            AzureDBDataHelper.handle(subscribe: false, to: podcast)
         } else {
             podcast.subscribed = true
             subscribeButton.setTitle("  Unubscribe  ", for: .normal)
             subscribeButton.backgroundColor = .red
             CoreDataHelper.save(context: managedContext!)
+            AzureDBDataHelper.handle(subscribe: true, to: podcast)
         }
     }
     
@@ -578,12 +580,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribe = UIPreviewAction(title: "Unsubscribe", style: .default, handler: {_,_ in
                 self.podcast.subscribed = false
                 CoreDataHelper.save(context: self.managedContext!)
+                AzureDBDataHelper.handle(subscribe: false, to: self.podcast)
                 self.reloadTableViewDelegate?.reloadTableView()
             })
         } else {
             subscribe = UIPreviewAction(title: "Subscribe", style: .default, handler: {_,_ in
                 self.podcast.subscribed = true
                 CoreDataHelper.save(context: self.managedContext!)
+                AzureDBDataHelper.handle(subscribe: true, to: self.podcast)
                 self.reloadTableViewDelegate?.reloadTableView()
             })
         }

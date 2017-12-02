@@ -502,6 +502,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             if podcast.count > 0 {
                 podcast[0].subscribed = true
                 CoreDataHelper.save(context: managedContext!)
+                AzureDBDataHelper.handle(subscribe: true, to: podcast[0])
             } else {
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
@@ -519,6 +520,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.backgroundG = Float(backgroundCIColor.components[1])
                 podcast.backgroundB = Float(backgroundCIColor.components[2])
                 CoreDataHelper.save(context: managedContext!)
+                AzureDBDataHelper.handle(subscribe: true, to: podcast)
             }
             if episodes.count > 0 {
                 downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], addTo: nil, playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
@@ -530,6 +532,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             if podcast.count > 0 {
                 podcast[0].subscribed = false
                 CoreDataHelper.save(context: managedContext!)
+                AzureDBDataHelper.handle(subscribe: false, to: podcast[0])
             } else {
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
@@ -547,6 +550,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast.backgroundG = Float(backgroundCIColor.components[1])
                 podcast.backgroundB = Float(backgroundCIColor.components[2])
                 CoreDataHelper.save(context: managedContext!)
+                AzureDBDataHelper.handle(subscribe: false, to: podcast)
             }
         }
     }

@@ -18,6 +18,7 @@
 		BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */; };
 		BE6853811FCC918900CA32C8 /* PodcastChecklistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */; };
 		BE773F861FC61BD00075FB9E /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE773F851FC61BD00075FB9E /* PlaylistCell.swift */; };
+		BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */; };
 		BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */; };
 		BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */; };
 		BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */; };
@@ -70,6 +71,7 @@
 		BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTitleCell.swift; sourceTree = "<group>"; };
 		BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastChecklistCell.swift; sourceTree = "<group>"; };
 		BE773F851FC61BD00075FB9E /* PlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
+		BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AzureDBDataHelper.swift; sourceTree = "<group>"; };
 		BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MiniPlayer.xib; sourceTree = "<group>"; };
 		BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
 		BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 			isa = PBXGroup;
 			children = (
 				BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */,
+				BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */,
 			);
 			path = DataHelpers;
 			sourceTree = "<group>";
@@ -399,6 +402,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */,
+				BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */,
 				BEE0A13B1FBE57C200AA111F /* PodcastsViewController.swift in Sources */,
 				BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */,
 				BEE7BA6B1FC77C22005345FB /* EpisodesForPodcastViewController.swift in Sources */,
