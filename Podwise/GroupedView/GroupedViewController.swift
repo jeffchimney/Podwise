@@ -117,8 +117,9 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         let episode = episodesInPlaylist[indexPath.row]
         let podcast = episode.podcast!
         startAudioSession()
-        nowPlayingArt = UIImage(data: (podcast.image)!)
-        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+        nowPlayingEpisode = episode
+        let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episodesInPlaylist[indexPath.row].localURL!)
     }

@@ -13,6 +13,14 @@ class MiniPlayerView: UIView {
     @IBOutlet var miniPlayerView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
+    @IBOutlet var artImageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewCenterYConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewCenterXConstraint: NSLayoutConstraint!
+    @IBOutlet weak var podcastTitle: UILabel!
+    @IBOutlet weak var episodeTitle: UILabel!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +44,9 @@ class MiniPlayerView: UIView {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             }
         }
+        
+        artImageViewCenterXConstraint.isActive = false
+        artImageViewCenterYConstraint.isActive = false
     }
     
     @IBAction func playPauseButtonPressed(_ sender: Any) {

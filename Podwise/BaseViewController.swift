@@ -12,7 +12,7 @@ import AVFoundation
 
 var audioPlayer:AVAudioPlayer!
 var downloads: [CDEpisode]!
-var nowPlayingArt: UIImage!
+var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
 
 class BaseViewController: UIViewController {
@@ -26,6 +26,8 @@ class BaseViewController: UIViewController {
     @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderView: UISlider!
+    let originalMiniPlayerHeightConstant: CGFloat = 70
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         baseViewController = self
@@ -37,6 +39,14 @@ class BaseViewController: UIViewController {
         
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
+        let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
+        swipeUp.direction = .up
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
+        swipeDown.direction = .down
+        miniPlayerView.addGestureRecognizer(tap)
+        miniPlayerView.addGestureRecognizer(swipeUp)
+        miniPlayerView.addGestureRecognizer(swipeDown)
 //        miniPlayerView.layer.cornerRadius = 15
 //        miniPlayerView.layer.masksToBounds = true
         
@@ -83,7 +93,10 @@ class BaseViewController: UIViewController {
     
     public func showMiniPlayer(animated: Bool) {
         if audioPlayer != nil {
-            miniPlayerView.artImageView.image = nowPlayingArt
+            let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
+            miniPlayerView.artImageView.image = imageArt
+            miniPlayerView.podcastTitle.text = nowPlayingEpisode.podcast?.title
+            miniPlayerView.episodeTitle.text = nowPlayingEpisode.title
             if audioPlayer.isPlaying {
                 miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             } else {
@@ -93,14 +106,14 @@ class BaseViewController: UIViewController {
         if animated {
             sliderView.isHidden = false
             self.sliderHeightConstraint.constant = 0
-            self.miniPlayerHeightConstraint.constant = 70
+            self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
             })
         } else {
             sliderView.isHidden = false
             self.sliderHeightConstraint.constant = 0
-            self.miniPlayerHeightConstraint.constant = 70
+            self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
         }
     }
     
@@ -148,5 +161,63 @@ class BaseViewController: UIViewController {
         // Compute result.
         let result = UIColor(red: CGFloat(bitmap[0]) / 255.0, green: CGFloat(bitmap[1]) / 255.0, blue: CGFloat(bitmap[2]) / 255.0, alpha: 1.0)
         return result
+    }
+    
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        if miniPlayerHeightConstraint.constant <= originalMiniPlayerHeightConstant { // make mini player full page
+            // disable old leading and bottom constraints
+            miniPlayerView.artImageViewLeadingConstraint.isActive = false
+            miniPlayerView.artImageViewBottomConstraint.isActive = false
+            
+            // enable new constraints
+            miniPlayerHeightConstraint.constant += baseView.bounds.height
+            miniPlayerView.artImageViewCenterXConstraint.isActive = true
+            miniPlayerView.artImageViewCenterYConstraint.isActive = true
+            miniPlayerView.artImageViewHeightConstraint.constant = 300
+            miniPlayerView.artImageViewWidthConstraint.constant = 300
+            UIView.animate(withDuration: 0.75, animations: {
+                self.miniPlayerView.layoutSubviews()
+                self.view.layoutSubviews()
+            })
+        }
+    }
+    
+    @objc func handleSwipe(_ sender: UISwipeGestureRecognizer) {
+        print(sender.direction)
+        if miniPlayerHeightConstraint.constant > originalMiniPlayerHeightConstant { // make mini player small
+            if sender.direction == .down {
+                // disable old leading and bottom constraints
+                miniPlayerView.artImageViewCenterXConstraint.isActive = false
+                miniPlayerView.artImageViewCenterYConstraint.isActive = false
+                
+                // enable new constraints
+                miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+                miniPlayerView.artImageViewLeadingConstraint.isActive = true
+                miniPlayerView.artImageViewBottomConstraint.isActive = true
+                miniPlayerView.artImageViewHeightConstraint.constant = 60
+                miniPlayerView.artImageViewWidthConstraint.constant = 60
+                UIView.animate(withDuration: 0.75, animations: {
+                    self.miniPlayerView.layoutSubviews()
+                    self.view.layoutSubviews()
+                })
+            }
+        } else { // make mini player full screen
+            if sender.direction == .up {
+                // disable old leading and bottom constraints
+                miniPlayerView.artImageViewLeadingConstraint.isActive = false
+                miniPlayerView.artImageViewBottomConstraint.isActive = false
+                
+                // enable new constraints
+                miniPlayerHeightConstraint.constant += baseView.bounds.height
+                miniPlayerView.artImageViewCenterXConstraint.isActive = true
+                miniPlayerView.artImageViewCenterYConstraint.isActive = true
+                miniPlayerView.artImageViewHeightConstraint.constant = 300
+                miniPlayerView.artImageViewWidthConstraint.constant = 300
+                UIView.animate(withDuration: 0.75, animations: {
+                    self.miniPlayerView.layoutSubviews()
+                    self.view.layoutSubviews()
+                })
+            }
+        }
     }
 }

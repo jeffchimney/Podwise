@@ -360,13 +360,19 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
-                nowPlayingArt = self.imageView.image
-                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                
-                let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
-                baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                
-                self.playDownload(at: destinationUrl)
+                let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
+                if episodesToPlay.count > 0 {
+                    let episodeToPlay = episodesToPlay[0]
+                    
+                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
+                    baseViewController.miniPlayerView.artImageView.image = podcastImage
+                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
+                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
+                    
+                    let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage?.cgImage!)!)
+                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                    self.playDownload(at: destinationUrl)
+                }
             } else { // add to playlist
                 let episodeWithID = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if let playlistToAddTo = addTo {
@@ -440,10 +446,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
-                        nowPlayingArt = self.imageView.image
+                        let nowPlayingArt = UIImage(data: podcast!.image!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
+                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
                         
-                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
                         baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                         
                         self.playDownload(at: destinationUrl)

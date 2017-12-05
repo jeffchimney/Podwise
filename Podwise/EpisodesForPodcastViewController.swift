@@ -171,8 +171,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = downloadedEpisodes[indexPath.row]
         startAudioSession()
-        nowPlayingArt = UIImage(data: (self.podcast.image)!)
-        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+        nowPlayingEpisode = episode
+        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
+        baseViewController.miniPlayerView.episodeTitle.text = episode.title
+        baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episode.localURL!)
     }
@@ -395,10 +397,20 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
-                nowPlayingArt = UIImage(data: (self.podcast.image)!)
-                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
-                self.playDownload(at: destinationUrl)
+                
+                let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
+                if episodesToPlay.count > 0 {
+                    let episodeToPlay = episodesToPlay[0]
+                    
+                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
+                    baseViewController.miniPlayerView.artImageView.image = podcastImage
+                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
+                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
+                    
+                    let backgroundColor = baseViewController.getAverageColorOf(image: podcastImage!.cgImage!)
+                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                    self.playDownload(at: destinationUrl)
+                }
             }
             // if the file doesn't exist
         } else {
@@ -438,8 +450,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
-                        nowPlayingArt = UIImage(data: (self.podcast.image)!)
+                        let nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.podcastTitle.text = self.podcast.title
+                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
+                        
                         baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
                         self.playDownload(at: destinationUrl)
                     }
