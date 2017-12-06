@@ -21,6 +21,13 @@ class MiniPlayerView: UIView {
     @IBOutlet var artImageViewCenterXConstraint: NSLayoutConstraint!
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
+    @IBOutlet weak var chevronImage: UIImageView!
+    @IBOutlet weak var playPauseDistanceFromBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var backTenDistanceFromPlayConstraint: NSLayoutConstraint!
+    @IBOutlet weak var forward30DistanceFromPlayConstraint: NSLayoutConstraint!
+    @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var progressSlider: UISlider!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -74,6 +81,15 @@ class MiniPlayerView: UIView {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: 30)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
+        }
+    }
+    
+    @IBAction func playheadChanged(_ sender: Any) {
+        if let player = audioPlayer {
+            // Update progress
+            let percentComplete = progressSlider.value
+            //print(percentComplete)
+            player.currentTime = player.duration * Double(percentComplete)
         }
     }
 }

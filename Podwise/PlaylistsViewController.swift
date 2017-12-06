@@ -175,7 +175,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
-            let height = CGFloat(playlistStructArray[indexPath.row].episodes.count * 80 + 55)
+            let height = CGFloat(playlistStructArray[indexPath.row].episodes.count * 80 + 50)
             return CGSize(width: collectionView.frame.width-16, height: height)
         } else {
             return CGSize(width: collectionView.frame.width-16, height: 75)

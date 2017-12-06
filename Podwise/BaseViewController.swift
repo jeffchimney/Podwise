@@ -118,27 +118,21 @@ class BaseViewController: UIViewController {
     }
     
     @objc public func startUpdatingSlider() {
-        if !sliderView.isTracking {
+        if !miniPlayerView.progressSlider.isTracking {
             if let player = audioPlayer {
                 if player.isPlaying
                 {
                     // Update progress
                     sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
+                    miniPlayerView.progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
                 }
             }
-        }
-    }
-    @IBAction func playheadChanged(_ sender: Any) {
-        if let player = audioPlayer {
-            // Update progress
-            let percentComplete = sliderView.value
-            //print(percentComplete)
-            player.currentTime = player.duration * Double(percentComplete)
         }
     }
     
     public func setProgressBarColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
         sliderView.minimumTrackTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        miniPlayerView.progressSlider.minimumTrackTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
     }
     
     public func getAverageColorOf(image: CGImage) -> UIColor {
@@ -175,6 +169,17 @@ class BaseViewController: UIViewController {
             miniPlayerView.artImageViewCenterYConstraint.isActive = true
             miniPlayerView.artImageViewHeightConstraint.constant = 300
             miniPlayerView.artImageViewWidthConstraint.constant = 300
+            miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
+            miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
+            miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
+            miniPlayerView.playPauseHeightConstraint.constant += 40
+            miniPlayerView.playPauseWidthConstraint.constant += 40
+            miniPlayerView.chevronImage.isHidden = false
+            miniPlayerView.podcastTitle.isHidden = false
+            miniPlayerView.episodeTitle.isHidden = false
+            
+            miniPlayerView.progressSlider.isHidden = false
+            
             UIView.animate(withDuration: 0.75, animations: {
                 self.miniPlayerView.layoutSubviews()
                 self.view.layoutSubviews()
@@ -196,6 +201,17 @@ class BaseViewController: UIViewController {
                 miniPlayerView.artImageViewBottomConstraint.isActive = true
                 miniPlayerView.artImageViewHeightConstraint.constant = 60
                 miniPlayerView.artImageViewWidthConstraint.constant = 60
+                miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
+                miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
+                miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
+                miniPlayerView.playPauseHeightConstraint.constant -= 40
+                miniPlayerView.playPauseWidthConstraint.constant -= 40
+                miniPlayerView.chevronImage.isHidden = true
+                miniPlayerView.podcastTitle.isHidden = true
+                miniPlayerView.episodeTitle.isHidden = true
+                
+                miniPlayerView.progressSlider.isHidden = true
+                
                 UIView.animate(withDuration: 0.75, animations: {
                     self.miniPlayerView.layoutSubviews()
                     self.view.layoutSubviews()
@@ -213,6 +229,17 @@ class BaseViewController: UIViewController {
                 miniPlayerView.artImageViewCenterYConstraint.isActive = true
                 miniPlayerView.artImageViewHeightConstraint.constant = 300
                 miniPlayerView.artImageViewWidthConstraint.constant = 300
+                miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
+                miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
+                miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
+                miniPlayerView.playPauseHeightConstraint.constant += 40
+                miniPlayerView.playPauseWidthConstraint.constant += 40
+                miniPlayerView.chevronImage.isHidden = false
+                miniPlayerView.podcastTitle.isHidden = false
+                miniPlayerView.episodeTitle.isHidden = false
+                
+                miniPlayerView.progressSlider.isHidden = false
+                
                 UIView.animate(withDuration: 0.75, animations: {
                     self.miniPlayerView.layoutSubviews()
                     self.view.layoutSubviews()

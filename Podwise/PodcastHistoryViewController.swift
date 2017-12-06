@@ -11,7 +11,7 @@ import UIKit
 import CoreData
 import AVFoundation
 
-class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
+class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate {
     
     var managedContext: NSManagedObjectContext?
     
@@ -23,9 +23,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var subscribeButton: UIButton!
     var subscribeButtonSet: Bool = false
+    var searchBar:UISearchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: 200,height: 20))
     
     var eName: String = String()
     var episodes: [Episode] = []
+    var filteredEpisodes: [Episode] = []
     var episodeID: String = String()
     var episodeTitle: String = String()
     var episodeDescription = String()
@@ -36,6 +38,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var url: URL!
     var collectionID: Int!
     var authorName: String!
+    var searchActive: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +53,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         channelLabel.text! = ""
         channelDescriptionTextView.text! = ""
         channelDescriptionTextView.font = UIFont(name: "Helvetica", size: 15)
+        
+        searchBar.searchBarStyle = .minimal
+        
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        let searchBarButtonItem = UIBarButtonItem(customView: searchBar)
+        navigationItem.rightBarButtonItem = searchBarButtonItem
         
         let urlString: String = feedURL
         url = URL(string: urlString)!
@@ -91,9 +100,19 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         var minutes = 0
         if let optionalHours = Int(episode.itunesDuration) {
             hours = (optionalHours/60)/60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if let optionalHours = Int(durationArray[0]) {
+                hours = optionalHours
+            }
         }
         if let optionalMinutes = Int(episode.itunesDuration) {
             minutes = (optionalMinutes/60)%60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if let optionalMinutes = Int(durationArray[1]) {
+                minutes = optionalMinutes
+            }
         }
         
         cell.titleLabel.text = episode.title
@@ -587,6 +606,42 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print(error)
         }
     }
+    
+    // Search Bar Methods
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    //MARK: Search bar delegate functions
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+        tableView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredEpisodes = []
+        for episode in episodes {
+            if episode.title.lowercased().contains(searchText.lowercased()) {
+                filteredEpisodes.append(episode)
+            }
+        }
+        
+        if (searchText == "") {
+            searchActive = false;
+        } else {
+            searchActive = true;
+        }
+        //tableView.reloadData()
+    }
+    
 }
 
 extension UIColor {

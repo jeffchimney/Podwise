@@ -288,12 +288,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="efk-zB-4Gb">
-                                <rect key="frame" x="0.0" y="462" width="375" height="56"/>
-                                <textInputTraits key="textInputTraits"/>
-                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GAl-91-dbA">
-                                <rect key="frame" x="0.0" y="64" width="375" height="398"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="454"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ResultCell" rowHeight="80" id="yIN-E6-8WY" customClass="PodcastCell" customModule="Podwise" customModuleProvider="target">
@@ -349,28 +345,23 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="efk-zB-4Gb" firstAttribute="leading" secondItem="2Oe-Ix-auU" secondAttribute="leading" id="3FN-6v-KF1"/>
-                            <constraint firstItem="GAl-91-dbA" firstAttribute="leading" secondItem="efk-zB-4Gb" secondAttribute="leading" id="HtV-Rc-WPA"/>
-                            <constraint firstItem="GAl-91-dbA" firstAttribute="trailing" secondItem="efk-zB-4Gb" secondAttribute="trailing" id="UUD-kn-XWg"/>
-                            <constraint firstItem="efk-zB-4Gb" firstAttribute="bottom" secondItem="2Oe-Ix-auU" secondAttribute="bottom" id="XTP-LE-U2T"/>
-                            <constraint firstItem="GAl-91-dbA" firstAttribute="top" secondItem="2Oe-Ix-auU" secondAttribute="top" id="ZjT-6C-YLP"/>
-                            <constraint firstItem="GAl-91-dbA" firstAttribute="bottom" secondItem="efk-zB-4Gb" secondAttribute="top" id="dei-LY-FcS"/>
-                            <constraint firstItem="efk-zB-4Gb" firstAttribute="trailing" secondItem="2Oe-Ix-auU" secondAttribute="trailing" id="mte-FN-ahi"/>
+                            <constraint firstItem="GAl-91-dbA" firstAttribute="leading" secondItem="iiU-cV-4RG" secondAttribute="leading" id="MGd-Cy-rOS"/>
+                            <constraint firstItem="GAl-91-dbA" firstAttribute="top" secondItem="2Oe-Ix-auU" secondAttribute="top" id="SCP-9p-cgK"/>
+                            <constraint firstAttribute="trailing" secondItem="GAl-91-dbA" secondAttribute="trailing" id="UvQ-gb-WHI"/>
+                            <constraint firstItem="GAl-91-dbA" firstAttribute="bottom" secondItem="2Oe-Ix-auU" secondAttribute="bottom" id="fHn-xd-i5T"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="2Oe-Ix-auU"/>
                     </view>
                     <navigationItem key="navigationItem" title="Search" id="Lqq-aH-Qb5"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
-                        <outlet property="searchBar" destination="efk-zB-4Gb" id="Eq7-aO-DLr"/>
-                        <outlet property="searchBarBottomConstraint" destination="XTP-LE-U2T" id="gag-vr-TiL"/>
                         <outlet property="tableView" destination="GAl-91-dbA" id="3ut-S2-8Ab"/>
                         <segue destination="zby-4D-EdC" kind="show" identifier="toPodcast" action="showDetailViewController:sender:" id="bgq-ZO-aYf"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Xa2-dV-qAA" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="929" y="1164"/>
+            <point key="canvasLocation" x="928.79999999999995" y="1163.568215892054"/>
         </scene>
         <!--Podcast History View Controller-->
         <scene sceneID="KpN-wh-8d0">

@@ -110,9 +110,19 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let episode = downloadedEpisodes[indexPath.row]
             if let optionalHours = Int(episode.duration!) {
                 hours = (optionalHours/60)/60
+            } else {
+                let durationArray = episode.duration?.split(separator: ":")
+                if let optionalHours = Int(durationArray![0]) {
+                    hours = optionalHours
+                }
             }
             if let optionalMinutes = Int(episode.duration!) {
                 minutes = (optionalMinutes/60)%60
+            } else {
+                let durationArray = episode.duration?.split(separator: ":")
+                if let optionalMinutes = Int(durationArray![1]) {
+                    minutes = optionalMinutes
+                }
             }
             
             cell.titleLabel.text = episode.title
@@ -125,9 +135,19 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let episode = unDownloadedEpisodes[indexPath.row]
             if let optionalHours = Int(episode.itunesDuration) {
                 hours = (optionalHours/60)/60
+            } else {
+                let durationArray = episode.itunesDuration.split(separator: ":")
+                if let optionalHours = Int(durationArray[0]) {
+                    hours = optionalHours
+                }
             }
             if let optionalMinutes = Int(episode.itunesDuration) {
                 minutes = (optionalMinutes/60)%60
+            } else {
+                let durationArray = episode.itunesDuration.split(separator: ":")
+                if let optionalMinutes = Int(durationArray[1]) {
+                    minutes = optionalMinutes
+                }
             }
             
             cell.titleLabel.text = episode.title
