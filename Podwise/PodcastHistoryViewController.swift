@@ -10,8 +10,9 @@ import Foundation
 import UIKit
 import CoreData
 import AVFoundation
+import MediaPlayer
 
-class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
+class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate {
     
     var managedContext: NSManagedObjectContext?
     
@@ -23,9 +24,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var subscribeButton: UIButton!
     var subscribeButtonSet: Bool = false
+    var searchBar:UISearchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: 200,height: 20))
     
     var eName: String = String()
     var episodes: [Episode] = []
+    var filteredEpisodes: [Episode] = []
     var episodeID: String = String()
     var episodeTitle: String = String()
     var episodeDescription = String()
@@ -36,6 +39,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var url: URL!
     var collectionID: Int!
     var authorName: String!
+    var searchActive: Bool = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -50,6 +54,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         channelLabel.text! = ""
         channelDescriptionTextView.text! = ""
         channelDescriptionTextView.font = UIFont(name: "Helvetica", size: 15)
+        
+        searchBar.searchBarStyle = .minimal
+        
+        navigationController?.setNavigationBarHidden(false, animated: false)
+        let searchBarButtonItem = UIBarButtonItem(customView: searchBar)
+        navigationItem.rightBarButtonItem = searchBarButtonItem
         
         let urlString: String = feedURL
         url = URL(string: urlString)!
@@ -91,9 +101,19 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         var minutes = 0
         if let optionalHours = Int(episode.itunesDuration) {
             hours = (optionalHours/60)/60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if let optionalHours = Int(durationArray[0]) {
+                hours = optionalHours
+            }
         }
         if let optionalMinutes = Int(episode.itunesDuration) {
             minutes = (optionalMinutes/60)%60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if let optionalMinutes = Int(durationArray[1]) {
+                minutes = optionalMinutes
+            }
         }
         
         cell.titleLabel.text = episode.title
@@ -360,13 +380,19 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
-                nowPlayingArt = self.imageView.image
-                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                
-                let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
-                baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                
-                self.playDownload(at: destinationUrl)
+                let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
+                if episodesToPlay.count > 0 {
+                    let episodeToPlay = episodesToPlay[0]
+                    
+                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
+                    baseViewController.miniPlayerView.artImageView.image = podcastImage
+                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
+                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
+                    
+                    let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage?.cgImage!)!)
+                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                    self.playDownload(at: destinationUrl)
+                }
             } else { // add to playlist
                 let episodeWithID = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if let playlistToAddTo = addTo {
@@ -440,10 +466,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
-                        nowPlayingArt = self.imageView.image
+                        let nowPlayingArt = UIImage(data: podcast!.image!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
+                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
                         
-                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt.cgImage!)
+                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
                         baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                         
                         self.playDownload(at: destinationUrl)
@@ -484,6 +512,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             
             player.prepareToPlay()
             player.play()
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
             
             DispatchQueue.main.async {
                 baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
@@ -579,6 +610,42 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print(error)
         }
     }
+    
+    // Search Bar Methods
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+    
+    //MARK: Search bar delegate functions
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchActive = false;
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchActive = false;
+        tableView.reloadData()
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredEpisodes = []
+        for episode in episodes {
+            if episode.title.lowercased().contains(searchText.lowercased()) {
+                filteredEpisodes.append(episode)
+            }
+        }
+        
+        if (searchText == "") {
+            searchActive = false;
+        } else {
+            searchActive = true;
+        }
+        //tableView.reloadData()
+    }
+    
 }
 
 extension UIColor {

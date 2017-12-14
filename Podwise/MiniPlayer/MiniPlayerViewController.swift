@@ -13,6 +13,21 @@ class MiniPlayerView: UIView {
     @IBOutlet var miniPlayerView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
+    @IBOutlet var artImageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewWidthConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewBottomConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewCenterYConstraint: NSLayoutConstraint!
+    @IBOutlet var artImageViewCenterXConstraint: NSLayoutConstraint!
+    @IBOutlet weak var podcastTitle: UILabel!
+    @IBOutlet weak var episodeTitle: UILabel!
+    @IBOutlet weak var chevronImage: UIImageView!
+    @IBOutlet weak var playPauseDistanceFromBottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var backTenDistanceFromPlayConstraint: NSLayoutConstraint!
+    @IBOutlet weak var forward30DistanceFromPlayConstraint: NSLayoutConstraint!
+    @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var progressSlider: UISlider!
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +51,9 @@ class MiniPlayerView: UIView {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             }
         }
+        
+        artImageViewCenterXConstraint.isActive = false
+        artImageViewCenterYConstraint.isActive = false
     }
     
     @IBAction func playPauseButtonPressed(_ sender: Any) {
@@ -63,6 +81,15 @@ class MiniPlayerView: UIView {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: 30)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
+        }
+    }
+    
+    @IBAction func playheadChanged(_ sender: Any) {
+        if let player = audioPlayer {
+            // Update progress
+            let percentComplete = progressSlider.value
+            //print(percentComplete)
+            player.currentTime = player.duration * Double(percentComplete)
         }
     }
 }

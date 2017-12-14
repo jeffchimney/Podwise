@@ -18,6 +18,8 @@
 		BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */; };
 		BE6853811FCC918900CA32C8 /* PodcastChecklistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */; };
 		BE773F861FC61BD00075FB9E /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE773F851FC61BD00075FB9E /* PlaylistCell.swift */; };
+		BE789B521FE1D4B4005ED126 /* HeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE789B511FE1D4B4005ED126 /* HeaderView.xib */; };
+		BE789B541FE1D4C0005ED126 /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE789B531FE1D4C0005ED126 /* HeaderView.swift */; };
 		BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */; };
 		BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */; };
 		BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */; };
@@ -40,6 +42,7 @@
 		BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */; };
 		BEE0A16A1FBE5EBA00AA111F /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */; };
 		BEE7BA6B1FC77C22005345FB /* EpisodesForPodcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */; };
+		BEF807E21FE07B8C0088F16F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +74,8 @@
 		BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTitleCell.swift; sourceTree = "<group>"; };
 		BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastChecklistCell.swift; sourceTree = "<group>"; };
 		BE773F851FC61BD00075FB9E /* PlaylistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
+		BE789B511FE1D4B4005ED126 /* HeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = HeaderView.xib; sourceTree = "<group>"; };
+		BE789B531FE1D4C0005ED126 /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AzureDBDataHelper.swift; sourceTree = "<group>"; };
 		BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MiniPlayer.xib; sourceTree = "<group>"; };
 		BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
@@ -101,6 +106,7 @@
 		BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
 		BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
 		BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesForPodcastViewController.swift; sourceTree = "<group>"; };
+		BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +114,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BEF807E21FE07B8C0088F16F /* MediaPlayer.framework in Frameworks */,
 				BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -134,6 +141,8 @@
 			children = (
 				BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */,
 				BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */,
+				BE789B511FE1D4B4005ED126 /* HeaderView.xib */,
+				BE789B531FE1D4C0005ED126 /* HeaderView.swift */,
 			);
 			path = GroupedView;
 			sourceTree = "<group>";
@@ -168,6 +177,7 @@
 		BEB608CE1FD133CF004FE0ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */,
 				BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */,
 			);
 			name = Frameworks;
@@ -207,6 +217,7 @@
 				BEA9D3B71FC389BC00A140AC /* Classes */,
 				BEE0A1661FBE5C2E00AA111F /* Cells */,
 				BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */,
+				BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */,
 				BEE0A13A1FBE57C200AA111F /* PodcastsViewController.swift */,
 				BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */,
 				BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */,
@@ -245,7 +256,6 @@
 				BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */,
 				BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */,
 				BE773F851FC61BD00075FB9E /* PlaylistCell.swift */,
-				BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */,
 				BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */,
 				BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */,
 				BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */,
@@ -377,6 +387,7 @@
 				BE230CE81FCE759F0065192C /* PlaylistCell.xib in Resources */,
 				BE0FC0B41FCE3B9300AC2505 /* GroupedView.xib in Resources */,
 				BEE0A13E1FBE57C200AA111F /* Main.storyboard in Resources */,
+				BE789B521FE1D4B4005ED126 /* HeaderView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -416,6 +427,7 @@
 				BEB04D171FCF898D0052BCBF /* AddPlaylistCell.swift in Sources */,
 				BE230CEA1FCE7EAB0065192C /* GroupedViewCell.swift in Sources */,
 				BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */,
+				BE789B541FE1D4C0005ED126 /* HeaderView.swift in Sources */,
 				BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */,
 				BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */,

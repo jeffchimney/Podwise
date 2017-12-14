@@ -9,8 +9,13 @@
 import UIKit
 import CoreData
 import AVFoundation
+import MediaPlayer
 
-class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate {
+public protocol editPlaylistDelegate: class {
+    func edit(playlist: CDPlaylist)
+}
+
+class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate, editPlaylistDelegate {
     
     var episodesInPlaylist: [CDEpisode] = []
     var rowInTableView: Int!
@@ -57,16 +62,32 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         return 50
     }
     
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+//        if episodesInPlaylist.count > 0 {
+//            if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
+//                return podcastPlaylist.name!
+//            } else {
+//                return ""
+//            }
+//        } else {
+//            return ""
+//        }
+//    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        
+        let cgRect = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
+        let headerView = HeaderView(frame: cgRect)
+        headerView.editDelegate = self
         if episodesInPlaylist.count > 0 {
             if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
-                return podcastPlaylist.name!
-            } else {
-                return ""
+                headerView.playlist = podcastPlaylist
+                headerView.label.text = podcastPlaylist.name!
             }
-        } else {
-            return ""
         }
+        headerView.headerView.backgroundColor = .lightGray
+
+        return headerView.headerView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -117,10 +138,12 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         let episode = episodesInPlaylist[indexPath.row]
         let podcast = episode.podcast!
         startAudioSession()
-        nowPlayingArt = UIImage(data: (podcast.image)!)
-        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+        nowPlayingEpisode = episode
+        let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episodesInPlaylist[indexPath.row].localURL!)
+        baseViewController.setupNowPlaying(episode: episode)
     }
     
         func tableView(_ tableView: UITableView,
@@ -178,6 +201,10 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             
             player.prepareToPlay()
             player.play()
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
+            
             baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             baseViewController.showMiniPlayer(animated: true)
         } catch let error {
@@ -186,18 +213,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     }
     
     func startAudioSession() {
-        do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .interruptSpokenAudioAndMixWithOthers)
-            print("AVAudioSession Category Playback OK")
-            do {
-                try AVAudioSession.sharedInstance().setActive(true)
-                print("AVAudioSession is Active")
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
-        }
+        
     }
     
     func reloadPlaylist() {
@@ -224,6 +240,10 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
 //
             self.reloadData()
 //        }
+    }
+    
+    func edit(playlist: CDPlaylist) {
+        print(playlist.name!)
     }
 }
 

@@ -11,9 +11,8 @@ import UIKit
 
 class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var searchBar: UISearchBar!
+    var searchBar:UISearchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: 200,height: 20))
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var searchBarBottomConstraint: NSLayoutConstraint!
     var podcastResults: [[String: Any]] = []
     var searchBarBottomConstraintInitialValue: CGFloat = 0
     var feedURL: String = ""
@@ -26,47 +25,22 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         tableView.delegate = self
         tableView.dataSource = self
         
+        searchBar.searchBarStyle = .prominent
+        searchBar.showsCancelButton = true
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        searchBarBottomConstraintInitialValue = searchBarBottomConstraint.constant
-        
         navigationController?.setNavigationBarHidden(false, animated: false)
+        //let searchBarButtonItem = UIBarButtonItem(customView: searchBar)
+        navigationItem.titleView = searchBar
+//        navigationItem.title = ""
+        searchBar.becomeFirstResponder()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         iTunesSearch(term: searchBar.text!)
         searchBar.resignFirstResponder()
-    }
-    
-    @objc func keyboardWillShow(notification: NSNotification) {
-        let info = notification.userInfo!
-        let keyboardFrame: CGRect = (info[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
-        let duration = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! Double
-        UIView.animate(withDuration: duration) { () -> Void in
-            if UIDevice().userInterfaceIdiom == .phone {
-                switch UIScreen.main.nativeBounds.height {
-                case 1136,1334,2208:
-                    print("Not iPhone X")
-                    self.searchBarBottomConstraint.constant = -keyboardFrame.height
-                case 2436:
-                    print("iPhone X")
-                    self.searchBarBottomConstraint.constant = 85-keyboardFrame.height
-                default:
-                    print("unknown")
-                }
-            }
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    @objc func keyboardWillHide(notification: NSNotification) {
-        let duration = notification.userInfo![UIKeyboardAnimationDurationUserInfoKey] as! Double
-        
-        UIView.animate(withDuration: duration) { () -> Void in
-            self.searchBarBottomConstraint.constant = self.searchBarBottomConstraintInitialValue
-            self.view.layoutIfNeeded()
-        }
     }
     
     //
@@ -154,5 +128,18 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         resultViewController.collectionID = rowData["collectionId"] as! Int
         resultViewController.authorName = rowData["artistName"] as? String
         self.navigationController?.pushViewController(resultViewController, animated: true)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.text = ""
+        searchBar.resignFirstResponder()
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        searchBar.showsCancelButton = true
+    }
+    
+    @objc func keyboardWillHide(notification: NSNotification) {
+        searchBar.showsCancelButton = false
     }
 }

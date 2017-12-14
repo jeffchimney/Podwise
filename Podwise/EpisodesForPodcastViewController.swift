@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 import AVFoundation
+import MediaPlayer
 
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
@@ -110,9 +111,19 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let episode = downloadedEpisodes[indexPath.row]
             if let optionalHours = Int(episode.duration!) {
                 hours = (optionalHours/60)/60
+            } else {
+                let durationArray = episode.duration?.split(separator: ":")
+                if let optionalHours = Int(durationArray![0]) {
+                    hours = optionalHours
+                }
             }
             if let optionalMinutes = Int(episode.duration!) {
                 minutes = (optionalMinutes/60)%60
+            } else {
+                let durationArray = episode.duration?.split(separator: ":")
+                if let optionalMinutes = Int(durationArray![1]) {
+                    minutes = optionalMinutes
+                }
             }
             
             cell.titleLabel.text = episode.title
@@ -125,9 +136,19 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let episode = unDownloadedEpisodes[indexPath.row]
             if let optionalHours = Int(episode.itunesDuration) {
                 hours = (optionalHours/60)/60
+            } else {
+                let durationArray = episode.itunesDuration.split(separator: ":")
+                if let optionalHours = Int(durationArray[0]) {
+                    hours = optionalHours
+                }
             }
             if let optionalMinutes = Int(episode.itunesDuration) {
                 minutes = (optionalMinutes/60)%60
+            } else {
+                let durationArray = episode.itunesDuration.split(separator: ":")
+                if let optionalMinutes = Int(durationArray[1]) {
+                    minutes = optionalMinutes
+                }
             }
             
             cell.titleLabel.text = episode.title
@@ -171,8 +192,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = downloadedEpisodes[indexPath.row]
         startAudioSession()
-        nowPlayingArt = UIImage(data: (self.podcast.image)!)
-        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+        nowPlayingEpisode = episode
+        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
+        baseViewController.miniPlayerView.episodeTitle.text = episode.title
+        baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episode.localURL!)
     }
@@ -395,10 +418,20 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             print("The file already exists at path")
             if playNow {
                 startAudioSession()
-                nowPlayingArt = UIImage(data: (self.podcast.image)!)
-                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
-                self.playDownload(at: destinationUrl)
+                
+                let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
+                if episodesToPlay.count > 0 {
+                    let episodeToPlay = episodesToPlay[0]
+                    
+                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
+                    baseViewController.miniPlayerView.artImageView.image = podcastImage
+                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
+                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
+                    
+                    let backgroundColor = baseViewController.getAverageColorOf(image: podcastImage!.cgImage!)
+                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                    self.playDownload(at: destinationUrl)
+                }
             }
             // if the file doesn't exist
         } else {
@@ -438,8 +471,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     print("File moved to documents folder")
                     if playNow {
                         self.startAudioSession()
-                        nowPlayingArt = UIImage(data: (self.podcast.image)!)
+                        let nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                        baseViewController.miniPlayerView.podcastTitle.text = self.podcast.title
+                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
+                        
                         baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
                         self.playDownload(at: destinationUrl)
                     }
@@ -479,6 +515,9 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             
             player.prepareToPlay()
             player.play()
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
             
             baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             baseViewController.showMiniPlayer(animated: true)
