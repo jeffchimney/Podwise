@@ -60,7 +60,7 @@ class AzureDBDataHelper {
             let client = delegate.client!
             let podcastsTable = client.table(withName: "Podcasts")
             let podcastsForDeviceTable = client.table(withName: "PodcastsForDevice")
-            let podcastToInsert = ["podcastId":"\(podcast.id)", "title":"\(podcast.title!)"]
+            let podcastToInsert = ["podcastId":"\(podcast.id)", "title":"\(podcast.title!)", "rssFeed":"\(podcast.feedURL!.absoluteString)"]
             let podcastForDevice = ["deviceId":identifierForVendor.uuidString, "podcastId":"\(podcast.id)", "subscribed":subscribe] as [String : Any]
             
             let query = podcastsTable.query(with: NSPredicate(format: "podcastId == %@", "\(podcast.id)"))
