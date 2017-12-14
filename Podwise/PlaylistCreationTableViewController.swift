@@ -102,17 +102,33 @@ class PlaylistCreationTableViewController: UITableViewController {
     }
     
     @IBAction func createPlaylist(_ sender: Any) {
-        let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
-        let playlist = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
-        
+        let existingPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         let titleCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! PlaylistTitleCell
-        playlist.name = titleCell.titleTextField.text
-        let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
-        playlist.sortIndex = (Int64(sortIndex + Int(1)))
-        playlist.id = UUID().uuidString
-        print(playlist.sortIndex)
-        for podcast in selectedPodcasts {
-            podcast.playlist = playlist
+        var playlistAlreadyExists = false
+        var preexistingPlaylist: CDPlaylist!
+        for existingPlaylist in existingPlaylists {
+            if existingPlaylist.name == titleCell.titleTextField.text {
+                playlistAlreadyExists = true
+                preexistingPlaylist = existingPlaylist
+            }
+        }
+        
+        if !playlistAlreadyExists {
+            let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
+            let playlist = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
+            
+            playlist.name = titleCell.titleTextField.text
+            let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
+            playlist.sortIndex = (Int64(sortIndex + Int(1)))
+            playlist.id = UUID().uuidString
+            print(playlist.sortIndex)
+            for podcast in selectedPodcasts {
+                podcast.playlist = playlist
+            }
+        } else {
+            for podcast in selectedPodcasts {
+                podcast.playlist = preexistingPlaylist
+            }
         }
         
         CoreDataHelper.save(context: managedContext!)

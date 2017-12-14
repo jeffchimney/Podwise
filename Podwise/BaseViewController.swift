@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 import AVFoundation
+import MediaPlayer
 
 var audioPlayer:AVAudioPlayer!
 var downloads: [CDEpisode]!
@@ -40,13 +41,13 @@ class BaseViewController: UIViewController {
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        let swipeUp = UIPanGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
-        //swipeUp.direction = .up
-        //let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
-        //swipeDown.direction = .down
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
+        swipeUp.direction = .up
+        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
+        swipeDown.direction = .down
         miniPlayerView.addGestureRecognizer(tap)
         miniPlayerView.addGestureRecognizer(swipeUp)
-        //miniPlayerView.addGestureRecognizer(swipeDown)
+        miniPlayerView.addGestureRecognizer(swipeDown)
 //        miniPlayerView.layer.cornerRadius = 15
 //        miniPlayerView.layer.masksToBounds = true
         
@@ -60,6 +61,30 @@ class BaseViewController: UIViewController {
         }
         
         self.view.backgroundColor = .black
+        
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.playCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
+            //Update your button here for the pause command
+            self.miniPlayerView.playPauseButtonPressed(self)
+            return .success
+        }
+        commandCenter.pauseCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
+            //Update your button here for the pause command
+            self.miniPlayerView.playPauseButtonPressed(self)
+            return .success
+        }
+        commandCenter.skipForwardCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
+            //Update your button here for the pause command
+            self.miniPlayerView.skipForward(self)
+            return .success
+        }
+        commandCenter.skipBackwardCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
+            //Update your button here for the pause command
+            self.miniPlayerView.skipBack(self)
+            return .success
+        }
         
         Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
     }
@@ -115,6 +140,24 @@ class BaseViewController: UIViewController {
             self.sliderHeightConstraint.constant = 0
             self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
         }
+    }
+    
+    func setupNowPlaying(episode: CDEpisode) {
+        // Define Now Playing Info
+        var nowPlayingInfo = [String : Any]()
+        nowPlayingInfo[MPMediaItemPropertyTitle] = "My Movie"
+        if let image = UIImage(named: "lockscreen") {
+            nowPlayingInfo[MPMediaItemPropertyArtwork] =
+                MPMediaItemArtwork(boundsSize: image.size) { size in
+                    return image
+            }
+        }
+        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = audioPlayer.currentTime
+        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = audioPlayer.duration
+        //nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
+        
+        // Set the metadata
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     
     @objc public func startUpdatingSlider() {
@@ -187,72 +230,147 @@ class BaseViewController: UIViewController {
         }
     }
     
-    @objc func handleSwipe(_ sender: UIPanGestureRecognizer) {
+    @objc func handleSwipe(_ sender: UISwipeGestureRecognizer) {
         
-        if sender.state == .began || sender.state == .changed {
-            
-            let translation = sender.translation(in: self.view)
-            // note: 'view' is optional and need to be unwrapped
-            miniPlayerHeightConstraint.constant -= translation.y/10
-            self.view.layoutSubviews()
-        }
-//        print(sender.direction)
-//        if miniPlayerHeightConstraint.constant > originalMiniPlayerHeightConstant { // make mini player small
-//            if sender.direction == .down {
-//                // disable old leading and bottom constraints
-//                miniPlayerView.artImageViewCenterXConstraint.isActive = false
-//                miniPlayerView.artImageViewCenterYConstraint.isActive = false
+//        if sender.state == .began || sender.state == .changed {
+//            let translation = sender.translation(in: self.view)
+//            // note: 'view' is optional and need to be unwrapped
+//            miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant-(translation.y)
+//            self.view.layoutSubviews()
+//        }
+//        if sender.state == .ended {
+//            let translation = sender.translation(in: self.view)
 //
-//                // enable new constraints
-//                miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
-//                miniPlayerView.artImageViewLeadingConstraint.isActive = true
-//                miniPlayerView.artImageViewBottomConstraint.isActive = true
-//                miniPlayerView.artImageViewHeightConstraint.constant = 60
-//                miniPlayerView.artImageViewWidthConstraint.constant = 60
-//                miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
-//                miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
-//                miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
-//                miniPlayerView.playPauseHeightConstraint.constant -= 40
-//                miniPlayerView.playPauseWidthConstraint.constant -= 40
-//                miniPlayerView.chevronImage.isHidden = true
-//                miniPlayerView.podcastTitle.isHidden = true
-//                miniPlayerView.episodeTitle.isHidden = true
+//            if miniPlayerHeightConstraint.constant == originalMiniPlayerHeightConstant { // show expanded mini player if threshold broken
+//                if -translation.y < self.view.frame.maxY/8 { // if threshold is not broken
+//                    miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+//                    UIView.animate(withDuration: 0.25, animations: {
+//                        self.miniPlayerView.layoutSubviews()
+//                        self.view.layoutSubviews()
+//                    })
+//                } else { // threshold is broken, enlarge mini player
+//                 //disable old leading and bottom constraints
+//                    miniPlayerView.artImageViewLeadingConstraint.isActive = false
+//                    miniPlayerView.artImageViewBottomConstraint.isActive = false
 //
-//                miniPlayerView.progressSlider.isHidden = true
+//                    // enable new constraints
+//                    miniPlayerHeightConstraint.constant += baseView.bounds.height
+//                    miniPlayerView.artImageViewCenterXConstraint.isActive = true
+//                    miniPlayerView.artImageViewCenterYConstraint.isActive = true
+//                    miniPlayerView.artImageViewHeightConstraint.constant = 300
+//                    miniPlayerView.artImageViewWidthConstraint.constant = 300
+//                    miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
+//                    miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
+//                    miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
+//                    miniPlayerView.playPauseHeightConstraint.constant += 40
+//                    miniPlayerView.playPauseWidthConstraint.constant += 40
+//                    miniPlayerView.chevronImage.isHidden = false
+//                    miniPlayerView.podcastTitle.isHidden = false
+//                    miniPlayerView.episodeTitle.isHidden = false
 //
-//                UIView.animate(withDuration: 0.75, animations: {
-//                    self.miniPlayerView.layoutSubviews()
-//                    self.view.layoutSubviews()
-//                })
-//            }
-//        } else { // make mini player full screen
-//            if sender.direction == .up {
-//                // disable old leading and bottom constraints
-//                miniPlayerView.artImageViewLeadingConstraint.isActive = false
-//                miniPlayerView.artImageViewBottomConstraint.isActive = false
+//                    miniPlayerView.progressSlider.isHidden = false
 //
-//                // enable new constraints
-//                miniPlayerHeightConstraint.constant += baseView.bounds.height
-//                miniPlayerView.artImageViewCenterXConstraint.isActive = true
-//                miniPlayerView.artImageViewCenterYConstraint.isActive = true
-//                miniPlayerView.artImageViewHeightConstraint.constant = 300
-//                miniPlayerView.artImageViewWidthConstraint.constant = 300
-//                miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
-//                miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
-//                miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
-//                miniPlayerView.playPauseHeightConstraint.constant += 40
-//                miniPlayerView.playPauseWidthConstraint.constant += 40
-//                miniPlayerView.chevronImage.isHidden = false
-//                miniPlayerView.podcastTitle.isHidden = false
-//                miniPlayerView.episodeTitle.isHidden = false
+//                    UIView.animate(withDuration: 0.25, animations: {
+//                        self.miniPlayerView.layoutSubviews()
+//                        self.view.layoutSubviews()
+//                    })
+//                }
+//            } else {
+//                if translation.y < -self.view.frame.maxY/8 { // if threshold is not broken
+//                    // enable new constraints
+//                    miniPlayerHeightConstraint.constant = baseView.bounds.height + translation.y
 //
-//                miniPlayerView.progressSlider.isHidden = false
 //
-//                UIView.animate(withDuration: 0.75, animations: {
-//                    self.miniPlayerView.layoutSubviews()
-//                    self.view.layoutSubviews()
-//                })
+//                    UIView.animate(withDuration: 0.25, animations: {
+//                        self.miniPlayerView.layoutSubviews()
+//                        self.view.layoutSubviews()
+//                    })
+//                } else { // threshold is broken, shrink mini player
+//                    //disable old leading and bottom constraints
+//                    miniPlayerView.artImageViewCenterXConstraint.isActive = false
+//                    miniPlayerView.artImageViewCenterYConstraint.isActive = false
+//
+//                    // enable new constraints
+//                    miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+//                    miniPlayerView.artImageViewLeadingConstraint.isActive = true
+//                    miniPlayerView.artImageViewBottomConstraint.isActive = true
+//                    miniPlayerView.artImageViewHeightConstraint.constant = 60
+//                    miniPlayerView.artImageViewWidthConstraint.constant = 60
+//                    miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
+//                    miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
+//                    miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
+//                    miniPlayerView.playPauseHeightConstraint.constant -= 40
+//                    miniPlayerView.playPauseWidthConstraint.constant -= 40
+//                    miniPlayerView.chevronImage.isHidden = true
+//                    miniPlayerView.podcastTitle.isHidden = true
+//                    miniPlayerView.episodeTitle.isHidden = true
+//
+//                    miniPlayerView.progressSlider.isHidden = true
+//
+//                    UIView.animate(withDuration: 0.75, animations: {
+//                        self.miniPlayerView.layoutSubviews()
+//                        self.view.layoutSubviews()
+//                    })
+//                }
 //            }
 //        }
+        print(sender.direction)
+        if miniPlayerHeightConstraint.constant > originalMiniPlayerHeightConstant { // make mini player small
+            if sender.direction == .down {
+                // disable old leading and bottom constraints
+                miniPlayerView.artImageViewCenterXConstraint.isActive = false
+                miniPlayerView.artImageViewCenterYConstraint.isActive = false
+
+                // enable new constraints
+                miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+                miniPlayerView.artImageViewLeadingConstraint.isActive = true
+                miniPlayerView.artImageViewBottomConstraint.isActive = true
+                miniPlayerView.artImageViewHeightConstraint.constant = 60
+                miniPlayerView.artImageViewWidthConstraint.constant = 60
+                miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
+                miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
+                miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
+                miniPlayerView.playPauseHeightConstraint.constant -= 40
+                miniPlayerView.playPauseWidthConstraint.constant -= 40
+                miniPlayerView.chevronImage.isHidden = true
+                miniPlayerView.podcastTitle.isHidden = true
+                miniPlayerView.episodeTitle.isHidden = true
+
+                miniPlayerView.progressSlider.isHidden = true
+
+                UIView.animate(withDuration: 0.75, animations: {
+                    self.miniPlayerView.layoutSubviews()
+                    self.view.layoutSubviews()
+                })
+            }
+        } else { // make mini player full screen
+            if sender.direction == .up {
+                // disable old leading and bottom constraints
+                miniPlayerView.artImageViewLeadingConstraint.isActive = false
+                miniPlayerView.artImageViewBottomConstraint.isActive = false
+
+                // enable new constraints
+                miniPlayerHeightConstraint.constant += baseView.bounds.height
+                miniPlayerView.artImageViewCenterXConstraint.isActive = true
+                miniPlayerView.artImageViewCenterYConstraint.isActive = true
+                miniPlayerView.artImageViewHeightConstraint.constant = 300
+                miniPlayerView.artImageViewWidthConstraint.constant = 300
+                miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
+                miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
+                miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
+                miniPlayerView.playPauseHeightConstraint.constant += 40
+                miniPlayerView.playPauseWidthConstraint.constant += 40
+                miniPlayerView.chevronImage.isHidden = false
+                miniPlayerView.podcastTitle.isHidden = false
+                miniPlayerView.episodeTitle.isHidden = false
+
+                miniPlayerView.progressSlider.isHidden = false
+
+                UIView.animate(withDuration: 0.75, animations: {
+                    self.miniPlayerView.layoutSubviews()
+                    self.view.layoutSubviews()
+                })
+            }
+        }
     }
 }

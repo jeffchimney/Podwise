@@ -42,8 +42,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPressGesture)
-        
-        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,6 +105,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         collectionView.backgroundView?.backgroundColor = .black
         
         collectionView.reloadData()
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
         
 //        if !isTimerRunning {
 //            runTimer()
@@ -233,7 +233,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                 pointInCell = cell?.convert(point, from: collectionView)
                 
                 if cell != nil && pointInCell != nil {
-                    if (cell!.playlistGroupTableView.headerView(forSection: 0)?.frame.contains(pointInCell!))! {
+                    if (pointInCell?.y)! < CGFloat(50) {
                         if let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) {
                             self.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
                         }

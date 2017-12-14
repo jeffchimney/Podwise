@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 import AVFoundation
+import MediaPlayer
 
 class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate {
     
@@ -511,6 +512,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             
             player.prepareToPlay()
             player.play()
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
             
             DispatchQueue.main.async {
                 baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)

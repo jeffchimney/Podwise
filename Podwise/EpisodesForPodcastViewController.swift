@@ -10,6 +10,7 @@ import Foundation
 import UIKit
 import CoreData
 import AVFoundation
+import MediaPlayer
 
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
@@ -514,6 +515,9 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             
             player.prepareToPlay()
             player.play()
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
             
             baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             baseViewController.showMiniPlayer(animated: true)
