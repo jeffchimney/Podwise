@@ -10,5 +10,6 @@
 #define Podwise_Bridging_Header_h
 
 #import <MicrosoftAzureMobile/MicrosoftAzureMobile.h>
+#import <WindowsAzureMessaging/WindowsAzureMessaging.h>
 
 #endif /* Podwise_Bridging_Header_h */

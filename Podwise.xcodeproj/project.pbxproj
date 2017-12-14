@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		BE0FC0B41FCE3B9300AC2505 /* GroupedView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */; };
 		BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */; };
+		BE0FC1D61FE238F200457EDD /* WindowsAzureMessaging.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BE0FC1D51FE238F200457EDD /* WindowsAzureMessaging.framework */; };
 		BE230CE81FCE759F0065192C /* PlaylistCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE230CE71FCE759F0065192C /* PlaylistCell.xib */; };
 		BE230CEA1FCE7EAB0065192C /* GroupedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE230CE91FCE7EAB0065192C /* GroupedViewCell.swift */; };
 		BE25226C1FC600B300E6B769 /* Podwise.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */; };
@@ -65,6 +66,8 @@
 /* Begin PBXFileReference section */
 		BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedView.xib; sourceTree = "<group>"; };
 		BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedViewController.swift; sourceTree = "<group>"; };
+		BE0FC1D51FE238F200457EDD /* WindowsAzureMessaging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WindowsAzureMessaging.framework; path = "../../../Downloads/azuresdk-iOS-v1/WindowsAzureMessaging.framework"; sourceTree = "<group>"; };
+		BE0FC1D71FE238F800457EDD /* WindowsAzureMessaging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WindowsAzureMessaging.framework; sourceTree = "<group>"; };
 		BE230CE71FCE759F0065192C /* PlaylistCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PlaylistCell.xib; sourceTree = "<group>"; };
 		BE230CE91FCE7EAB0065192C /* GroupedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedViewCell.swift; sourceTree = "<group>"; };
 		BE25226B1FC600B300E6B769 /* Podwise.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Podwise.xcdatamodel; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			files = (
 				BEF807E21FE07B8C0088F16F /* MediaPlayer.framework in Frameworks */,
 				BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */,
+				BE0FC1D61FE238F200457EDD /* WindowsAzureMessaging.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,6 +181,7 @@
 		BEB608CE1FD133CF004FE0ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BE0FC1D71FE238F800457EDD /* WindowsAzureMessaging.framework */,
 				BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */,
 				BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */,
 			);
@@ -186,6 +191,7 @@
 		BEE0A12A1FBE57C200AA111F = {
 			isa = PBXGroup;
 			children = (
+				BE0FC1D51FE238F200457EDD /* WindowsAzureMessaging.framework */,
 				BEB608D11FD13433004FE0ED /* Podwise-Bridging-Header.h */,
 				BEE0A1351FBE57C200AA111F /* Podwise */,
 				BEE0A14C1FBE57C300AA111F /* PodwiseTests */,
@@ -605,6 +611,7 @@
 				CODE_SIGN_ENTITLEMENTS = Podwise/Podwise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSZY8AYXNH;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -626,6 +633,7 @@
 				CODE_SIGN_ENTITLEMENTS = Podwise/Podwise.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = JSZY8AYXNH;
+				ENABLE_BITCODE = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",

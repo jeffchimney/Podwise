@@ -18,6 +18,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
     var client: MSClient!
+    let endpoint = "Endpoint=sb://podwise.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=99efNs84C80JoCaZdQyrCPiV5CShshoAU8G1Q5E9ojg="
+    let hubName = "PodwiseHub"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -122,12 +124,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        
+        let hub: SBNotificationHub = SBNotificationHub(connectionString: endpoint, notificationHubPath: hubName)
+        
+        hub.registerNative(withDeviceToken: deviceToken, tags: nil, completion: { error in
+            if error != nil {
+                print("Error registering for notifications: \(String(describing: error))")
+            } else {
+                print("Registered with NotificationHub")
+            }
+        })
+        
         let tokenParts = deviceToken.map { data -> String in
             return String(format: "%02.2hhx", data)
         }
         
         let token = tokenParts.joined()
-
+        
         let managedContext = persistentContainer.viewContext
         let tokenEntity = NSEntityDescription.entity(forEntityName: "CDAPNSToken", in: managedContext)!
         let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
