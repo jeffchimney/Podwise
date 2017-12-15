@@ -9,29 +9,28 @@
 import UIKit
 import CoreData
 
-public protocol reloadTableViewDelegate: class {
-    func reloadTableView()
+public protocol reloadCollectionViewDelegate: class {
+    func reloadCollectionView()
 }
 
-class PodcastsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIViewControllerPreviewingDelegate, reloadTableViewDelegate {
+class PodcastsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerPreviewingDelegate, reloadCollectionViewDelegate {
     
     var subscribedPodcasts: [CDPodcast] = []
     var unSubscribedPodcasts: [CDPodcast] = []
     var managedContext: NSManagedObjectContext?
+    fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var collectionView: UICollectionView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        tableView.dataSource = self
-        tableView.delegate = self
+        collectionView.dataSource = self
+        collectionView.delegate = self
         
         if( traitCollection.forceTouchCapability == .available){
             registerForPreviewing(with: self, sourceView: view)
         }
-        
-        navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,7 +53,9 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         }
         unSubscribedPodcasts.sort(by: { $0.title! < $1.title!})
         
-        tableView.reloadData()
+        collectionView.reloadData()
+        
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -62,99 +63,92 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         // Dispose of any resources that can be recreated.
     }
 
-    func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print(section)
         return 2
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return subscribedPodcasts.count
-        } else {
-            return unSubscribedPodcasts.count
-        }
-    }
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 80
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        var podcastListForSection: [CDPodcast] = []
-        if indexPath.section == 0 {
-            podcastListForSection = subscribedPodcasts
-        } else {
-            podcastListForSection = unSubscribedPodcasts
-        }
-    
-        let cell = tableView.dequeueReusableCell(withIdentifier: "PodcastCell", for: indexPath as IndexPath) as! PodcastListCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "SubscriptionGroupCell", for: indexPath) as! SubscriptionCell
         
-        cell.titleLabel.text = podcastListForSection[indexPath.row].title
-        cell.authorLabel.text = podcastListForSection[indexPath.row].author
-        if let imageData = podcastListForSection[indexPath.row].image {
-            cell.artImageView.image = UIImage(data: imageData)
+        cell.subscriptionsTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
+        cell.subscriptionsTableView.frame = cell.bounds
+        if indexPath.row == 0 {
+            cell.subscriptionsTableView.podcasts = subscribedPodcasts
+            cell.subscriptionsTableView.subscribed = true
+        } else {
+            cell.subscriptionsTableView.podcasts = unSubscribedPodcasts
+            cell.subscriptionsTableView.subscribed = false
         }
-        
-        cell.artImageView.layer.cornerRadius = 10
-        cell.artImageView.layer.masksToBounds = true
+        cell.subscriptionsTableView.rowInTableView = indexPath.row
+        cell.subscriptionsTableView.layer.cornerRadius = 15
+        cell.subscriptionsTableView.layer.masksToBounds = true
+        cell.subscriptionsTableView.previousViewController = self
+        cell.subscriptionsTableView.reloadData()
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var podcastListForSection: [CDPodcast] = []
-        if indexPath.section == 0 {
-            podcastListForSection = subscribedPodcasts
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        if indexPath.row == 0 {
+            let height = CGFloat(subscribedPodcasts.count * 80 + 50)
+            return CGSize(width: collectionView.frame.width-16, height: height)
         } else {
-            podcastListForSection = unSubscribedPodcasts
-        }
-        
-        let podcast: CDPodcast = podcastListForSection[indexPath.row]
-        
-        let resultViewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "episodesViewController") as! EpisodesForPodcastViewController
-        resultViewController.podcast = podcast
-        self.navigationController?.pushViewController(resultViewController, animated: true)
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        if section == 0 {
-            return  "Subscribed"
-        } else {
-            return  "Not Subscribed"
+            let height = CGFloat(unSubscribedPodcasts.count * 80 + 50)
+            return CGSize(width: collectionView.frame.width-16, height: height)
         }
     }
     
-    func tableView(_ tableView: UITableView,
-                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
-    {
-
-        let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Adding to playlist...")
-            let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
-            
-            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
-            
-            for eachPlaylist in playlists {
-                alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
-                    //execute some code when this option is selected
-                    if indexPath.section == 0 {
-                        self.add(podcast: self.subscribedPodcasts[indexPath.row], to: eachPlaylist)
-                    } else {
-                        self.add(podcast: self.unSubscribedPodcasts[indexPath.row], to: eachPlaylist)
-                    }
-                }))
-            }
-            
-            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-            
-            self.present(alert, animated: true, completion: nil)
-            success(true)
-        })
-        
-        addToPlaylistAction.image = UIImage(named: "playlist")
-        addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-        
-        return UISwipeActionsConfiguration(actions: [addToPlaylistAction])
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
     }
+    
+    // 4
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
+    
+    
+//    func tableView(_ tableView: UITableView,
+//                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+//    {
+//
+//        let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+//            print("Adding to playlist...")
+//            let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
+//
+//            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+//
+//            for eachPlaylist in playlists {
+//                alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+//                    //execute some code when this option is selected
+//                    if indexPath.section == 0 {
+//                        self.add(podcast: self.subscribedPodcasts[indexPath.row], to: eachPlaylist)
+//                    } else {
+//                        self.add(podcast: self.unSubscribedPodcasts[indexPath.row], to: eachPlaylist)
+//                    }
+//                }))
+//            }
+//
+//            alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+//
+//            self.present(alert, animated: true, completion: nil)
+//            success(true)
+//        })
+//
+//        addToPlaylistAction.image = UIImage(named: "playlist")
+//        addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+//
+//        return UISwipeActionsConfiguration(actions: [addToPlaylistAction])
+//    }
     
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {
         podcast.playlist = playlist
@@ -164,10 +158,17 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
     // MARK: - Preview Delegate Methods
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
         // convert point from position in self.view to position in warrantiesTableView
-        let cellPosition = tableView.convert(location, from: self.view)
+        let cellPosition = collectionView.convert(location, from: self.view)
         
-        guard let indexPath = tableView.indexPathForRow(at: cellPosition),
-            let cell = tableView.cellForRow(at: indexPath) else {
+        guard let indexPath = collectionView.indexPathForItem(at: cellPosition),
+            let cell = (collectionView.cellForItem(at: indexPath) as? SubscriptionCell) else {
+                return nil
+        }
+        
+        let subCellPosition = cell.subscriptionsTableView.convert(location, from: self.view)
+        
+        guard let subIndexPath = cell.subscriptionsTableView.indexPathForRow(at: subCellPosition),
+            let subCell = (cell.subscriptionsTableView.cellForRow(at: subIndexPath) as? PlaylistCell) else {
                 return nil
         }
         
@@ -180,17 +181,17 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         
         var selectedPodcast: CDPodcast!
         if indexPath.section == 0 {
-            selectedPodcast = subscribedPodcasts[indexPath.row]
+            selectedPodcast = subscribedPodcasts[subIndexPath.row]
         } else {
-            selectedPodcast = unSubscribedPodcasts[indexPath.row]
+            selectedPodcast = unSubscribedPodcasts[subIndexPath.row]
         }
         
         targetViewController.podcast = selectedPodcast
-        targetViewController.reloadTableViewDelegate = self
+        targetViewController.reloadCollectionViewDelegate = self
         targetViewController.preferredContentSize =
             CGSize(width: 0.0, height: 500)
         
-        previewingContext.sourceRect = view.convert(cell.frame, from: tableView)
+        previewingContext.sourceRect = view.convert(subCell.frame, to: cell.subscriptionsTableView)
         
         return targetViewController
     }
@@ -199,7 +200,7 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         show(viewControllerToCommit, sender: self)
     }
     
-    func reloadTableView() {
+    func reloadCollectionView() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -219,7 +220,7 @@ class PodcastsViewController: UIViewController, UITableViewDataSource, UITableVi
         unSubscribedPodcasts.sort(by: { $0.title! < $1.title!})
         
         DispatchQueue.main.async() {
-            self.tableView.reloadData()
+            self.collectionView.reloadData()
         }
     }
 }

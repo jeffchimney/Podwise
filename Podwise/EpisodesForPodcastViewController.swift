@@ -15,7 +15,7 @@ import MediaPlayer
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
     var managedContext: NSManagedObjectContext?
-    weak var reloadTableViewDelegate: reloadTableViewDelegate?
+    weak var reloadCollectionViewDelegate: reloadCollectionViewDelegate?
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
@@ -621,14 +621,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 self.podcast.subscribed = false
                 CoreDataHelper.save(context: self.managedContext!)
                 AzureDBDataHelper.handle(subscribe: false, to: self.podcast)
-                self.reloadTableViewDelegate?.reloadTableView()
+                self.reloadCollectionViewDelegate?.reloadCollectionView()
             })
         } else {
             subscribe = UIPreviewAction(title: "Subscribe", style: .default, handler: {_,_ in
                 self.podcast.subscribed = true
                 CoreDataHelper.save(context: self.managedContext!)
                 AzureDBDataHelper.handle(subscribe: true, to: self.podcast)
-                self.reloadTableViewDelegate?.reloadTableView()
+                self.reloadCollectionViewDelegate?.reloadCollectionView()
             })
         }
         

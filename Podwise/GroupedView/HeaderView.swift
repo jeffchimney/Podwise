@@ -14,6 +14,7 @@ class HeaderView: UITableViewHeaderFooterView {
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var button: UIButton!
     var playlist: CDPlaylist!
+    var headerTitle = ""
     weak var editDelegate: editPlaylistDelegate!
     
 //    override init(frame: CGRect) {
