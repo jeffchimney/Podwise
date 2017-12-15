@@ -21,6 +21,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
     var managedContext: NSManagedObjectContext!
+    weak var editPlaylistParentDelegate: editPlaylistParentDelegate!
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
@@ -34,6 +35,9 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     
     func commonInit() {
         Bundle.main.loadNibNamed("GroupedView", owner: self, options: nil)
+        let headerViewNib = UINib(nibName: "HeaderView", bundle: nil)
+        self.register(headerViewNib, forHeaderFooterViewReuseIdentifier: "TableSectionHeader")
+        
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -62,32 +66,26 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         return 50
     }
     
-//    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-//        if episodesInPlaylist.count > 0 {
-//            if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
-//                return podcastPlaylist.name!
-//            } else {
-//                return ""
-//            }
-//        } else {
-//            return ""
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        
-        let cgRect = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 50)
-        let headerView = HeaderView(frame: cgRect)
+        // Dequeue with the reuse identifier
+        let headerView = self.dequeueReusableHeaderFooterView(withIdentifier: "TableSectionHeader") as! HeaderView
+
         headerView.editDelegate = self
         if episodesInPlaylist.count > 0 {
             if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
                 headerView.playlist = podcastPlaylist
                 headerView.label.text = podcastPlaylist.name!
+                if podcastPlaylist.name! == "Unsorted" {
+                    headerView.button.isHidden = true
+                } else {
+                    headerView.button.isHidden = false
+                }
             }
         }
-        headerView.headerView.backgroundColor = .lightGray
-
-        return headerView.headerView
+        headerView.backgroundColor = .lightGray
+        headerView.isUserInteractionEnabled = true
+        print(headerView.frame)
+        return headerView
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -200,6 +198,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             guard let player = audioPlayer else { return }
             
             player.prepareToPlay()
+            startAudioSession()
             player.play()
             
             let mpic = MPNowPlayingInfoCenter.default()
@@ -213,37 +212,27 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     }
     
     func startAudioSession() {
-        
+        // set up background audio capabilities
+        do {
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)//, with: .interruptSpokenAudioAndMixWithOthers
+            print("AVAudioSession Category Playback OK")
+            do {
+                try AVAudioSession.sharedInstance().setActive(true)
+                print("AVAudioSession is Active")
+            } catch {
+                print(error)
+            }
+        } catch {
+            print(error)
+        }
     }
     
     func reloadPlaylist() {
-//        DispatchQueue.main.async() {
-//            self.misfitEpisodes = []
-//            self.episodesInPlaylist = []
-//            let podcastsInPlaylist: [CDPodcast] = CoreDataHelper.fetchPodcastsFor(playlist: self.playlist!, in: self.managedContext!)
-//            for podcast in podcastsInPlaylist {
-//                let episodesForPodcastInPlaylist: [CDEpisode] = CoreDataHelper.fetchEpisodesFor(podcast: podcast, in: self.managedContext!)
-//                for episode in episodesForPodcastInPlaylist {
-//                    if episode.playlist != nil {
-//                        self.misfitEpisodes.append(episode)
-//                    }
-//                }
-//                self.episodesInPlaylist.append(contentsOf: episodesForPodcastInPlaylist)
-//            }
-//            // for episodes that have been assigned another playlist, remove them from this playlist
-//            for episode in self.misfitEpisodes {
-//                if self.episodesInPlaylist.contains(episode) {
-//                    let index = self.episodesInPlaylist.index(of: episode)
-//                    self.episodesInPlaylist.remove(at: index!)
-//                }
-//            }
-//
-            self.reloadData()
-//        }
+        self.reloadData()
     }
     
     func edit(playlist: CDPlaylist) {
-        print(playlist.name!)
+        editPlaylistParentDelegate.edit(playlist: playlist)
     }
 }
 

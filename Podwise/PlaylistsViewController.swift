@@ -14,7 +14,11 @@ public protocol relayoutSectionDelegate: class {
     func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist)
 }
 
-class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, relayoutSectionDelegate {
+public protocol editPlaylistParentDelegate: class {
+    func edit(playlist: CDPlaylist)
+}
+
+class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, relayoutSectionDelegate, editPlaylistParentDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -204,7 +208,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             cell.playlistGroupTableView.frame = cell.bounds
             cell.playlistGroupTableView.episodesInPlaylist = playlistStructArray[indexPath.row].episodes
             cell.playlistGroupTableView.reloadPlaylist()
-            
+            cell.playlistGroupTableView.editPlaylistParentDelegate = self
             cell.playlistGroupTableView.rowInTableView = indexPath.row
             cell.playlistGroupTableView.relayoutSectionDelegate = self
             cell.playlistGroupTableView.layer.cornerRadius = 15
@@ -214,8 +218,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
             
-            cell.playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-            cell.playlistButton.layer.cornerRadius = 25
+            cell.playlistButton.backgroundColor = UIColor.white
+            cell.playlistButton.layer.cornerRadius = 15
             cell.playlistButton.layer.masksToBounds = true
             
             return cell
@@ -272,6 +276,19 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             
             collectionView.reloadItems(at: [IndexPath(row: row, section: 0)])
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: collectionView.layoutSubviews, completion: nil)
+        }
+    }
+    
+    func edit(playlist: CDPlaylist) {
+        // Safe Push VC
+        if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "playlistCreationViewController") as? PlaylistCreationTableViewController {
+            
+            viewController.playlist = playlist
+            viewController.navigationItem.title = "Edit Group"
+            
+            if let navigator = navigationController {
+                navigator.pushViewController(viewController, animated: true)
+            }
         }
     }
 }

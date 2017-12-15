@@ -9,32 +9,32 @@
 import Foundation
 import UIKit
 
-class HeaderView: UIView {
+class HeaderView: UITableViewHeaderFooterView {
     
-    @IBOutlet var headerView: UIView!
     @IBOutlet weak var label: UILabel!
     @IBOutlet weak var button: UIButton!
     var playlist: CDPlaylist!
     weak var editDelegate: editPlaylistDelegate!
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        commonInit()
+//    }
+//
+//    required init?(coder aDecoder: NSCoder) {
+//        super.init(coder: aDecoder)
+//        commonInit()
+//    }
+//
+//    private func commonInit() {
+//        Bundle.main.loadNibNamed("HeaderView", owner: self, options: nil)
+//        addSubview(headerView)
+//        headerView.frame = self.bounds
+//        headerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+//        button.addTarget(self, action: #selector(editPlaylist(_:)), for: .touchUpInside)
+//    }
     
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-    
-    private func commonInit() {
-        Bundle.main.loadNibNamed("HeaderView", owner: self, options: nil)
-        addSubview(headerView)
-        headerView.frame = self.bounds
-        headerView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-    }
-    
-    @IBAction func editPlaylist(_ sender: Any) {
+    @IBAction func editPlaylist(_ sender: UIButton) {
         editDelegate.edit(playlist: playlist)
     }
 }

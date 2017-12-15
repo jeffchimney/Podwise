@@ -12,8 +12,11 @@ import UIKit
 
 class PlaylistCreationTableViewController: UITableViewController {
     
+    var playlist: CDPlaylist!
     var podcasts: [CDPodcast] = []
     var selectedPodcasts: [CDPodcast] = []
+    var podcastsInPlaylist: [CDPodcast] = []
+    @IBOutlet weak var saveButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext?
     
     override func viewDidLoad() {
@@ -26,6 +29,13 @@ class PlaylistCreationTableViewController: UITableViewController {
         
         podcasts = CoreDataHelper.getPodcastsWhere(subscribed: true, in: managedContext!)
         podcasts.sort(by: { $0.title! < $1.title!})
+        
+        if playlist != nil {
+            podcastsInPlaylist = CoreDataHelper.fetchPodcastsFor(playlist: playlist, in: managedContext!)
+            saveButton.title = "Save"
+        } else {
+            saveButton.title = "Create"
+        }
         
         navigationController?.setNavigationBarHidden(false, animated: true)
         
@@ -63,9 +73,18 @@ class PlaylistCreationTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "titleCell", for: indexPath as IndexPath) as! PlaylistTitleCell
+            
+            if playlist != nil {
+                cell.titleTextField.text = playlist.name!
+            }
+            
             return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath as IndexPath) as! PodcastChecklistCell
+            
+            if podcastsInPlaylist.contains(podcasts[indexPath.row]) {
+                cell.accessoryType = .checkmark
+            }
             
             cell.titleLabel.text = podcasts[indexPath.row].title
             cell.networkLabel.text = podcasts[indexPath.row].author
@@ -102,21 +121,38 @@ class PlaylistCreationTableViewController: UITableViewController {
     }
     
     @IBAction func createPlaylist(_ sender: Any) {
-        let existingPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         let titleCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! PlaylistTitleCell
-        var playlistAlreadyExists = false
-        var preexistingPlaylist: CDPlaylist!
-        for existingPlaylist in existingPlaylists {
-            if existingPlaylist.name == titleCell.titleTextField.text {
-                playlistAlreadyExists = true
-                preexistingPlaylist = existingPlaylist
+        if playlist == nil {
+            let existingPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+            var playlistAlreadyExists = false
+            var preexistingPlaylist: CDPlaylist!
+            for existingPlaylist in existingPlaylists {
+                if existingPlaylist.name == titleCell.titleTextField.text {
+                    playlistAlreadyExists = true
+                    preexistingPlaylist = existingPlaylist
+                }
             }
-        }
-        
-        if !playlistAlreadyExists {
-            let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
-            let playlist = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
             
+            if !playlistAlreadyExists {
+                let playlistEntity = NSEntityDescription.entity(forEntityName: "CDPlaylist", in: managedContext!)!
+                let newPlaylist = NSManagedObject(entity: playlistEntity, insertInto: managedContext) as! CDPlaylist
+                
+                newPlaylist.name = titleCell.titleTextField.text
+                let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
+                newPlaylist.sortIndex = (Int64(sortIndex + Int(1)))
+                newPlaylist.id = UUID().uuidString
+                print(newPlaylist.sortIndex)
+                for podcast in selectedPodcasts {
+                    podcast.playlist = newPlaylist
+                }
+            } else {
+                for podcast in selectedPodcasts {
+                    podcast.playlist = preexistingPlaylist
+                }
+            }
+            
+            CoreDataHelper.save(context: managedContext!)
+        } else {
             playlist.name = titleCell.titleTextField.text
             let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
             playlist.sortIndex = (Int64(sortIndex + Int(1)))
@@ -125,13 +161,9 @@ class PlaylistCreationTableViewController: UITableViewController {
             for podcast in selectedPodcasts {
                 podcast.playlist = playlist
             }
-        } else {
-            for podcast in selectedPodcasts {
-                podcast.playlist = preexistingPlaylist
-            }
+            
+            CoreDataHelper.save(context: managedContext!)
         }
-        
-        CoreDataHelper.save(context: managedContext!)
         
         navigationController?.popViewController(animated: true)
     }

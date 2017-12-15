@@ -597,8 +597,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func startAudioSession() {
+        // set up background audio capabilities
         do {
-            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback, with: .interruptSpokenAudioAndMixWithOthers)
+            try AVAudioSession.sharedInstance().setCategory(AVAudioSessionCategoryPlayback)//, with: .interruptSpokenAudioAndMixWithOthers
             print("AVAudioSession Category Playback OK")
             do {
                 try AVAudioSession.sharedInstance().setActive(true)
