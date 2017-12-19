@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class PlaylistTitleCell: UITableViewCell {
+class PlaylistTitleCell: UICollectionViewCell {
     
     @IBOutlet weak var titleTextField: UITextField!
     

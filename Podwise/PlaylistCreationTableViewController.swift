@@ -10,14 +10,17 @@ import Foundation
 import CoreData
 import UIKit
 
-class PlaylistCreationTableViewController: UITableViewController {
+class PlaylistCreationTableViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
     
+    @IBOutlet weak var collectionView: UICollectionView!
     var playlist: CDPlaylist!
     var podcasts: [CDPodcast] = []
     var selectedPodcasts: [CDPodcast] = []
     var podcastsInPlaylist: [CDPodcast] = []
     @IBOutlet weak var saveButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext?
+    
+    fileprivate let sectionInsets = UIEdgeInsets(top: 25, left: 8.0, bottom: 25, right: 8.0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,91 +40,134 @@ class PlaylistCreationTableViewController: UITableViewController {
             saveButton.title = "Create"
         }
         
+        collectionView.backgroundColor = .black
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
         navigationController?.setNavigationBarHidden(false, animated: true)
         
-        tableView.reloadData()
+        collectionView.reloadData()
     }
     
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
     
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
-        } else {
-            return podcasts.count
-        }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if indexPath.section == 0 {
-            return 50
+            return CGSize(width: collectionView.frame.width-16, height: 50)
         } else {
-            return 80
+            let height = CGFloat(podcasts.count * 80 + 50)
+            return CGSize(width: collectionView.frame.width-16, height: height)
         }
     }
     
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if section == 1 {
-            return 50
-        } else {
-            return 25
-        }
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        insetForSectionAt section: Int) -> UIEdgeInsets {
+        return sectionInsets
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    // 4
+    func collectionView(_ collectionView: UICollectionView,
+                        layout collectionViewLayout: UICollectionViewLayout,
+                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        return sectionInsets.left
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "titleCell", for: indexPath as IndexPath) as! PlaylistTitleCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistTitleCell", for: indexPath) as! PlaylistTitleCell
             
             if playlist != nil {
                 cell.titleTextField.text = playlist.name!
             }
             
+            cell.layer.cornerRadius = 15
+            cell.layer.masksToBounds = true
+            
+            cell.isUserInteractionEnabled = false
+            
             return cell
         } else {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath as IndexPath) as! PodcastChecklistCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewPlaylistCell", for: indexPath) as! PodcastsForPlaylistCell
             
-            if podcastsInPlaylist.contains(podcasts[indexPath.row]) {
-                cell.accessoryType = .checkmark
-            }
+            cell.subscriptionsTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
+            cell.subscriptionsTableView.frame = cell.bounds
+            cell.subscriptionsTableView.podcasts = podcasts
+            cell.subscriptionsTableView.podcastsInPlaylist = podcastsInPlaylist
+            cell.subscriptionsTableView.subscribed = true
+            cell.subscriptionsTableView.rowInTableView = indexPath.row
+            cell.subscriptionsTableView.layer.cornerRadius = 15
+            cell.subscriptionsTableView.layer.masksToBounds = true
             
-            cell.titleLabel.text = podcasts[indexPath.row].title
-            cell.networkLabel.text = podcasts[indexPath.row].author
-            
-            if let imageData = podcasts[indexPath.row].image {
-                cell.artImageView.image = UIImage(data: imageData)
-            }
-            
-            cell.artImageView.layer.cornerRadius = 10
-            cell.artImageView.layer.masksToBounds = true
+            cell.subscriptionsTableView.reloadData()
             
             return cell
         }
     }
     
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {
-            let cell = tableView.cellForRow(at: indexPath) as! PodcastChecklistCell
-            if cell.accessoryType == .checkmark { // deselect row
-                DispatchQueue.main.async {
-                    cell.accessoryType = .none
-                }
-                if selectedPodcasts.contains(podcasts[indexPath.row]) {
-                    let index = selectedPodcasts.index(of: podcasts[indexPath.row])
-                    selectedPodcasts.remove(at: index!)
-                }
-            } else { // select row
-                DispatchQueue.main.async {
-                    cell.accessoryType = .checkmark
-                }
-                selectedPodcasts.append(podcasts[indexPath.row])
-            }
-        }
-    }
+//    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        if indexPath.section == 0 {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "titleCell", for: indexPath as IndexPath) as! PlaylistTitleCell
+//
+//            if playlist != nil {
+//                cell.titleTextField.text = playlist.name!
+//            }
+//
+//            cell.layer.cornerRadius = 15
+//            cell.layer.masksToBounds = true
+//
+//            return cell
+//        } else {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "ChecklistCell", for: indexPath as IndexPath) as! PodcastChecklistCell
+//
+//            if podcastsInPlaylist.contains(podcasts[indexPath.row]) {
+//                cell.accessoryType = .checkmark
+//            }
+//
+//            cell.titleLabel.text = podcasts[indexPath.row].title
+//            cell.networkLabel.text = podcasts[indexPath.row].author
+//
+//            if let imageData = podcasts[indexPath.row].image {
+//                cell.artImageView.image = UIImage(data: imageData)
+//            }
+//
+//            cell.artImageView.layer.cornerRadius = 10
+//            cell.artImageView.layer.masksToBounds = true
+//
+//            return cell
+//        }
+//    }
+    
+//    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+//        if indexPath.section == 1 {
+//            let cell = tableView.cellForRow(at: indexPath) as! PodcastChecklistCell
+//            if cell.accessoryType == .checkmark { // deselect row
+//                DispatchQueue.main.async {
+//                    cell.accessoryType = .none
+//                }
+//                if selectedPodcasts.contains(podcasts[indexPath.row]) {
+//                    let index = selectedPodcasts.index(of: podcasts[indexPath.row])
+//                    selectedPodcasts.remove(at: index!)
+//                }
+//            } else { // select row
+//                DispatchQueue.main.async {
+//                    cell.accessoryType = .checkmark
+//                }
+//                selectedPodcasts.append(podcasts[indexPath.row])
+//            }
+//        }
+//    }
     
     @IBAction func createPlaylist(_ sender: Any) {
-        let titleCell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! PlaylistTitleCell
+        
+        
+        let titleCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! PlaylistTitleCell
         if playlist == nil {
             let existingPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
             var playlistAlreadyExists = false
