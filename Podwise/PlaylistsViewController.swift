@@ -16,9 +16,10 @@ public protocol relayoutSectionDelegate: class {
 
 public protocol editPlaylistParentDelegate: class {
     func edit(playlist: CDPlaylist)
+    func edit()
 }
 
-class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, relayoutSectionDelegate, editPlaylistParentDelegate {
+class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, relayoutSectionDelegate, editPlaylistParentDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -36,6 +37,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
+    private var interactionController: UIPercentDrivenInteractiveTransition?
     
     @IBOutlet weak var collectionView: UICollectionView!
     
@@ -221,6 +223,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             cell.playlistButton.backgroundColor = UIColor.white
             cell.playlistButton.layer.cornerRadius = 15
             cell.playlistButton.layer.masksToBounds = true
+            cell.editDelegate = self
             
             return cell
         }
@@ -233,13 +236,15 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             var pointInCell: CGPoint?
             var cell: GroupedViewCell?
             if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
-                cell = (collectionView.cellForItem(at: indexPath) as! GroupedViewCell)
-                pointInCell = cell?.convert(point, from: collectionView)
-                
-                if cell != nil && pointInCell != nil {
-                    if (pointInCell?.y)! < CGFloat(50) {
-                        if let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) {
-                            self.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+                if indexPath.section == 0 {
+                    cell = (collectionView.cellForItem(at: indexPath) as! GroupedViewCell)
+                    pointInCell = cell?.convert(point, from: collectionView)
+                    
+                    if cell != nil && pointInCell != nil {
+                        if (pointInCell?.y)! < CGFloat(50) {
+                            if let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) {
+                                self.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
+                            }
                         }
                     }
                 }
@@ -284,11 +289,16 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "playlistCreationViewController") as? PlaylistCreationTableViewController {
             
             viewController.playlist = playlist
-            viewController.navigationItem.title = "Edit Group"
             
-            if let navigator = navigationController {
-                navigator.pushViewController(viewController, animated: true)
-            }
+            present(viewController, animated: true, completion: nil)
+        }
+    }
+    
+    func edit() {
+        // Safe Push VC
+        if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "playlistCreationViewController") as? PlaylistCreationTableViewController {
+          
+            present(viewController, animated: true, completion: nil)
         }
     }
 }

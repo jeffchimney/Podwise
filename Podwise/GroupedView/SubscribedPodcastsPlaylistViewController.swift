@@ -11,7 +11,11 @@ import CoreData
 import AVFoundation
 import MediaPlayer
 
-class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSource, UITableViewDelegate {
+public protocol savePlaylistDelegate: class {
+    func saveButtonPressed(playlistName: String)
+}
+
+class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSource, UITableViewDelegate, savePlaylistDelegate {
     
     var podcasts: [CDPodcast] = []
     var playlist: CDPlaylist!
@@ -21,7 +25,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
     var managedContext: NSManagedObjectContext!
-    var previousViewController: PodcastsViewController!
+    var previousViewController: PlaylistCreationTableViewController!
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
@@ -35,7 +39,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     
     func commonInit() {
         Bundle.main.loadNibNamed("SubscribedPodcastsPlaylistView", owner: self, options: nil)
-        let headerViewNib = UINib(nibName: "HeaderView", bundle: nil)
+        let headerViewNib = UINib(nibName: "NewPlaylistHeaderView", bundle: nil)
         self.register(headerViewNib, forHeaderFooterViewReuseIdentifier: "SubscriptionSectionHeader")
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -69,12 +73,17 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Dequeue with the reuse identifier
-        let headerView = self.dequeueReusableHeaderFooterView(withIdentifier: "SubscriptionSectionHeader") as! HeaderView
+        let headerView = self.dequeueReusableHeaderFooterView(withIdentifier: "SubscriptionSectionHeader") as! NewPlaylistHeaderView
         
-        headerView.label.text = "Podcasts"
+        headerView.savePlaylistDelegate = self
+        if playlist != nil {
+            headerView.textField.text = playlist.name
+            headerView.saveButton.setTitle("Save", for: .normal)
+        } else {
+            headerView.saveButton.setTitle("Create", for: .normal)
+        }
         
-        headerView.button.isHidden = true
-        
+        headerView.isUserInteractionEnabled = true
         return headerView
     }
     
@@ -97,7 +106,8 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
         if let imageData = podcasts[indexPath.row].image {
             cell.artImageView.image = UIImage(data: imageData)
         }
-
+        
+        cell.activityIndicator.isHidden = true
         cell.artImageView.layer.cornerRadius = 10
         cell.artImageView.layer.masksToBounds = true
 
@@ -105,7 +115,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {
+        if indexPath.section == 0 {
             let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
             if cell.accessoryType == .checkmark { // deselect row
                 DispatchQueue.main.async {
@@ -127,6 +137,10 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {
         podcast.playlist = playlist
         CoreDataHelper.save(context: managedContext!)
+    }
+    
+    func saveButtonPressed(playlistName: String) {
+        previousViewController.createPlaylist(playlistName: playlistName, selectedPodcasts: selectedPodcasts)
     }
 }
 

@@ -13,6 +13,7 @@ import MediaPlayer
 
 public protocol editPlaylistDelegate: class {
     func edit(playlist: CDPlaylist)
+    func edit()
 }
 
 class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate, editPlaylistDelegate {
@@ -233,6 +234,10 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     
     func edit(playlist: CDPlaylist) {
         editPlaylistParentDelegate.edit(playlist: playlist)
+    }
+    
+    func edit() {
+        editPlaylistParentDelegate.edit()
     }
 }
 
