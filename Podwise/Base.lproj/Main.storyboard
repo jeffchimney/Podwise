@@ -69,7 +69,6 @@
                                                     <state key="normal" image="addPlaylist"/>
                                                     <connections>
                                                         <action selector="addPlaylistPressed:" destination="3j1-v0-YP1" eventType="touchUpInside" id="S0e-yy-SiD"/>
-                                                        <segue destination="rdl-jR-dK7" kind="custom" id="cGx-ID-LT1"/>
                                                     </connections>
                                                 </button>
                                             </subviews>

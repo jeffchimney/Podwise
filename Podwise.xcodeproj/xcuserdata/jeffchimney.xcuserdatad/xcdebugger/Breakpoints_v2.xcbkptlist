@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Podwise/GroupedView/GroupedViewController.swift"
-            timestampString = "535424426.857602"
+            timestampString = "535443549.988718"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "218"
@@ -54,17 +54,49 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Podwise/PresentationController.swift"
-            timestampString = "535424426.857924"
+            timestampString = "535445173.288908"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "frameOfPresentedViewInContainerView"
-            landmarkType = "24">
+            startingLineNumber = "32"
+            endingLineNumber = "32"
+            landmarkName = "presentationTransitionWillBegin()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Podwise.PresentationController.presentationTransitionWillBegin() -&gt; ()"
+                  moduleName = "Podwise"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jeffchimney/Projects/iOS/Podwise/Podwise/PresentationController.swift"
+                  timestampString = "535441956.649398"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "31"
+                  endingLineNumber = "31"
+                  offsetFromSymbolStart = "240">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; () in Podwise.PresentationController.presentationTransitionWillBegin() -&gt; ()"
+                  moduleName = "Podwise"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/jeffchimney/Projects/iOS/Podwise/Podwise/PresentationController.swift"
+                  timestampString = "535441956.651525"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "32"
+                  endingLineNumber = "32"
+                  offsetFromSymbolStart = "24">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

@@ -13,6 +13,7 @@ import MediaPlayer
 
 public protocol savePlaylistDelegate: class {
     func saveButtonPressed(playlistName: String)
+    func dismissPlaylist()
 }
 
 class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSource, UITableViewDelegate, savePlaylistDelegate {
@@ -124,6 +125,8 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
                 if selectedPodcasts.contains(podcasts[indexPath.row]) {
                     let index = selectedPodcasts.index(of: podcasts[indexPath.row])
                     selectedPodcasts.remove(at: index!)
+                    
+                    removeFromPlaylist(podcast: podcasts[indexPath.row])
                 }
             } else { // select row
                 DispatchQueue.main.async {
@@ -132,6 +135,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
                 selectedPodcasts.append(podcasts[indexPath.row])
             }
         }
+        print(selectedPodcasts)
     }
     
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {
@@ -139,8 +143,17 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
         CoreDataHelper.save(context: managedContext!)
     }
     
+    func removeFromPlaylist(podcast: CDPodcast) {
+        podcast.playlist = CoreDataHelper.fetchAllPlaylists(with: "Unsorted", in: managedContext!)[0]
+        CoreDataHelper.save(context: managedContext!)
+    }
+    
     func saveButtonPressed(playlistName: String) {
         previousViewController.createPlaylist(playlistName: playlistName, selectedPodcasts: selectedPodcasts)
+    }
+    
+    func dismissPlaylist() {
+        previousViewController.dismiss(animated: true, completion: nil  )
     }
 }
 

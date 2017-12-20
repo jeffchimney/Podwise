@@ -12,6 +12,7 @@ class PresentationController: UIPresentationController {
     
     lazy var dimmingView :UIView = {
         let view = UIView(frame: self.containerView!.bounds)
+        view.insetsLayoutMarginsFromSafeArea = true
         view.backgroundColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.3)
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
@@ -27,8 +28,17 @@ class PresentationController: UIPresentationController {
                 return
         }
         
+        let scalingFactor : CGFloat = 0.92
+        UIView.animate(withDuration: 0.5, animations: {
+            self.presentingViewController.view?.transform = CGAffineTransform.identity.scaledBy(x: scalingFactor, y: 1)
+        })
+        
         // Add the dimming view and the presented view to the heirarchy
         dimmingView.frame = containerView.bounds
+        
+        containerView.layer.cornerRadius = 8
+        containerView.clipsToBounds = true
+        
         containerView.addSubview(dimmingView)
         containerView.addSubview(presentedView)
         
@@ -68,8 +78,8 @@ class PresentationController: UIPresentationController {
         // We don't want the presented view to fill the whole container view, so inset it's frame
         let frame = self.containerView!.bounds;
         var presentedViewFrame = CGRect.zero
-        presentedViewFrame.size = CGSize(width: frame.size.width, height: frame.size.height - 200)
-        presentedViewFrame.origin = CGPoint(x: 0, y: 200)
+        presentedViewFrame.size = CGSize(width: frame.size.width, height: frame.size.height - 70)
+        presentedViewFrame.origin = CGPoint(x: 0, y: 70)
         
         return presentedViewFrame
     }

@@ -8,7 +8,7 @@
 
 import UIKit
 
-class CardAnimationController: NSObject {
+class CardAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
     
     let isPresenting :Bool
     let duration :TimeInterval = 0.5
@@ -18,11 +18,6 @@ class CardAnimationController: NSObject {
         
         super.init()
     }
-}
-
-// MARK: - UIViewControllerAnimatedTransitioning
-
-extension CardAnimationController: UIViewControllerAnimatedTransitioning {
     
     func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
         return self.duration
@@ -39,7 +34,7 @@ extension CardAnimationController: UIViewControllerAnimatedTransitioning {
         if isPresenting {
             containerView.addSubview(toView!)
         }
-        
+    
         let bottomVC = isPresenting ? fromVC : toVC
         let bottomPresentingView = bottomVC?.view
         

@@ -12,12 +12,15 @@ import AVFoundation
 
 public protocol relayoutSectionDelegate: class {
     func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist)
+    func reloadCollectionView()
 }
 
 public protocol editPlaylistParentDelegate: class {
     func edit(playlist: CDPlaylist)
     func edit()
 }
+
+
 
 class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, relayoutSectionDelegate, editPlaylistParentDelegate {
     
@@ -45,6 +48,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        self.transitioningDelegate = self
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPressGesture)
@@ -270,10 +275,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
-    @IBAction func addPlaylistButtonPressed(_ sender: Any) {
-        
-    }
-    
     func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist) {
         if playlistStructArray[row].episodes.contains(deleted) {
             let indexToDelete = playlistStructArray[row].episodes.index(of: deleted)
@@ -284,13 +285,20 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
+    func reloadCollectionView() {
+        viewWillAppear(true)
+    }
+    
     func edit(playlist: CDPlaylist) {
         // Safe Push VC
         if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "playlistCreationViewController") as? PlaylistCreationTableViewController {
             
             viewController.playlist = playlist
+            viewController.transitioningDelegate = self
+            viewController.modalPresentationStyle = .custom
+            viewController.relayoutSectionDelegate = self
             
-            present(viewController, animated: true, completion: nil)
+            navigationController?.present(viewController, animated: true, completion: nil)
         }
     }
     
@@ -298,8 +306,18 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         // Safe Push VC
         if let viewController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "playlistCreationViewController") as? PlaylistCreationTableViewController {
           
-            present(viewController, animated: true, completion: nil)
+            viewController.transitioningDelegate = self
+            viewController.modalPresentationStyle = .custom
+            viewController.relayoutSectionDelegate = self
+            
+            navigationController?.present(viewController, animated: true, completion: nil)
         }
+    }
+    
+    func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        let presentation = PresentationController.init(presentedViewController: presented, presenting: presenting)
+        
+        return presentation;
     }
 }
 

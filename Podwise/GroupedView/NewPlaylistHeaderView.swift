@@ -22,5 +22,8 @@ class NewPlaylistHeaderView: UITableViewHeaderFooterView {
         }
         savePlaylistDelegate.saveButtonPressed(playlistName: textField.text!)
     }
+    @IBAction func dismissButtonPressed(_ sender: Any) {
+        savePlaylistDelegate.dismissPlaylist()
+    }
 }
 

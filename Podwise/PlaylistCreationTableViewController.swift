@@ -18,8 +18,9 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     var podcastsInPlaylist: [CDPodcast] = []
     @IBOutlet weak var saveButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext?
+    weak var relayoutSectionDelegate: relayoutSectionDelegate!
     
-    fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
+    fileprivate let sectionInsets = UIEdgeInsets(top: 0, left: 8.0, bottom: 4.0, right: 8.0)
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -43,12 +44,12 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
         collectionView.dataSource = self
         collectionView.delegate = self
         
+        self.transitioningDelegate = self
+        
         navigationController?.setNavigationBarHidden(true, animated: false)
 
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
-        
-        self.transitioningDelegate = self
         
         collectionView.reloadData()
     }
@@ -145,6 +146,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             CoreDataHelper.save(context: managedContext!)
         }
         
+        relayoutSectionDelegate.reloadCollectionView()
+        
         dismiss(animated: true, completion: nil)
     }
     
@@ -174,6 +177,4 @@ extension PlaylistCreationTableViewController: UIViewControllerTransitioningDele
             return nil
         }
     }
-    
-    
 }
