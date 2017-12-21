@@ -83,7 +83,6 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
                 }
             }
         }
-        headerView.backgroundColor = .lightGray
         headerView.isUserInteractionEnabled = true
         print(headerView.frame)
         return headerView
@@ -91,18 +90,32 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistGroupCell", for: indexPath as IndexPath) as! PlaylistCell
+        cell.episodeCounterLabel.isHidden = true
         let thisEpisode: CDEpisode = episodesInPlaylist[indexPath.row]
         print(thisEpisode.title!)
         cell.titleLabel.text = thisEpisode.title
-        
+
         var hours = 0
         var minutes = 0
         if let optionalHours = Int(thisEpisode.duration!) {
             hours = (optionalHours/60)/60
+        }  else {
+            let durationArray = thisEpisode.duration?.split(separator: ":")
+            if let optionalHours = Int(durationArray![0]) {
+                hours = optionalHours
+            }
         }
         if let optionalMinutes = Int(thisEpisode.duration!) {
             minutes = (optionalMinutes/60)%60
+        }  else {
+            let durationArray = thisEpisode.duration!.split(separator: ":")
+            if let optionalMinutes = Int(durationArray[1]) {
+                minutes = optionalMinutes
+            }
         }
+        
+        cell.titleLabel.text = thisEpisode.title
+        cell.durationLabel.text = thisEpisode.subTitle
         if hours == 0 && minutes == 0 {
             cell.durationLabel.text = ""
         } else if hours == 0 {

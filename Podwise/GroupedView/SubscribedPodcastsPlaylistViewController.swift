@@ -75,7 +75,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         // Dequeue with the reuse identifier
         let headerView = self.dequeueReusableHeaderFooterView(withIdentifier: "SubscriptionSectionHeader") as! NewPlaylistHeaderView
-        
+        headerView.textField.delegate = headerView
         headerView.savePlaylistDelegate = self
         if playlist != nil {
             headerView.textField.text = playlist.name
@@ -90,9 +90,9 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistGroupCell", for: indexPath as IndexPath) as! PlaylistCell
+        cell.episodeCounterLabel.isHidden = true
         let thisPodcast: CDPodcast = podcasts[indexPath.row]
-        //print(thisPodcast.title)
-        //print(indexPath)
+        
         cell.titleLabel.text = thisPodcast.title
         cell.durationLabel.text = thisPodcast.author
         

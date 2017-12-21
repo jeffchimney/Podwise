@@ -20,8 +20,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     var managedContext: NSManagedObjectContext?
     weak var relayoutSectionDelegate: relayoutSectionDelegate!
     
-    fileprivate let sectionInsets = UIEdgeInsets(top: 0, left: 8.0, bottom: 4.0, right: 8.0)
-    
+    //fileprivate let sectionInsets = UIEdgeInsets(top: 0, left: 8.0, bottom: 4.0, right: 8.0)
+        fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -40,7 +40,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             saveButton.title = "Create"
         }
         
-        collectionView.backgroundColor = .black
+        //collectionView.backgroundColor = .black
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -55,7 +55,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
+        return 2
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -63,8 +63,13 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let height = CGFloat(podcasts.count * 80 + 50)
-        return CGSize(width: collectionView.frame.width-16, height: height)
+        if indexPath.section != 0 {
+            let height = CGFloat(50)
+            return CGSize(width: collectionView.frame.width-16, height: height)
+        } else {
+            let height = CGFloat(podcasts.count * 80 + 50)
+            return CGSize(width: collectionView.frame.width-16, height: height)
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView,
@@ -81,26 +86,50 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewPlaylistCell", for: indexPath) as! PodcastsForPlaylistCell
         
-        cell.subscriptionsTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
-        cell.subscriptionsTableView.frame = cell.bounds
-        cell.subscriptionsTableView.podcasts = podcasts
-        cell.subscriptionsTableView.podcastsInPlaylist = podcastsInPlaylist
-        cell.subscriptionsTableView.subscribed = true
-        cell.subscriptionsTableView.rowInTableView = indexPath.row
-        cell.subscriptionsTableView.layer.cornerRadius = 15
-        cell.subscriptionsTableView.layer.masksToBounds = true
-        cell.subscriptionsTableView.previousViewController = self
-        
-        if playlist != nil {
-            cell.subscriptionsTableView.playlist = playlist
+        if indexPath.section != 0 {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistColourCell", for: indexPath) as! PlaylistColourCell
+            
+            cell.purpleButton.layer.cornerRadius = 20
+            cell.purpleButton.layer.masksToBounds = true
+            cell.blueButton.layer.cornerRadius = 20
+            cell.blueButton.layer.masksToBounds = true
+            cell.greenButton.layer.cornerRadius = 20
+            cell.greenButton.layer.masksToBounds = true
+            cell.yellowButton.layer.cornerRadius = 20
+            cell.yellowButton.layer.masksToBounds = true
+            cell.orangeButton.layer.cornerRadius = 20
+            cell.orangeButton.layer.masksToBounds = true
+            cell.redButton.layer.cornerRadius = 20
+            cell.redButton.layer.masksToBounds = true
+            cell.greyButton.layer.cornerRadius = 20
+            cell.greyButton.layer.masksToBounds = true
+            
+            cell.layer.cornerRadius = 15
+            cell.layer.masksToBounds = true
+            
+            return cell
+        } else {
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "NewPlaylistCell", for: indexPath) as! PodcastsForPlaylistCell
+            
+            cell.subscriptionsTableView.register(UINib(nibName: "PlaylistCell", bundle: Bundle.main), forCellReuseIdentifier: "PlaylistCell")
+            cell.subscriptionsTableView.frame = cell.bounds
+            cell.subscriptionsTableView.podcasts = podcasts
+            cell.subscriptionsTableView.podcastsInPlaylist = podcastsInPlaylist
+            cell.subscriptionsTableView.subscribed = true
+            cell.subscriptionsTableView.rowInTableView = indexPath.row
+            cell.layer.cornerRadius = 15
+            cell.layer.masksToBounds = true
+            cell.subscriptionsTableView.previousViewController = self
+            
+            if playlist != nil {
+                cell.subscriptionsTableView.playlist = playlist
+            }
+            
+            cell.subscriptionsTableView.reloadData()
+            
+            return cell
         }
-        
-        cell.subscriptionsTableView.reloadData()
-        
-        return cell
     }
     
     func createPlaylist(playlistName: String, selectedPodcasts: [CDPodcast]) {

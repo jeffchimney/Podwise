@@ -112,8 +112,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         
         playlistStructArray.sort(by: { $0.name.sortIndex < $1.name.sortIndex})
         
-        collectionView.backgroundColor = .black
-        collectionView.backgroundView?.backgroundColor = .black
+        //collectionView.backgroundColor = .black
+        //collectionView.backgroundView?.backgroundColor = .black
         
         collectionView.reloadData()
         
@@ -218,8 +218,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             cell.playlistGroupTableView.editPlaylistParentDelegate = self
             cell.playlistGroupTableView.rowInTableView = indexPath.row
             cell.playlistGroupTableView.relayoutSectionDelegate = self
-            cell.playlistGroupTableView.layer.cornerRadius = 15
-            cell.playlistGroupTableView.layer.masksToBounds = true
+            cell.layer.cornerRadius = 15
+            cell.layer.masksToBounds = true
             
             return cell
         } else {
@@ -260,8 +260,8 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
         case .ended:
             let point: CGPoint = gesture.location(in: collectionView)
-            var pointInCell: CGPoint?
-            var cell: GroupedViewCell?
+            let pointInCell: CGPoint?
+            let cell: GroupedViewCell?
             if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
                 if indexPath.section == 0 {
                     collectionView.endInteractiveMovement()

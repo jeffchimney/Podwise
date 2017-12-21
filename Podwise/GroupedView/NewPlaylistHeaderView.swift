@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class NewPlaylistHeaderView: UITableViewHeaderFooterView {
+class NewPlaylistHeaderView: UITableViewHeaderFooterView, UITextFieldDelegate {
     
     @IBOutlet weak var saveButton: UIButton!
     @IBOutlet weak var textField: UITextField!
@@ -24,6 +24,19 @@ class NewPlaylistHeaderView: UITableViewHeaderFooterView {
     }
     @IBAction func dismissButtonPressed(_ sender: Any) {
         savePlaylistDelegate.dismissPlaylist()
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        textField.becomeFirstResponder()
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        textField.resignFirstResponder()
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }
 

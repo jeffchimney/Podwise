@@ -84,8 +84,14 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistGroupCell", for: indexPath as IndexPath) as! PlaylistCell
         let thisPodcast: CDPodcast = podcasts[indexPath.row]
-        //print(thisPodcast.title)
-        //print(indexPath)
+        
+        let episodes = CoreDataHelper.fetchEpisodesFor(podcast: thisPodcast, in: managedContext!)
+        
+        if episodes.count == 0 {
+            cell.episodeCounterLabel.isHidden = true
+        } else {
+            cell.episodeCounterLabel.text = String(episodes.count)
+        }
         cell.titleLabel.text = thisPodcast.title
         cell.durationLabel.text = thisPodcast.author
         
@@ -96,6 +102,12 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
         cell.artImageView.layer.cornerRadius = 10
         cell.artImageView.layer.masksToBounds = true
         cell.activityIndicator.isHidden = true
+        
+        cell.episodeCounterLabel.backgroundColor = .black
+        cell.episodeCounterLabel.textColor = .white
+        
+        cell.episodeCounterLabel.layer.cornerRadius = 9
+        cell.episodeCounterLabel.layer.masksToBounds = true
         
         return cell
     }

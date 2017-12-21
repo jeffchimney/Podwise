@@ -85,8 +85,8 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
             cell.subscriptionsTableView.subscribed = false
         }
         cell.subscriptionsTableView.rowInTableView = indexPath.row
-        cell.subscriptionsTableView.layer.cornerRadius = 15
-        cell.subscriptionsTableView.layer.masksToBounds = true
+        cell.layer.cornerRadius = 15
+        cell.layer.masksToBounds = true
         cell.subscriptionsTableView.previousViewController = self
         cell.subscriptionsTableView.reloadData()
         
