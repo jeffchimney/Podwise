@@ -68,7 +68,6 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        print(section)
         return 2
     }
     
@@ -85,10 +84,18 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
             cell.subscriptionsTableView.subscribed = false
         }
         cell.subscriptionsTableView.rowInTableView = indexPath.row
-        cell.layer.cornerRadius = 15
-        cell.layer.masksToBounds = true
         cell.subscriptionsTableView.previousViewController = self
         cell.subscriptionsTableView.reloadData()
+        
+        cell.contentView.layer.cornerRadius = 15
+        cell.contentView.layer.masksToBounds = true
+        
+        cell.layer.shadowColor = UIColor.black.cgColor
+        cell.layer.shadowRadius = 1.0
+        cell.layer.shadowOpacity = 0.75
+        cell.layer.shadowOffset = CGSize.zero
+        cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
+        cell.layer.masksToBounds = false
         
         return cell
     }

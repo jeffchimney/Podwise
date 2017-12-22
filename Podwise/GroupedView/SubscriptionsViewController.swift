@@ -52,7 +52,6 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("\(podcasts.count) podcasts in section \(section)")
         return podcasts.count
     }
     
@@ -71,8 +70,12 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
         if subscribed != nil {
             if subscribed {
                 headerView.label.text = "Subscribed"
+                let subscribedColour = UIColor(displayP3Red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
+                headerView.contentView.backgroundColor = subscribedColour
             } else {
                 headerView.label.text = "Not Subscribed"
+                let unsubscribedColour = UIColor(displayP3Red: 255/255, green: 149/255, blue: 0, alpha: 1.0)
+                headerView.contentView.backgroundColor = unsubscribedColour
             }
         }
     
@@ -124,7 +127,6 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Adding to playlist...")
             let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
             
             let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)

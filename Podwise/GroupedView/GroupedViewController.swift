@@ -75,6 +75,11 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         if episodesInPlaylist.count > 0 {
             if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
                 headerView.playlist = podcastPlaylist
+                
+                let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
+                
+                headerView.contentView.backgroundColor = playlistColour as? UIColor
+                
                 headerView.label.text = podcastPlaylist.name!
                 if podcastPlaylist.name! == "Unsorted" {
                     headerView.button.isHidden = true
@@ -83,6 +88,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
                 }
             }
         }
+        
         headerView.isUserInteractionEnabled = true
         print(headerView.frame)
         return headerView

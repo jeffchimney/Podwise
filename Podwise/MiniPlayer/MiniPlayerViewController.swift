@@ -52,6 +52,10 @@ class MiniPlayerView: UIView {
             }
         }
         
+        let thumbImage = UIImage(named: "first")
+        
+        progressSlider.setThumbImage(thumbImage, for: .normal)
+        
         artImageViewCenterXConstraint.isActive = false
         artImageViewCenterYConstraint.isActive = false
     }
@@ -88,7 +92,6 @@ class MiniPlayerView: UIView {
         if let player = audioPlayer {
             // Update progress
             let percentComplete = progressSlider.value
-            //print(percentComplete)
             player.currentTime = player.duration * Double(percentComplete)
         }
     }

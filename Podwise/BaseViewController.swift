@@ -33,11 +33,6 @@ class BaseViewController: UIViewController {
         super.viewDidLoad()
         baseViewController = self
         
-        baseView.layer.shadowColor = UIColor.black.cgColor
-        baseView.layer.shadowOpacity = 0.75
-        baseView.layer.shadowOffset = CGSize.zero
-        baseView.layer.shadowRadius = 5
-        
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
@@ -60,7 +55,7 @@ class BaseViewController: UIViewController {
             hideMiniPlayer(animated: false)
         }
         
-        self.view.backgroundColor = .black
+        self.view.backgroundColor = .white
         
         UIApplication.shared.beginReceivingRemoteControlEvents()
         
@@ -92,6 +87,9 @@ class BaseViewController: UIViewController {
     }
     
     public func hideMiniPlayer(animated: Bool) {
+        
+        baseView.layer.shadowOpacity = 0.0
+        
         if animated {
             self.miniPlayerHeightConstraint.constant = 0
             self.sliderHeightConstraint.constant = 0
@@ -107,6 +105,11 @@ class BaseViewController: UIViewController {
     }
     
     public func showMiniPlayer(animated: Bool) {
+        baseView.layer.shadowColor = UIColor.black.cgColor
+        baseView.layer.shadowOpacity = 0.75
+        baseView.layer.shadowOffset = CGSize.zero
+        baseView.layer.shadowRadius = 5
+        
         if audioPlayer != nil {
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
             miniPlayerView.artImageView.image = imageArt

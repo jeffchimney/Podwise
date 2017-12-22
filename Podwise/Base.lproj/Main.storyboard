@@ -16,12 +16,12 @@
             <objects>
                 <viewController id="9pv-A4-QxB" customClass="PlaylistsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="518"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="8SN-dq-vqt">
                                 <rect key="frame" x="0.0" y="20" width="375" height="498"/>
-                                <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="GBp-vb-e3y">
                                     <size key="itemSize" width="348" height="119"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -84,7 +84,7 @@
                                 </cells>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="8SN-dq-vqt" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="4wi-rY-EKd"/>
                             <constraint firstItem="8SN-dq-vqt" firstAttribute="trailing" secondItem="PQr-Ze-W5v" secondAttribute="trailing" id="Au2-dW-PsL"/>
@@ -107,12 +107,12 @@
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="PodcastsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="518"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="y97-4Z-uka">
                                 <rect key="frame" x="0.0" y="20" width="375" height="498"/>
-                                <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="1gi-vi-hph">
                                     <size key="itemSize" width="348" height="119"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -146,7 +146,7 @@
                                 </cells>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="y97-4Z-uka" firstAttribute="bottom" secondItem="O1u-W8-tvY" secondAttribute="bottom" id="7Ag-4a-Px2"/>
                             <constraint firstItem="y97-4Z-uka" firstAttribute="leading" secondItem="O1u-W8-tvY" secondAttribute="leading" id="EGY-I7-y2A"/>
@@ -370,7 +370,7 @@
             <objects>
                 <viewController storyboardIdentifier="episodesViewController" id="65y-0i-8sg" customClass="EpisodesForPodcastViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Teo-VX-RFe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="518"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rd5-o7-xUo">
@@ -568,11 +568,10 @@
         <scene sceneID="yl2-sM-qoP">
             <objects>
                 <tabBarController id="49e-Tb-3d3" sceneMemberID="viewController">
-                    <tabBar key="tabBar" contentMode="scaleToFill" id="W28-zg-YXA">
+                    <tabBar key="tabBar" contentMode="scaleToFill" translucent="NO" id="W28-zg-YXA">
                         <rect key="frame" x="0.0" y="975" width="768" height="49"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                        <color key="barTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <color key="selectedImageTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="selectedImageTintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
                     <connections>
                         <segue destination="xni-6i-4bL" kind="relationship" relationship="viewControllers" id="u7Y-xg-7CH"/>
@@ -649,7 +648,7 @@
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="kAw-Ct-SE3">
                                 <rect key="frame" x="0.0" y="20" width="375" height="647"/>
-                                <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="y35-dV-NqY">
                                     <size key="itemSize" width="348" height="119"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -698,7 +697,7 @@
                                                                 <constraint firstAttribute="height" constant="40" id="ywR-Kt-fxN"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="LeS-fv-NKx"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="NCc-7O-nOu"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XyV-gy-LGW">
@@ -709,7 +708,7 @@
                                                                 <constraint firstAttribute="width" constant="40" id="aq9-Nb-xxX"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="z8H-yn-okt"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="qaA-la-J3L"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gAE-OR-8xA">
@@ -720,7 +719,7 @@
                                                                 <constraint firstAttribute="height" constant="40" id="aBh-wb-71F"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="324-Zb-HPP"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="sHR-29-KIi"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="196-Gy-sRd">
@@ -731,7 +730,7 @@
                                                                 <constraint firstAttribute="width" constant="40" id="yTb-GM-sLb"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="kHc-tc-Zw6"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="6rB-Di-c9d"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uTu-R2-Y7w">
@@ -742,7 +741,7 @@
                                                                 <constraint firstAttribute="width" constant="40" id="vFE-Qb-xsd"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="PEw-ut-RAg"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="2pe-G3-kj5"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FS3-cd-Khj">
@@ -753,7 +752,7 @@
                                                                 <constraint firstAttribute="height" constant="40" id="urS-bz-val"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="fgH-GW-zbg"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="z8j-14-aIp"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IVZ-PO-wqj">
@@ -764,7 +763,7 @@
                                                                 <constraint firstAttribute="width" constant="40" id="ulx-4z-Fvd"/>
                                                             </constraints>
                                                             <connections>
-                                                                <action selector="colourPreferenceChanged:" destination="ki0-zN-5Cc" eventType="touchUpInside" id="uCj-AQ-IZJ"/>
+                                                                <action selector="setPlaylistColour:" destination="rdl-jR-dK7" eventType="touchUpInside" id="Y3u-7P-XIn"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>
@@ -807,7 +806,7 @@
                                 </cells>
                             </collectionView>
                         </subviews>
-                        <color key="backgroundColor" red="0.35135805606842041" green="0.78384542465209961" blue="0.9800000786781311" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" red="0.92143100499999997" green="0.92145264149999995" blue="0.92144101860000005" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="kAw-Ct-SE3" firstAttribute="top" secondItem="lIR-JK-HpD" secondAttribute="top" id="dXU-oO-laA"/>
                             <constraint firstItem="kAw-Ct-SE3" firstAttribute="trailing" secondItem="lIR-JK-HpD" secondAttribute="trailing" id="iCh-fm-jcT"/>

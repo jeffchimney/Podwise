@@ -60,7 +60,6 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("\(podcasts.count) podcasts in section \(section)")
         return podcasts.count
     }
     
@@ -80,8 +79,12 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
         if playlist != nil {
             headerView.textField.text = playlist.name
             headerView.saveButton.setTitle("Save", for: .normal)
+            
+            let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: playlist.colour!) as? UIColor
+            headerView.contentView.backgroundColor = playlistColour
         } else {
             headerView.saveButton.setTitle("Create", for: .normal)
+            headerView.contentView.backgroundColor = UIColor(displayP3Red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         }
         
         headerView.isUserInteractionEnabled = true
@@ -135,7 +138,6 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
                 selectedPodcasts.append(podcasts[indexPath.row])
             }
         }
-        print(selectedPodcasts)
     }
     
     func add(podcast: CDPodcast, to playlist: CDPlaylist) {

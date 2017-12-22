@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13533" systemVersion="17B48" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="13772" systemVersion="17C88" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CDAPNSToken" representedClassName="CDAPNSToken" syncable="YES" codeGenerationType="class">
         <attribute name="token" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -15,6 +15,7 @@
         <relationship name="podcast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CDPodcast" syncable="YES"/>
     </entity>
     <entity name="CDPlaylist" representedClassName="CDPlaylist" syncable="YES" codeGenerationType="class">
+        <attribute name="colour" optional="YES" attributeType="Binary" syncable="YES"/>
         <attribute name="id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="sortIndex" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -37,7 +38,7 @@
     <elements>
         <element name="CDAPNSToken" positionX="-54" positionY="81" width="128" height="60"/>
         <element name="CDEpisode" positionX="-63" positionY="-18" width="128" height="180"/>
-        <element name="CDPlaylist" positionX="-54" positionY="81" width="128" height="90"/>
+        <element name="CDPlaylist" positionX="-54" positionY="81" width="128" height="105"/>
         <element name="CDPodcast" positionX="-54" positionY="-9" width="128" height="240"/>
     </elements>
 </model>

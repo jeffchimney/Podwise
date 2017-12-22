@@ -20,8 +20,6 @@ public protocol editPlaylistParentDelegate: class {
     func edit()
 }
 
-
-
 class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, relayoutSectionDelegate, editPlaylistParentDelegate {
     
     struct PlaylistEpisodes {
@@ -207,7 +205,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        print(playlistStructArray.count)
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistCell", for: indexPath) as! GroupedViewCell
             
@@ -218,8 +215,15 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             cell.playlistGroupTableView.editPlaylistParentDelegate = self
             cell.playlistGroupTableView.rowInTableView = indexPath.row
             cell.playlistGroupTableView.relayoutSectionDelegate = self
-            cell.layer.cornerRadius = 15
-            cell.layer.masksToBounds = true
+            cell.contentView.layer.cornerRadius = 15
+            cell.contentView.layer.masksToBounds = true
+            
+            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.shadowRadius = 1.0
+            cell.layer.shadowOpacity = 0.75
+            cell.layer.shadowOffset = CGSize.zero
+            //cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
+            cell.layer.masksToBounds = false
             
             return cell
         } else {

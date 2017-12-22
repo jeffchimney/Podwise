@@ -204,7 +204,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                    leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
         let closeAction = UIContextualAction(style: .normal, title:  "Close", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("OK, marked as Closed")
             success(true)
         })
         closeAction.image = UIImage(named: "tick")
@@ -218,12 +217,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                    trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
     {
         let downloadAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Downloading...")
             self.downloadFile(at: self.unDownloadedEpisodes[indexPath.row].audioUrl, relatedTo: self.unDownloadedEpisodes[indexPath.row], addTo: nil, playNow: false, cellIndexPath: indexPath)
             success(true)
         })
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Adding to playlist...")
             let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
             
             let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
@@ -249,7 +246,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         })
         
         let deleteFromDownloadedEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Delete action ...")
             let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.downloadedEpisodes[indexPath.row].id!, in: self.managedContext!)
             if cdEpisode.count > 0 {
                 do {
@@ -272,7 +268,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         })
         
         let deleteFromUndownloadedEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            print("Delete action ...")
             let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.unDownloadedEpisodes[indexPath.row].id, in: self.managedContext!)
             if cdEpisode.count > 0 {
                 do {

@@ -19,6 +19,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     @IBOutlet weak var saveButton: UIBarButtonItem!
     var managedContext: NSManagedObjectContext?
     weak var relayoutSectionDelegate: relayoutSectionDelegate!
+    var colour = UIColor()
     
     //fileprivate let sectionInsets = UIEdgeInsets(top: 0, left: 8.0, bottom: 4.0, right: 8.0)
         fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
@@ -40,7 +41,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             saveButton.title = "Create"
         }
         
-        //collectionView.backgroundColor = .black
+        collectionView.backgroundColor = .clear
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -50,6 +51,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
 
         view.layer.cornerRadius = 8
         view.clipsToBounds = true
+        
+        colour = UIColor(displayP3Red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
         
         collectionView.reloadData()
     }
@@ -118,9 +121,17 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             cell.subscriptionsTableView.podcastsInPlaylist = podcastsInPlaylist
             cell.subscriptionsTableView.subscribed = true
             cell.subscriptionsTableView.rowInTableView = indexPath.row
-            cell.layer.cornerRadius = 15
-            cell.layer.masksToBounds = true
             cell.subscriptionsTableView.previousViewController = self
+            
+            cell.contentView.layer.cornerRadius = 15
+            cell.contentView.layer.masksToBounds = true
+            
+            cell.layer.shadowColor = UIColor.black.cgColor
+            cell.layer.shadowRadius = 2.0
+            cell.layer.shadowOpacity = 0.75
+            cell.layer.shadowOffset = CGSize.zero
+            cell.layer.shadowPath = UIBezierPath(roundedRect: cell.bounds, cornerRadius: cell.contentView.layer.cornerRadius).cgPath
+            cell.layer.masksToBounds = false
             
             if playlist != nil {
                 cell.subscriptionsTableView.playlist = playlist
@@ -133,6 +144,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     }
     
     func createPlaylist(playlistName: String, selectedPodcasts: [CDPodcast]) {
+        let colourData = NSKeyedArchiver.archivedData(withRootObject: colour)
+        
         if playlist == nil {
             let existingPlaylists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
             var playlistAlreadyExists = false
@@ -141,6 +154,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
                 if existingPlaylist.name == playlistName {
                     playlistAlreadyExists = true
                     preexistingPlaylist = existingPlaylist
+                    preexistingPlaylist.colour = colourData
                 }
             }
             
@@ -152,7 +166,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
                 let sortIndex = CoreDataHelper.getHighestPlaylistSortIndex(in: managedContext!)
                 newPlaylist.sortIndex = (Int64(sortIndex + Int(1)))
                 newPlaylist.id = UUID().uuidString
-                print(newPlaylist.sortIndex)
+                newPlaylist.colour = colourData
+
                 for podcast in selectedPodcasts {
                     podcast.playlist = newPlaylist
                 }
@@ -165,9 +180,8 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             CoreDataHelper.save(context: managedContext!)
         } else {
             playlist.name = playlistName
-            playlist.id = UUID().uuidString
-            print(playlist.sortIndex)
-            print(selectedPodcasts.count)
+            playlist.colour = colourData
+
             for podcast in selectedPodcasts {
                 podcast.playlist = playlist
             }
@@ -180,6 +194,33 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
         dismiss(animated: true, completion: nil)
     }
     
+    @IBAction func setPlaylistColour(_ sender: Any) {
+        
+        let cell = collectionView.cellForItem(at: IndexPath(row: 0, section: 1)) as! PlaylistColourCell
+        let buttonPressed = sender as! UIButton
+        switch buttonPressed {
+        case cell.purpleButton:
+            colour = UIColor(displayP3Red: 88/255, green: 86/255, blue: 214/255, alpha: 1.0)
+        case cell.blueButton:
+            colour = UIColor(displayP3Red: 0, green: 122/255, blue: 255/255, alpha: 1.0)
+        case cell.greenButton:
+            colour = UIColor(displayP3Red: 76/255, green: 217/255, blue: 100/255, alpha: 1.0)
+        case cell.yellowButton:
+            colour = UIColor(displayP3Red: 255/255, green: 204/255, blue: 0, alpha: 1.0)
+        case cell.orangeButton:
+            colour = UIColor(displayP3Red: 255/255, green: 149/255, blue: 0, alpha: 1.0)
+        case cell.redButton:
+            colour = UIColor(displayP3Red: 255/255, green: 59/255, blue: 48/255, alpha: 1.0)
+        case cell.greyButton:
+            colour = UIColor(displayP3Red: 142/255, green: 142/255, blue: 147/255, alpha: 1.0)
+        default:
+            print("default")
+        }
+        
+        let tableCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! PodcastsForPlaylistCell
+        let headerView = tableCell.subscriptionsTableView.headerView(forSection: 0) as! NewPlaylistHeaderView
+        headerView.contentView.backgroundColor = colour
+    }
 }
 
 extension PlaylistCreationTableViewController: UIViewControllerTransitioningDelegate {
