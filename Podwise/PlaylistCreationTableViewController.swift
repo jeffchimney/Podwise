@@ -20,6 +20,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     var managedContext: NSManagedObjectContext?
     weak var relayoutSectionDelegate: relayoutSectionDelegate!
     var colour = UIColor()
+    var colourSet = false
     
     //fileprivate let sectionInsets = UIEdgeInsets(top: 0, left: 8.0, bottom: 4.0, right: 8.0)
         fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
@@ -180,7 +181,10 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
             CoreDataHelper.save(context: managedContext!)
         } else {
             playlist.name = playlistName
-            playlist.colour = colourData
+            
+            if colourSet {
+                playlist.colour = colourData
+            }
 
             for podcast in selectedPodcasts {
                 podcast.playlist = playlist
@@ -220,6 +224,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
         let tableCell = collectionView.cellForItem(at: IndexPath(row: 0, section: 0)) as! PodcastsForPlaylistCell
         let headerView = tableCell.subscriptionsTableView.headerView(forSection: 0) as! NewPlaylistHeaderView
         headerView.contentView.backgroundColor = colour
+        colourSet = true
     }
 }
 

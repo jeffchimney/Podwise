@@ -52,7 +52,18 @@ class MiniPlayerView: UIView {
             }
         }
         
-        let thumbImage = UIImage(named: "first")
+        var thumbImage = UIImage(named: "first")
+        
+        let horizontalRatio: CGFloat = 0.5
+        let verticalRatio: CGFloat = 0.5
+        
+        let ratio = max(horizontalRatio, verticalRatio)
+        let newSize = CGSize(width: (thumbImage?.size.width)! * ratio, height: (thumbImage?.size.height)! * ratio)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1)
+        draw(CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        thumbImage = newImage!
         
         progressSlider.setThumbImage(thumbImage, for: .normal)
         
