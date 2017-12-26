@@ -131,7 +131,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         // lets create your destination file url
         let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.audioUrl.lastPathComponent)
         
-        // to check if it exists before downloading it
+        // to check if it exists
         if !FileManager.default.fileExists(atPath: destinationUrl.path) {
             // File doesn't exist in data, make fonts grey
             cell.titleLabel.textColor = .lightGray
@@ -462,7 +462,14 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
-            URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
+            let session : URLSession = {
+                let config = URLSessionConfiguration.ephemeral
+                config.allowsCellularAccess = true
+                let session = URLSession(configuration: config, delegate: baseViewController, delegateQueue: OperationQueue.main)
+                return session
+            }()
+            
+            session.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
                 guard let location = location, error == nil else { return }
                 do {
                     // after downloading your file you need to move it to your destination url
@@ -650,7 +657,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         }
         //tableView.reloadData()
     }
-    
 }
 
 extension UIColor {

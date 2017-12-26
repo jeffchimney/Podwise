@@ -71,8 +71,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
         }
-        
-        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -88,6 +86,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
         
         tableView.reloadData()
+        
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     // Table View Delegate Methods

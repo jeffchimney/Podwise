@@ -397,7 +397,7 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="u9J-WY-F3m">
-                                <rect key="frame" x="-10" y="144" width="395" height="29"/>
+                                <rect key="frame" x="8" y="144" width="359" height="29"/>
                                 <segments>
                                     <segment title="Unplayed"/>
                                     <segment title="All"/>
@@ -482,9 +482,9 @@
                             <constraint firstItem="AT9-UE-fdc" firstAttribute="top" secondItem="JOa-5s-hbq" secondAttribute="bottom" constant="11" id="TI1-qb-PHK"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="top" secondItem="u9J-WY-F3m" secondAttribute="bottom" constant="8" id="W7J-0T-t8z"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="trailing" secondItem="jdf-1N-VHZ" secondAttribute="trailing" id="f3c-YQ-owH"/>
-                            <constraint firstItem="u9J-WY-F3m" firstAttribute="trailing" secondItem="jdf-1N-VHZ" secondAttribute="trailing" constant="10" id="fqs-yX-E8A"/>
+                            <constraint firstItem="u9J-WY-F3m" firstAttribute="trailing" secondItem="jdf-1N-VHZ" secondAttribute="trailing" constant="-8" id="fqs-yX-E8A"/>
                             <constraint firstItem="AT9-UE-fdc" firstAttribute="bottom" secondItem="rd5-o7-xUo" secondAttribute="bottom" id="gFa-Oy-CwW"/>
-                            <constraint firstItem="u9J-WY-F3m" firstAttribute="leading" secondItem="jdf-1N-VHZ" secondAttribute="leading" constant="-10" id="gRj-vq-gt7"/>
+                            <constraint firstItem="u9J-WY-F3m" firstAttribute="leading" secondItem="jdf-1N-VHZ" secondAttribute="leading" constant="8" id="gRj-vq-gt7"/>
                             <constraint firstItem="seM-z3-KUl" firstAttribute="leading" secondItem="jdf-1N-VHZ" secondAttribute="leading" id="lEE-do-vVl"/>
                             <constraint firstItem="jdf-1N-VHZ" firstAttribute="trailing" relation="lessThanOrEqual" secondItem="fxt-bP-6fc" secondAttribute="trailing" constant="71" id="otB-jL-1V0"/>
                             <constraint firstItem="u9J-WY-F3m" firstAttribute="top" secondItem="rd5-o7-xUo" secondAttribute="bottom" constant="8" id="xAK-ga-4oe"/>

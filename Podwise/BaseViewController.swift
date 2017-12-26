@@ -16,11 +16,11 @@ var downloads: [CDEpisode]!
 var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
 
-class BaseViewController: UIViewController {
+class BaseViewController: UIViewController, URLSessionDownloadDelegate {
     
-    override var preferredStatusBarStyle: UIStatusBarStyle {
-        return .lightContent
-    }
+//    override var preferredStatusBarStyle: UIStatusBarStyle {
+//        return .lightContent
+//    }
     
     @IBOutlet weak var baseView: UIView!
     @IBOutlet weak var miniPlayerView: MiniPlayerView!
@@ -365,5 +365,37 @@ class BaseViewController: UIViewController {
                 })
             }
         }
+    }
+    
+    private func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int, totalBytesWritten writ: Int, totalBytesExpectedToWrite exp: Int) {
+        print("downloaded \(100*writ/exp)")
+        let taskTotalBytesWritten = Int(writ)
+        let taskTotalBytesExpectedToWrite = Int(exp)
+        let percentageWritten = Float(taskTotalBytesWritten) / Float(taskTotalBytesExpectedToWrite)
+        //progressBar.progress = percentageWritten
+        print(String(format: "%.01f", percentageWritten*100) + "%")
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        print("completed: error: \(String(describing: error))")
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        
+        //        let documentsDirectoryURL =  NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
+        //        println("Finished downloading!")
+        //        println(documentsDirectoryURL)
+        //        var err:NSError?
+        //
+        //        // Here you can move your downloaded file
+        //        if NSFileManager().moveItemAtURL(location, toURL: documentsDirectoryURL.URLByAppendingPathComponent(downloadTask.response!.suggestedFilename!), error: &err) {
+        //            println("File saved")
+        //        } else {
+        //            if let err = err {
+        //                println("File not saved.\n\(err.description)")
+        //
+        //            }
+        //        }
+        
     }
 }

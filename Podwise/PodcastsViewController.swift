@@ -172,7 +172,7 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
                 return nil
         }
         
-        let subCellPosition = cell.subscriptionsTableView.convert(location, from: self.view)
+        let subCellPosition = cell.subscriptionsTableView.convert(cellPosition, from: collectionView)
         
         guard let subIndexPath = cell.subscriptionsTableView.indexPathForRow(at: subCellPosition),
             let subCell = (cell.subscriptionsTableView.cellForRow(at: subIndexPath) as? PlaylistCell) else {
@@ -187,7 +187,7 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
         }
         
         var selectedPodcast: CDPodcast!
-        if indexPath.section == 0 {
+        if indexPath.row == 0 {
             selectedPodcast = subscribedPodcasts[subIndexPath.row]
         } else {
             selectedPodcast = unSubscribedPodcasts[subIndexPath.row]
@@ -198,13 +198,16 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
         targetViewController.preferredContentSize =
             CGSize(width: 0.0, height: 500)
         
-        previewingContext.sourceRect = view.convert(subCell.frame, to: cell.subscriptionsTableView)
+        let toCollectionView = cell.subscriptionsTableView.convert(subCell.frame, to: collectionView)
+        previewingContext.sourceRect = collectionView.convert(toCollectionView, to: view)
         
         return targetViewController
     }
     
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-        show(viewControllerToCommit, sender: self)
+        //present(viewControllerToCommit, animated: true, completion: nil)
+        navigationController?.pushViewController(viewControllerToCommit, animated: true)
+        //show(viewControllerToCommit, sender: self)
     }
     
     func reloadCollectionView() {
