@@ -17,6 +17,7 @@ class Download {
     var playNow = false
     var indexPath: IndexPath?
     var addTo: CDPlaylist?
+    var isDownloading = false
     
     init(url: URL, audioUrl: URL, episode: CDEpisode, parsedEpisode: Episode, playNow: Bool, indexPath: IndexPath, addTo: CDPlaylist) {
         self.url = url
@@ -30,6 +31,10 @@ class Download {
     
     func setPercentDown(to: Float) {
         percentDown = to
+    }
+    
+    func setIsDownloading() {
+        isDownloading = true
     }
     
 }

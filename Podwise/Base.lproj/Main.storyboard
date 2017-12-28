@@ -274,9 +274,8 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="99.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="p6X-3U-P7w">
-                                                    <rect key="frame" x="0.0" y="48" width="375" height="2"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progressViewStyle="bar" translatesAutoresizingMaskIntoConstraints="NO" id="p6X-3U-P7w">
+                                                    <rect key="frame" x="0.0" y="49" width="375" height="2.5"/>
                                                 </progressView>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cMq-oN-OST">
                                                     <rect key="frame" x="327" y="11" width="33" height="16"/>
@@ -301,12 +300,15 @@
                                                 </label>
                                             </subviews>
                                             <constraints>
+                                                <constraint firstItem="p6X-3U-P7w" firstAttribute="leading" secondItem="qSE-qn-fad" secondAttribute="leading" id="34Q-OW-W0z"/>
+                                                <constraint firstAttribute="trailing" secondItem="p6X-3U-P7w" secondAttribute="trailing" id="HrD-eH-L2a"/>
                                                 <constraint firstItem="5hH-hm-jPV" firstAttribute="top" secondItem="qSE-qn-fad" secondAttribute="topMargin" id="LlB-gd-MJb"/>
                                                 <constraint firstItem="cMq-oN-OST" firstAttribute="trailing" secondItem="qSE-qn-fad" secondAttribute="trailingMargin" id="MYp-ZY-P1p"/>
                                                 <constraint firstItem="wGu-1m-KKA" firstAttribute="top" secondItem="5hH-hm-jPV" secondAttribute="bottom" constant="8" id="R6w-5u-Ndu"/>
                                                 <constraint firstAttribute="trailing" secondItem="wGu-1m-KKA" secondAttribute="trailing" constant="14" id="YZY-4y-1Bj"/>
                                                 <constraint firstItem="cMq-oN-OST" firstAttribute="top" secondItem="qSE-qn-fad" secondAttribute="topMargin" id="Yua-9v-cf8"/>
                                                 <constraint firstItem="cMq-oN-OST" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="5hH-hm-jPV" secondAttribute="trailing" constant="8" id="bG6-sz-Hev"/>
+                                                <constraint firstItem="p6X-3U-P7w" firstAttribute="centerY" secondItem="qSE-qn-fad" secondAttribute="centerY" id="btI-JO-8kR"/>
                                                 <constraint firstItem="wGu-1m-KKA" firstAttribute="leading" secondItem="qSE-qn-fad" secondAttribute="leading" constant="14" id="qlC-sx-c2v"/>
                                                 <constraint firstItem="5hH-hm-jPV" firstAttribute="leading" secondItem="qSE-qn-fad" secondAttribute="leadingMargin" id="vyl-k0-dLb"/>
                                             </constraints>

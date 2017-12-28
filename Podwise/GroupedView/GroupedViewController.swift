@@ -90,7 +90,6 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         }
         
         headerView.isUserInteractionEnabled = true
-        print(headerView.frame)
         return headerView
     }
     
@@ -98,7 +97,6 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistGroupCell", for: indexPath as IndexPath) as! PlaylistCell
         cell.episodeCounterLabel.isHidden = true
         let thisEpisode: CDEpisode = episodesInPlaylist[indexPath.row]
-        print(thisEpisode.title!)
         cell.titleLabel.text = thisEpisode.title
 
         var hours = 0

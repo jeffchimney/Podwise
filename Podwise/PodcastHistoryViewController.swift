@@ -109,16 +109,20 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             hours = (optionalHours/60)/60
         }  else {
             let durationArray = episode.itunesDuration.split(separator: ":")
-            if let optionalHours = Int(durationArray[0]) {
-                hours = optionalHours
+            if durationArray.count > 0 {
+                if let optionalHours = Int(durationArray[0]) {
+                    hours = optionalHours
+                }
             }
         }
         if let optionalMinutes = Int(episode.itunesDuration) {
             minutes = (optionalMinutes/60)%60
         }  else {
             let durationArray = episode.itunesDuration.split(separator: ":")
-            if let optionalMinutes = Int(durationArray[1]) {
-                minutes = optionalMinutes
+            if durationArray.count > 1 {
+                if let optionalMinutes = Int(durationArray[1]) {
+                    minutes = optionalMinutes
+                }
             }
         }
         
@@ -150,10 +154,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             cell.durationLabel.textColor = .black
             episode.downloaded = true
         }
-        
-        cell.downloadProgressView.progress = 0
+
         cell.downloadProgressView.alpha = 0.3
-        
         cell.downloadProgressView.transform = cell.downloadProgressView.transform.scaledBy(x: 1, y: cell.frame.height/2)
         
         return cell
@@ -465,11 +467,18 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             let thisDownload = Download(url: destinationUrl, audioUrl: relatedTo.audioUrl, episode: episode, parsedEpisode: relatedTo, playNow: playNow, indexPath: cellIndexPath!, addTo: addTo ?? unSortedPlaylist)
 
             if downloads.isEmpty {
+                thisDownload.setIsDownloading()
                 downloads.append(thisDownload)
                 downloadTask = backgroundSession.downloadTask(with: at)
                 downloadTask.resume()
             } else {
-                downloads.append(thisDownload)
+                if downloads[0].isDownloading {
+                    downloads.append(thisDownload)
+                } else {
+                    downloads[0].setIsDownloading()
+                    downloadTask = backgroundSession.downloadTask(with: downloads[0].audioUrl)
+                    downloadTask.resume()
+                }
             }
             
             if let playlistToAddTo = addTo {
@@ -482,28 +491,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     add(podcast: podcast, to: unSortedPlaylist)
                 }
             }
-            
-            // you can use NSURLSession.sharedSession to download the data asynchronously
-//            let session : URLSession = {
-//                let config = URLSessionConfiguration.ephemeral
-//                config.allowsCellularAccess = true
-//                let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
-//                return session
-//            }()
-            
-            //let downloadTask = session.downloadTask(with: at)//, completionHandler: { (location, response, error) -> Void in
-//                guard let location = location, error == nil else { return }
-//                do {
-//                    // after downloading your file you need to move it to your destination url
-//                    try FileManager.default.moveItem(at: location, to: self.destinationUrl)
-//                    print("File moved to documents folder")
-//
-//                } catch let error as NSError {
-//                    print(error.localizedDescription)
-//                }
-//            }).resume()
-            //downloadTask.resume()
-            
         }
     }
     
@@ -656,14 +643,16 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     }
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-            print("downloaded \(totalBytesWritten)/\(totalBytesExpectedToWrite)")
-        
         if downloads.count > 0 {
-            let cell = tableView.cellForRow(at: downloads[0].indexPath!) as! EpisodeCell
-            let progress: Float = Float(totalBytesWritten/totalBytesExpectedToWrite)
-            DispatchQueue.main.async {
-                cell.downloadProgressView.setProgress(progress, animated: true)
-                cell.setNeedsDisplay()
+            if let testCell = tableView.cellForRow(at: downloads[0].indexPath!) {
+                let cell = tableView.cellForRow(at: downloads[0].indexPath!) as! EpisodeCell
+                let progress = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+                print("downloaded \(progress)%")
+                downloads[0].setPercentDown(to: progress)
+                DispatchQueue.main.async {
+                    cell.downloadProgressView.setProgress(progress, animated: true)
+                    //self.tableView.reloadRows(at: [downloads[0].indexPath!], with: .none)
+                }
             }
         }
     }
@@ -694,21 +683,23 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             
             if let indexPath = downloads[0].indexPath {
                 DispatchQueue.main.async {
-                    let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
-                    cell.titleLabel.textColor = .lightGray
-                    cell.descriptionLabel.textColor = .lightGray
-                    cell.durationLabel.textColor = .lightGray
-                    self.episodes[indexPath.row].downloaded = true
-                    self.tableView.reloadData()
+                    if let testCell = self.tableView.cellForRow(at: indexPath) {
+                        let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
+                        cell.titleLabel.textColor = .lightGray
+                        cell.descriptionLabel.textColor = .lightGray
+                        cell.durationLabel.textColor = .lightGray
+                        cell.downloadProgressView.progress = 0
+                        self.episodes[indexPath.row].downloaded = true
+                        self.tableView.reloadRows(at: [indexPath], with: .none)
+                    }
                 }
             }
-            
-            downloads.removeFirst()
-            
+            print(downloads.count)
+            downloads = Array(downloads.dropFirst())
+            print(downloads.count)
             if downloads.count > 0 {
-                downloadFile(at: downloads[0].audioUrl, relatedTo: downloads[0].parsedEpisode, addTo: downloads[0].addTo, playNow: downloads[0].playNow, cellIndexPath: downloads[0].indexPath)
+                self.downloadFile(at: downloads[0].audioUrl, relatedTo: downloads[0].parsedEpisode, addTo: downloads[0].addTo, playNow: downloads[0].playNow, cellIndexPath: downloads[0].indexPath)
             }
-            
         } catch let error as NSError {
             print(error.localizedDescription)
         }
