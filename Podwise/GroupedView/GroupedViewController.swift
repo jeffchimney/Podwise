@@ -138,14 +138,17 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         cell.artImageView.layer.masksToBounds = true
         cell.activityIndicator.isHidden = true
         if downloads != nil {
-            if downloads.contains(thisEpisode) {
-                cell.activityIndicator.startAnimating()
-                cell.activityIndicator.isHidden = false
-                cell.isUserInteractionEnabled = false
-            } else {
-                cell.activityIndicator.isHidden = true
-                cell.activityIndicator.stopAnimating()
-                cell.isUserInteractionEnabled = true
+            for download in downloads {
+                if download.episode == thisEpisode {
+                    cell.activityIndicator.startAnimating()
+                    cell.activityIndicator.isHidden = false
+                    cell.isUserInteractionEnabled = false
+                    break
+                } else {
+                    cell.activityIndicator.isHidden = true
+                    cell.activityIndicator.stopAnimating()
+                    cell.isUserInteractionEnabled = true
+                }
             }
         }
         //cell.setNeedsDisplay()
@@ -161,7 +164,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(at: episodesInPlaylist[indexPath.row].localURL!)
-        baseViewController.setupNowPlaying(episode: episode)
+        //baseViewController.setupNowPlaying(episode: episode)
     }
     
         func tableView(_ tableView: UITableView,

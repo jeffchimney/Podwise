@@ -12,11 +12,11 @@ import AVFoundation
 import MediaPlayer
 
 var audioPlayer:AVAudioPlayer!
-var downloads: [CDEpisode]!
+var downloads: [Download]!
 var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
 
-class BaseViewController: UIViewController, URLSessionDownloadDelegate {
+class BaseViewController: UIViewController {
     
 //    override var preferredStatusBarStyle: UIStatusBarStyle {
 //        return .lightContent
@@ -135,23 +135,23 @@ class BaseViewController: UIViewController, URLSessionDownloadDelegate {
         }
     }
     
-    func setupNowPlaying(episode: CDEpisode) {
-        // Define Now Playing Info
-        var nowPlayingInfo = [String : Any]()
-        nowPlayingInfo[MPMediaItemPropertyTitle] = "My Movie"
-        if let image = UIImage(named: "lockscreen") {
-            nowPlayingInfo[MPMediaItemPropertyArtwork] =
-                MPMediaItemArtwork(boundsSize: image.size) { size in
-                    return image
-            }
-        }
-        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = audioPlayer.currentTime
-        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = audioPlayer.duration
-        //nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
-        
-        // Set the metadata
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-    }
+//    func setupNowPlaying(episode: CDEpisode) {
+//        // Define Now Playing Info
+//        var nowPlayingInfo = [String : Any]()
+//        nowPlayingInfo[MPMediaItemPropertyTitle] = "My Movie"
+//        if let image = UIImage(named: "lockscreen") {
+//            nowPlayingInfo[MPMediaItemPropertyArtwork] =
+//                MPMediaItemArtwork(boundsSize: image.size) { size in
+//                    return image
+//            }
+//        }
+//        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = audioPlayer.currentTime
+//        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = audioPlayer.duration
+//        //nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
+//        
+//        // Set the metadata
+//        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+//    }
     
     @objc public func startUpdatingSlider() {
         if !miniPlayerView.progressSlider.isTracking {
@@ -365,37 +365,5 @@ class BaseViewController: UIViewController, URLSessionDownloadDelegate {
                 })
             }
         }
-    }
-    
-    private func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int, totalBytesWritten writ: Int, totalBytesExpectedToWrite exp: Int) {
-        print("downloaded \(100*writ/exp)")
-        let taskTotalBytesWritten = Int(writ)
-        let taskTotalBytesExpectedToWrite = Int(exp)
-        let percentageWritten = Float(taskTotalBytesWritten) / Float(taskTotalBytesExpectedToWrite)
-        //progressBar.progress = percentageWritten
-        print(String(format: "%.01f", percentageWritten*100) + "%")
-    }
-    
-    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
-        print("completed: error: \(String(describing: error))")
-    }
-    
-    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
-        
-        //        let documentsDirectoryURL =  NSFileManager().URLsForDirectory(.DocumentDirectory, inDomains: .UserDomainMask).first as! NSURL
-        //        println("Finished downloading!")
-        //        println(documentsDirectoryURL)
-        //        var err:NSError?
-        //
-        //        // Here you can move your downloaded file
-        //        if NSFileManager().moveItemAtURL(location, toURL: documentsDirectoryURL.URLByAppendingPathComponent(downloadTask.response!.suggestedFilename!), error: &err) {
-        //            println("File saved")
-        //        } else {
-        //            if let err = err {
-        //                println("File not saved.\n\(err.description)")
-        //
-        //            }
-        //        }
-        
     }
 }

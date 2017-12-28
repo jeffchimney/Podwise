@@ -39,6 +39,7 @@
 		BEB0B7351FE380B3006FA0E5 /* SubscriptionsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB0B7341FE380B3006FA0E5 /* SubscriptionsViewController.swift */; };
 		BEB0B7371FE385BD006FA0E5 /* SubscriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEB0B7361FE385BD006FA0E5 /* SubscriptionCell.swift */; };
 		BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */; };
+		BECD5B0D1FF441050091DD4F /* Download.swift in Sources */ = {isa = PBXBuildFile; fileRef = BECD5B0C1FF441050091DD4F /* Download.swift */; };
 		BEDFE6441FC6B60A0084D392 /* PodcastListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */; };
 		BEE0A1371FBE57C200AA111F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1361FBE57C200AA111F /* AppDelegate.swift */; };
 		BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */; };
@@ -109,6 +110,7 @@
 		BEB0B7361FE385BD006FA0E5 /* SubscriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionCell.swift; sourceTree = "<group>"; };
 		BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = MicrosoftAzureMobile.framework; sourceTree = "<group>"; };
 		BEB608D11FD13433004FE0ED /* Podwise-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Podwise-Bridging-Header.h"; sourceTree = "<group>"; };
+		BECD5B0C1FF441050091DD4F /* Download.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Download.swift; sourceTree = "<group>"; };
 		BED4B0111FCBDA0C00B818A9 /* Podwise.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Podwise.entitlements; sourceTree = "<group>"; };
 		BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastListCell.swift; sourceTree = "<group>"; };
 		BEE0A1331FBE57C200AA111F /* Podwise.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Podwise.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -202,6 +204,7 @@
 			children = (
 				BEA9D3B81FC389EF00A140AC /* Channel.swift */,
 				BEA9D3BA1FC38A0D00A140AC /* Episode.swift */,
+				BECD5B0C1FF441050091DD4F /* Download.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -479,6 +482,7 @@
 				BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */,
 				BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */,
+				BECD5B0D1FF441050091DD4F /* Download.swift in Sources */,
 				BEA55DA01FE9D6FC007B3164 /* AnimationController.swift in Sources */,
 				BEFBDB231FE88494007C4CA4 /* SubscribedPodcastsPlaylistViewController.swift in Sources */,
 				BEDFE6441FC6B60A0084D392 /* PodcastListCell.swift in Sources */,

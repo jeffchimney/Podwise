@@ -15,5 +15,6 @@ class EpisodeCell: UITableViewCell {
     @IBOutlet weak var durationLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     var feedID: String!
+    @IBOutlet weak var downloadProgressView: UIProgressView!
     
 }

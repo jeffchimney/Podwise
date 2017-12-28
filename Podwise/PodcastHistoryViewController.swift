@@ -12,7 +12,7 @@ import CoreData
 import AVFoundation
 import MediaPlayer
 
-class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate {
+class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate, URLSessionDownloadDelegate {
     
     var managedContext: NSManagedObjectContext?
     
@@ -40,6 +40,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var collectionID: Int!
     var authorName: String!
     var searchActive: Bool = false
+    
+    var downloadTask: URLSessionDownloadTask!
+    var backgroundSession: URLSession!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,6 +80,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         tableView.dataSource = self
         
         tableView.tableHeaderView = channelDescriptionTextView
+        
+        let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+        backgroundSession = Foundation.URLSession(configuration: backgroundSessionConfiguration, delegate: self, delegateQueue: OperationQueue.main)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -144,6 +150,11 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             cell.durationLabel.textColor = .black
             episode.downloaded = true
         }
+        
+        cell.downloadProgressView.progress = 0
+        cell.downloadProgressView.alpha = 0.3
+        
+        cell.downloadProgressView.transform = cell.downloadProgressView.transform.scaledBy(x: 1, y: cell.frame.height/2)
         
         return cell
     }
@@ -387,6 +398,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if episodesToPlay.count > 0 {
                     let episodeToPlay = episodesToPlay[0]
+                    nowPlayingEpisode = episodeToPlay
                     
                     let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = podcastImage
@@ -449,7 +461,17 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             if downloads == nil {
                 downloads = []
             }
-            downloads.append(episode)
+            
+            let thisDownload = Download(url: destinationUrl, audioUrl: relatedTo.audioUrl, episode: episode, parsedEpisode: relatedTo, playNow: playNow, indexPath: cellIndexPath!, addTo: addTo ?? unSortedPlaylist)
+
+            if downloads.isEmpty {
+                downloads.append(thisDownload)
+                downloadTask = backgroundSession.downloadTask(with: at)
+                downloadTask.resume()
+            } else {
+                downloads.append(thisDownload)
+            }
+            
             if let playlistToAddTo = addTo {
                 print(playlistToAddTo.name!)
                 add(episode: episode, to: playlistToAddTo)
@@ -462,51 +484,26 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             }
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
-            let session : URLSession = {
-                let config = URLSessionConfiguration.ephemeral
-                config.allowsCellularAccess = true
-                let session = URLSession(configuration: config, delegate: baseViewController, delegateQueue: OperationQueue.main)
-                return session
-            }()
+//            let session : URLSession = {
+//                let config = URLSessionConfiguration.ephemeral
+//                config.allowsCellularAccess = true
+//                let session = URLSession(configuration: config, delegate: self, delegateQueue: OperationQueue.main)
+//                return session
+//            }()
             
-            session.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
-                guard let location = location, error == nil else { return }
-                do {
-                    // after downloading your file you need to move it to your destination url
-                    try FileManager.default.moveItem(at: location, to: destinationUrl)
-                    print("File moved to documents folder")
-                    if playNow {
-                        self.startAudioSession()
-                        let nowPlayingArt = UIImage(data: podcast!.image!)
-                        baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
-                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
-                        
-                        let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
-                        baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                        
-                        self.playDownload(at: destinationUrl)
-                    }
-                    if downloads.contains(episode) {
-                        if let episodeIndex = downloads.index(of: episode) {
-                            downloads.remove(at: episodeIndex)
-                        }
-                    }
-                    
-                    if let indexPath = cellIndexPath {
-                        DispatchQueue.main.async {
-                            let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
-                            cell.titleLabel.textColor = .lightGray
-                            cell.descriptionLabel.textColor = .lightGray
-                            cell.durationLabel.textColor = .lightGray
-                            self.episodes[indexPath.row].downloaded = true
-                            self.tableView.reloadData()
-                        }
-                    }
-                } catch let error as NSError {
-                    print(error.localizedDescription)
-                }
-            }).resume()
+            //let downloadTask = session.downloadTask(with: at)//, completionHandler: { (location, response, error) -> Void in
+//                guard let location = location, error == nil else { return }
+//                do {
+//                    // after downloading your file you need to move it to your destination url
+//                    try FileManager.default.moveItem(at: location, to: self.destinationUrl)
+//                    print("File moved to documents folder")
+//
+//                } catch let error as NSError {
+//                    print(error.localizedDescription)
+//                }
+//            }).resume()
+            //downloadTask.resume()
+            
         }
     }
     
@@ -656,6 +653,65 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             searchActive = true;
         }
         //tableView.reloadData()
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+            print("downloaded \(totalBytesWritten)/\(totalBytesExpectedToWrite)")
+        
+        if downloads.count > 0 {
+            let cell = tableView.cellForRow(at: downloads[0].indexPath!) as! EpisodeCell
+            let progress: Float = Float(totalBytesWritten/totalBytesExpectedToWrite)
+            DispatchQueue.main.async {
+                cell.downloadProgressView.setProgress(progress, animated: true)
+                cell.setNeedsDisplay()
+            }
+        }
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        print("completed: error: \(String(describing: error))")
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        do {
+            // after downloading your file you need to move it to your destination url
+            try FileManager.default.moveItem(at: location, to: downloads[0].url)
+            print("File moved to documents folder")
+            
+            if downloads[0].playNow {
+                self.startAudioSession()
+                nowPlayingEpisode = downloads[0].episode
+                let nowPlayingArt = UIImage(data: downloads[0].episode.podcast!.image!)
+                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+                baseViewController.miniPlayerView.podcastTitle.text = downloads[0].episode.podcast!.title
+                baseViewController.miniPlayerView.episodeTitle.text = downloads[0].episode.title
+
+                let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
+                baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                
+                self.playDownload(at: downloads[0].url)
+            }
+            
+            if let indexPath = downloads[0].indexPath {
+                DispatchQueue.main.async {
+                    let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
+                    cell.titleLabel.textColor = .lightGray
+                    cell.descriptionLabel.textColor = .lightGray
+                    cell.durationLabel.textColor = .lightGray
+                    self.episodes[indexPath.row].downloaded = true
+                    self.tableView.reloadData()
+                }
+            }
+            
+            downloads.removeFirst()
+            
+            if downloads.count > 0 {
+                downloadFile(at: downloads[0].audioUrl, relatedTo: downloads[0].parsedEpisode, addTo: downloads[0].addTo, playNow: downloads[0].playNow, cellIndexPath: downloads[0].indexPath)
+            }
+            
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
     }
 }
 

@@ -445,7 +445,10 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             if downloads == nil {
                 downloads = []
             }
-            downloads.append(episode)
+            
+            let thisDownload = Download(url: destinationUrl, audioUrl: episode.audioURL!, episode: episode, parsedEpisode: relatedTo, playNow: playNow, indexPath: cellIndexPath!, addTo: addTo!) //Download(url: destinationUrl, episode: episode, playNow: playNow, indexPath: cellIndexPath!)
+            downloads.append(thisDownload)
+            
             if let playlistToAddTo = addTo {
                 add(episode: episode, to: playlistToAddTo)
             }
@@ -474,11 +477,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                         baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
                         self.playDownload(at: destinationUrl)
                     }
-                    if downloads.contains(episode) {
-                        if let episodeIndex = downloads.index(of: episode) {
-                            downloads.remove(at: episodeIndex)
-                        }
-                    }
                     
                     if let indexPath = cellIndexPath {
                         DispatchQueue.main.async {
@@ -490,6 +488,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                             self.tableView.reloadData()
                         }
                     }
+                    
+                    downloads.removeFirst()
                 } catch let error as NSError {
                     print(error.localizedDescription)
                 }
