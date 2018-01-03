@@ -12,5 +12,5 @@ import UIKit
 class GroupedViewCell: UICollectionViewCell {
     
     @IBOutlet weak var playlistGroupTableView: GroupedViewController!
-    
+
 }

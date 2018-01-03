@@ -26,7 +26,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
     var managedContext: NSManagedObjectContext!
-    var previousViewController: PlaylistCreationTableViewController!
+    weak var previousViewController: PlaylistCreationTableViewController!
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)

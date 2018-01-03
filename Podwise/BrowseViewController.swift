@@ -35,7 +35,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         //let searchBarButtonItem = UIBarButtonItem(customView: searchBar)
         navigationItem.titleView = searchBar
 //        navigationItem.title = ""
-        searchBar.becomeFirstResponder()
+        //searchBar.becomeFirstResponder()
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

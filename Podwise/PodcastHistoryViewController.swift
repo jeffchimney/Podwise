@@ -400,7 +400,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if episodesToPlay.count > 0 {
                     let episodeToPlay = episodesToPlay[0]
-                    nowPlayingEpisode = episodeToPlay
                     
                     let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = podcastImage
@@ -409,7 +408,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     
                     let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage?.cgImage!)!)
                     baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                    self.playDownload(at: destinationUrl)
+                    self.playDownload(for: episodeToPlay)
+                    nowPlayingEpisode = episodeToPlay
                 }
             } else { // add to playlist
                 let episodeWithID = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
@@ -433,6 +433,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 episode.duration = relatedTo.itunesDuration
                 episode.podcast = podcastsWithId[0]
                 podcast = podcastsWithId[0]
+                episode.progress = 0
             } else { // episode doesn't belong to a previously downloaded or subscribed podcast, create new one
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
                 podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
@@ -457,6 +458,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 episode.localURL = relatedTo.localURL
                 episode.duration = relatedTo.itunesDuration
                 episode.podcast = podcast
+                episode.progress = 0
             }
             
             CoreDataHelper.save(context: managedContext!)
@@ -494,22 +496,28 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         }
     }
     
-    func playDownload(at: URL) {
+    func playDownload(for episode: CDEpisode) {
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
             guard let player = audioPlayer else { return }
             
+            player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
             player.play()
             
+            let artworkImage = UIImage(data: episode.podcast!.image!)
+            let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
+                return artworkImage!
+            })
+            
             let mpic = MPNowPlayingInfoCenter.default()
-            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:"title", MPMediaItemPropertyArtist:"artist"]
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!, MPMediaItemPropertyArtist:episode.podcast!.title!, MPMediaItemPropertyArtwork: artwork]
             
             DispatchQueue.main.async {
                 baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
@@ -644,7 +652,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         if downloads.count > 0 {
-            if let testCell = tableView.cellForRow(at: downloads[0].indexPath!) {
+            if tableView.cellForRow(at: downloads[0].indexPath!) != nil {
                 let cell = tableView.cellForRow(at: downloads[0].indexPath!) as! EpisodeCell
                 let progress = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
                 print("downloaded \(progress)%")
@@ -678,12 +686,18 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
                 baseViewController.sliderView.minimumTrackTintColor = backgroundColor
                 
-                self.playDownload(at: downloads[0].url)
+                if nowPlayingEpisode != nil {
+                    nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                }
+                
+                CoreDataHelper.save(context: managedContext!)
+                
+                self.playDownload(for: downloads[0].episode)
             }
             
             if let indexPath = downloads[0].indexPath {
                 DispatchQueue.main.async {
-                    if let testCell = self.tableView.cellForRow(at: indexPath) {
+                    if self.tableView.cellForRow(at: indexPath) != nil {
                         let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
                         cell.titleLabel.textColor = .lightGray
                         cell.descriptionLabel.textColor = .lightGray

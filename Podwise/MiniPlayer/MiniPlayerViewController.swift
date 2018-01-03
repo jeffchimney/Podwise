@@ -28,6 +28,7 @@ class MiniPlayerView: UIView {
     @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
     @IBOutlet weak var progressSlider: UISlider!
+    var managedContext: NSManagedObjectContext?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -75,6 +76,14 @@ class MiniPlayerView: UIView {
         if let player = audioPlayer {
             if player.isPlaying {
                 playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                
+                guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                    return
+                }
+                managedContext = appDelegate.persistentContainer.viewContext
+                
+                nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                CoreDataHelper.save(context: managedContext!)
                 player.pause()
             } else {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)

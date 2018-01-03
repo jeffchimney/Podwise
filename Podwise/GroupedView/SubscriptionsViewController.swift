@@ -18,7 +18,7 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
     var managedContext: NSManagedObjectContext!
-    var previousViewController: PodcastsViewController!
+    weak var previousViewController: PodcastsViewController!
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
