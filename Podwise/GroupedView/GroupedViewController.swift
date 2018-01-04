@@ -128,13 +128,16 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             cell.durationLabel.text = "\(hours)h \(minutes)m"
         }
         
-        if let imageData = thisEpisode.podcast?.image {
-            cell.artImageView.image = UIImage(data: imageData)
+        DispatchQueue.main.async {
+            if let imageData = thisEpisode.podcast?.image {
+                cell.artImageView.image = UIImage(data: imageData)
+            }
+            
+            cell.artImageView.layer.cornerRadius = 10
+            cell.artImageView.layer.masksToBounds = true
+            cell.activityIndicator.isHidden = true
         }
-        
-        cell.artImageView.layer.cornerRadius = 10
-        cell.artImageView.layer.masksToBounds = true
-        cell.activityIndicator.isHidden = true
+       
         if downloads != nil {
             for download in downloads {
                 if download.episode == thisEpisode {
@@ -232,7 +235,12 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             })
             
             let mpic = MPNowPlayingInfoCenter.default()
-            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!, MPMediaItemPropertyArtist:episode.podcast!.title!, MPMediaItemPropertyArtwork: artwork]
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!,
+                                   MPMediaItemPropertyArtist:episode.podcast!.title!,
+                                   MPMediaItemPropertyArtwork: artwork,
+                                   MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
+                                   MPMediaItemPropertyPlaybackDuration: player.duration
+                                  ]
             
             baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             baseViewController.showMiniPlayer(animated: true)

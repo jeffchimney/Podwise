@@ -80,6 +80,9 @@ class BaseViewController: UIViewController {
             self.miniPlayerView.skipBack(self)
             return .success
         }
+        
+        commandCenter.skipForwardCommand.preferredIntervals = [30]
+        commandCenter.skipBackwardCommand.preferredIntervals = [10]
     }
     
     override func viewDidAppear(_ animated: Bool) {

@@ -264,8 +264,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
         case .ended:
             let point: CGPoint = gesture.location(in: collectionView)
-            let pointInCell: CGPoint?
-            let cell: GroupedViewCell?
             if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
                 if indexPath.section == 0 {
                     collectionView.endInteractiveMovement()

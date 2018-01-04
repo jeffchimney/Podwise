@@ -16,6 +16,7 @@
 		BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */; };
 		BE4B40C71FEB325E00719676 /* PlaylistColourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
+		BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */; };
 		BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */; };
 		BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */; };
 		BE6853811FCC918900CA32C8 /* PodcastChecklistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */; };
@@ -86,6 +87,7 @@
 		BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistColourCell.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoryViewController.swift; sourceTree = "<group>"; };
 		BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCreationTableViewController.swift; sourceTree = "<group>"; };
 		BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTitleCell.swift; sourceTree = "<group>"; };
 		BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastChecklistCell.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				BEE0A13A1FBE57C200AA111F /* PodcastsViewController.swift */,
 				BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */,
 				BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */,
+				BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */,
 				BEA71A5E1FBF9DDC001B42FC /* PodcastHistoryViewController.swift */,
 				BEE0A13C1FBE57C200AA111F /* Main.storyboard */,
 				BEE0A13F1FBE57C200AA111F /* Assets.xcassets */,
@@ -471,6 +474,7 @@
 				BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */,
 				BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */,
 				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
+				BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */,
 				BEB0B7351FE380B3006FA0E5 /* SubscriptionsViewController.swift in Sources */,
 				BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */,
 				BEB0B7371FE385BD006FA0E5 /* SubscriptionCell.swift in Sources */,
