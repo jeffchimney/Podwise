@@ -15,6 +15,7 @@ var audioPlayer:AVAudioPlayer!
 var downloads: [Download]!
 var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
+let audioSession = AVAudioSession.sharedInstance()
 
 class BaseViewController: UIViewController {
     
@@ -42,15 +43,12 @@ class BaseViewController: UIViewController {
         
         sliderView.setValue(0, animated: false)
         sliderView.maximumTrackTintColor = .clear
-        
         if audioPlayer != nil {
             showMiniPlayer(animated: false)
         } else {
             hideMiniPlayer(animated: false)
         }
-        
-        
-        
+
         self.view.backgroundColor = .white
         
         UIApplication.shared.beginReceivingRemoteControlEvents()
@@ -81,7 +79,17 @@ class BaseViewController: UIViewController {
         commandCenter.skipBackwardCommand.preferredIntervals = [10]
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
+        if let player = audioPlayer {
+            if !player.isPlaying {
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+            } else {
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+            }
+        }
+        
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
     }
     
@@ -151,16 +159,15 @@ class BaseViewController: UIViewController {
 //    }
     
     @objc public func startUpdatingSlider() {
-//        if !miniPlayerView.progressSlider.isTracking {
-//            if let player = audioPlayer {
-//                if player.isPlaying
-//                {
-//                    // Update progress
-//                    sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
-//                    miniPlayerView.progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
-//                }
-//            }
-//        }
+        if !sliderView.isTracking {
+            if let player = audioPlayer {
+                if player.isPlaying
+                {
+                    // Update progress
+                    sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
+                }
+            }
+        }
     }
     
     public func setProgressBarColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
@@ -212,10 +219,10 @@ class BaseViewController: UIViewController {
             destinationViewController.interactor = interactor
             
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
-            //destinationViewController.artImageView.image = imageArt
-            //destinationViewController.episodeTitle.text = nowPlayingEpisode.title!
-            //destinationViewController.podcastTitle.text = nowPlayingEpisode.podcast!.title!
-            //destinationViewController.progressSlider.minimumTrackTintColor = sliderView.minimumTrackTintColor
+            destinationViewController.image = imageArt
+            destinationViewController.episodeTitleText = nowPlayingEpisode.title!
+            destinationViewController.podcastTitleText = nowPlayingEpisode.podcast!.title!
+            destinationViewController.minimumTrackTintColor = sliderView.minimumTrackTintColor
         }
     }
     

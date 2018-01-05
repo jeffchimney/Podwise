@@ -135,15 +135,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         
-        let hub: SBNotificationHub = SBNotificationHub(connectionString: endpoint, notificationHubPath: hubName)
-        
-        hub.registerNative(withDeviceToken: deviceToken, tags: nil, completion: { error in
-            if error != nil {
-                print("Error registering for notifications: \(String(describing: error))")
-            } else {
-                print("Registered with NotificationHub")
-            }
-        })
+//        let hub: SBNotificationHub = SBNotificationHub(connectionString: endpoint, notificationHubPath: hubName)
+//        
+//        hub.registerNative(withDeviceToken: deviceToken, tags: nil, completion: { error in
+//            if error != nil {
+//                print("Error registering for notifications: \(String(describing: error))")
+//            } else {
+//                print("Registered with NotificationHub")
+//            }
+//        })
         
         let tokenParts = deviceToken.map { data -> String in
             return String(format: "%02.2hhx", data)

@@ -11,11 +11,16 @@ import MediaPlayer
 
 class PlayerViewController: UIViewController {
     
+    var image: UIImage!
+    var episodeTitleText: String!
+    var podcastTitleText: String!
+    var minimumTrackTintColor: UIColor!
+    
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
-    @IBOutlet weak var chevronImage: UIImageView!
+    @IBOutlet weak var chevronButton: UIButton!
     @IBOutlet weak var progressSlider: UISlider!
     var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
@@ -23,7 +28,7 @@ class PlayerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         if let player = audioPlayer {
-            if player.isPlaying {
+            if !player.isPlaying {
                 playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
             } else {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
@@ -43,9 +48,19 @@ class PlayerViewController: UIViewController {
         UIGraphicsEndImageContext()
         thumbImage = newImage!
         
+        progressSlider.minimumTrackTintColor = minimumTrackTintColor
+        artImageView.image = image
+        episodeTitle.text = episodeTitleText
+        podcastTitle.text = podcastTitleText
+        
         progressSlider.setThumbImage(thumbImage, for: .normal)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
+    }
+        
     @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
         // 3
         let translation = sender.translation(in: view)
@@ -87,6 +102,18 @@ class PlayerViewController: UIViewController {
             } else {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
                 player.play()
+            }
+        }
+    }
+    
+    @objc public func startUpdatingSlider() {
+        if !progressSlider.isTracking {
+            if let player = audioPlayer {
+                if player.isPlaying
+                {
+                    // Update progress
+                    progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
+                }
             }
         }
     }
