@@ -102,39 +102,10 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath) as! EpisodeCell
         
-        let episode = episodes[indexPath.row]
-        var hours = 0
-        var minutes = 0
-        if let optionalHours = Int(episode.itunesDuration) {
-            hours = (optionalHours/60)/60
-        }  else {
-            let durationArray = episode.itunesDuration.split(separator: ":")
-            if durationArray.count > 0 {
-                if let optionalHours = Int(durationArray[0]) {
-                    hours = optionalHours
-                }
-            }
-        }
-        if let optionalMinutes = Int(episode.itunesDuration) {
-            minutes = (optionalMinutes/60)%60
-        }  else {
-            let durationArray = episode.itunesDuration.split(separator: ":")
-            if durationArray.count > 1 {
-                if let optionalMinutes = Int(durationArray[1]) {
-                    minutes = optionalMinutes
-                }
-            }
-        }
         
-        cell.titleLabel.text = episode.title
-        cell.descriptionLabel.text = episode.itunesSubtitle
-        if hours == 0 && minutes == 0 {
-            cell.durationLabel.text = ""
-        } else if hours == 0 {
-            cell.durationLabel.text = "\(minutes)m"
-        } else {
-            cell.durationLabel.text = "\(hours)h \(minutes)m"
-        }
+        
+        
+        let episode = episodes[indexPath.row]
         
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -159,6 +130,42 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         cell.downloadProgressView.transform = cell.downloadProgressView.transform.scaledBy(x: 1, y: cell.frame.height/2)
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let episode = episodes[indexPath.row]
+        var hours = 0
+        var minutes = 0
+        if let optionalHours = Int(episode.itunesDuration) {
+            hours = (optionalHours/60)/60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if durationArray.count > 0 {
+                if let optionalHours = Int(durationArray[0]) {
+                    hours = optionalHours
+                }
+            }
+        }
+        if let optionalMinutes = Int(episode.itunesDuration) {
+            minutes = (optionalMinutes/60)%60
+        }  else {
+            let durationArray = episode.itunesDuration.split(separator: ":")
+            if durationArray.count > 1 {
+                if let optionalMinutes = Int(durationArray[1]) {
+                    minutes = optionalMinutes
+                }
+            }
+        }
+        
+        (cell as! EpisodeCell).titleLabel.text = episode.title
+        (cell as! EpisodeCell).descriptionLabel.text = episode.itunesSubtitle
+        if hours == 0 && minutes == 0 {
+            (cell as! EpisodeCell).durationLabel.text = ""
+        } else if hours == 0 {
+            (cell as! EpisodeCell).durationLabel.text = "\(minutes)m"
+        } else {
+            (cell as! EpisodeCell).durationLabel.text = "\(hours)h \(minutes)m"
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -275,6 +282,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                             
                             self.activityIndicator.isHidden = true
                             self.activityIndicator.stopAnimating()
+                            self.setSubscribeButton()
                         }
                     } catch {
                         print("Could not load art thumbnail")
@@ -315,19 +323,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             episodes.append(episode)
             if !subscribeButtonSet {
                 subscribeButtonSet = true
-                let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
-                if podcast.count > 0 {
-                    if podcast[0].subscribed {
-                        subscribeButton.setTitle("  Unubscribe  ", for: .normal)
-                        subscribeButton.backgroundColor = .red
-                    } else {
-                        subscribeButton.setTitle("  Subscribe  ", for: .normal)
-                        subscribeButton.backgroundColor = .green
-                    }
-                } else {
-                    subscribeButton.setTitle("  Subscribe  ", for: .normal)
-                    subscribeButton.backgroundColor = .green
-                }
+                setSubscribeButton()
             }
         }
     }
@@ -358,6 +354,41 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             }
         } else {
             
+        }
+    }
+    
+    func setSubscribeButton() {
+        if activityIndicator.isAnimating {
+            let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+            if podcast.count > 0 {
+                if podcast[0].subscribed {
+                    subscribeButton.setTitle("  Unubscribe  ", for: .normal)
+                    subscribeButton.backgroundColor = .gray
+                } else {
+                    subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                    subscribeButton.backgroundColor = .gray
+                }
+            } else {
+                subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                subscribeButton.backgroundColor = .gray
+            }
+            subscribeButton.isEnabled = false
+        } else {
+            let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
+            if podcast.count > 0 {
+                if podcast[0].subscribed {
+                    subscribeButton.setTitle("  Unubscribe  ", for: .normal)
+                    subscribeButton.backgroundColor = .red
+                } else {
+                    subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                    subscribeButton.backgroundColor = .green
+                }
+            } else {
+                subscribeButton.setTitle("  Subscribe  ", for: .normal)
+                subscribeButton.backgroundColor = .green
+            }
+            
+            subscribeButton.isEnabled = true
         }
     }
     
@@ -403,8 +434,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     
                     let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = podcastImage
-                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
-                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
                     
                     let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage?.cgImage!)!)
                     baseViewController.sliderView.minimumTrackTintColor = backgroundColor
@@ -680,8 +709,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 nowPlayingEpisode = downloads[0].episode
                 let nowPlayingArt = UIImage(data: downloads[0].episode.podcast!.image!)
                 baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                baseViewController.miniPlayerView.podcastTitle.text = downloads[0].episode.podcast!.title
-                baseViewController.miniPlayerView.episodeTitle.text = downloads[0].episode.title
 
                 let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
                 baseViewController.sliderView.minimumTrackTintColor = backgroundColor

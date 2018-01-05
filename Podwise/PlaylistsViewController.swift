@@ -51,10 +51,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
         collectionView.addGestureRecognizer(longPressGesture)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(true)
+        
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -116,6 +113,11 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         collectionView.reloadData()
         
         navigationController?.setNavigationBarHidden(true, animated: true)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
         
 //        if !isTimerRunning {
 //            runTimer()

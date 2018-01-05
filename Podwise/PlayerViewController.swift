@@ -1,46 +1,27 @@
 //
-//  MiniPlayerViewController.swift
+//  PlayerViewController.swift
 //  Podwise
 //
-//  Created by Jeff Chimney on 2017-11-23.
-//  Copyright © 2017 Jeff Chimney. All rights reserved.
+//  Created by Jeff Chimney on 2018-01-05.
+//  Copyright © 2018 Jeff Chimney. All rights reserved.
 //
 
 import UIKit
 import MediaPlayer
 
-class MiniPlayerView: UIView {
+class PlayerViewController: UIViewController {
     
-    @IBOutlet var miniPlayerView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
-    @IBOutlet var artImageViewHeightConstraint: NSLayoutConstraint!
-    @IBOutlet var artImageViewWidthConstraint: NSLayoutConstraint!
-    @IBOutlet var artImageViewLeadingConstraint: NSLayoutConstraint!
-    @IBOutlet var artImageViewBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var playPauseDistanceFromBottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var backTenDistanceFromPlayConstraint: NSLayoutConstraint!
-    @IBOutlet weak var forward30DistanceFromPlayConstraint: NSLayoutConstraint!
-    @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
-    @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var podcastTitle: UILabel!
+    @IBOutlet weak var episodeTitle: UILabel!
+    @IBOutlet weak var chevronImage: UIImageView!
+    @IBOutlet weak var progressSlider: UISlider!
     var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-
-    private func commonInit() {
-        Bundle.main.loadNibNamed("MiniPlayer", owner: self, options: nil)
-        addSubview(miniPlayerView)
-        miniPlayerView.frame = self.bounds
-        miniPlayerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
+    override func viewDidLoad() {
+        super.viewDidLoad()
         if let player = audioPlayer {
             if player.isPlaying {
                 playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
@@ -48,6 +29,44 @@ class MiniPlayerView: UIView {
                 playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             }
         }
+        
+        var thumbImage = UIImage(named: "first")
+        
+        let horizontalRatio: CGFloat = 0.5
+        let verticalRatio: CGFloat = 0.5
+        
+        let ratio = max(horizontalRatio, verticalRatio)
+        let newSize = CGSize(width: (thumbImage?.size.width)! * ratio, height: (thumbImage?.size.height)! * ratio)
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1)
+        view.draw(CGRect(origin: CGPoint(x: 0, y: 0), size: newSize))
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        thumbImage = newImage!
+        
+        progressSlider.setThumbImage(thumbImage, for: .normal)
+    }
+    
+    @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
+        // 3
+        let translation = sender.translation(in: view)
+        // 4
+        let progress = MiniPlayerTransitionHelper.calculateProgress(
+            translationInView: translation,
+            viewBounds: view.bounds,
+            direction: .Down
+        )
+        // 5
+        MiniPlayerTransitionHelper.mapGestureStateToInteractor(
+            gestureState: sender.state,
+            progress: progress,
+            interactor: interactor){
+                // 6
+                self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    @IBAction func closeMenu(sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
     }
     
     @IBAction func playPauseButtonPressed(_ sender: Any) {
@@ -90,6 +109,15 @@ class MiniPlayerView: UIView {
         }
     }
     
+    @IBAction func playheadChanged(_ sender: Any) {
+        if let player = audioPlayer {
+            // Update progress
+            let percentComplete = progressSlider.value
+            player.currentTime = player.duration * Double(percentComplete)
+            updateMediaPlayer(player: player)
+        }
+    }
+    
     func updateMediaPlayer(player: AVAudioPlayer) {
         let artworkImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
         let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
@@ -105,4 +133,5 @@ class MiniPlayerView: UIView {
         ]
     }
 }
+
 

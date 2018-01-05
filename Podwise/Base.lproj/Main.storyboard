@@ -647,7 +647,7 @@
         <!--Base View Controller-->
         <scene sceneID="24Y-Pg-Scg">
             <objects>
-                <viewController id="pSL-3u-Knh" customClass="BaseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="openPlayer" id="pSL-3u-Knh" customClass="BaseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="6XK-M5-xq2">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -655,9 +655,13 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FG3-di-WrS" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="597" width="375" height="70"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="fy0-df-lyC"/>
                                 </constraints>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="e0u-L8-OaI" appends="YES" id="DWs-5Z-ESt"/>
+                                </connections>
                             </view>
                             <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="567"/>
@@ -697,9 +701,15 @@
                         <outlet property="miniPlayerView" destination="FG3-di-WrS" id="EEX-Ni-fzR"/>
                         <outlet property="sliderHeightConstraint" destination="kbi-i1-9Rn" id="rWU-Yj-i09"/>
                         <outlet property="sliderView" destination="i6q-z0-SyV" id="OHY-yw-Exm"/>
+                        <segue destination="fFV-2T-Tw5" kind="presentation" identifier="openPlayer" id="qoW-ID-3FU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tDc-Kk-5Be" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="e0u-L8-OaI">
+                    <connections>
+                        <action selector="openPlayerGestureWithSender:" destination="pSL-3u-Knh" id="CaP-JJ-pPA"/>
+                    </connections>
+                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-810.39999999999998" y="-27.436281859070466"/>
         </scene>
@@ -986,10 +996,122 @@
             </objects>
             <point key="canvasLocation" x="748" y="1728"/>
         </scene>
+        <!--Player View Controller-->
+        <scene sceneID="FKe-WO-yNL">
+            <objects>
+                <viewController storyboardIdentifier="playerViewController" id="fFV-2T-Tw5" customClass="PlayerViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="fyI-76-o8u">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5sS-ge-T9F">
+                                <rect key="frame" x="167" y="566" width="40" height="40"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="40" id="BZE-yW-ldj"/>
+                                    <constraint firstAttribute="height" constant="40" id="oVA-7y-wIj"/>
+                                </constraints>
+                                <state key="normal" image="play-50"/>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Hyw-Pe-rlC">
+                                <rect key="frame" x="77" y="571" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="NWl-MA-lqZ"/>
+                                    <constraint firstAttribute="width" constant="30" id="ede-hf-PPc"/>
+                                </constraints>
+                                <state key="normal" image="replay-10-50"/>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Title" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Fg5-NU-g8Y">
+                                <rect key="frame" x="167.5" y="110" width="39" height="24"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="20"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" alpha="0.60000002384185791" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6m5-Gp-nX0">
+                                <rect key="frame" x="137.5" y="142" width="99" height="21"/>
+                                <fontDescription key="fontDescription" type="italicSystem" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <imageView hidden="YES" userInteractionEnabled="NO" alpha="0.5" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="chevron" translatesAutoresizingMaskIntoConstraints="NO" id="eHz-Y0-755">
+                                <rect key="frame" x="170" y="12" width="35" height="35"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="35" id="C2J-TQ-Ono"/>
+                                    <constraint firstAttribute="height" constant="35" id="zVJ-da-uwQ"/>
+                                </constraints>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yvE-SS-Ab0">
+                                <rect key="frame" x="37" y="183" width="300" height="300"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="300" id="YIc-Vz-Bx9"/>
+                                    <constraint firstAttribute="width" constant="300" id="qXr-Ee-mRR"/>
+                                </constraints>
+                            </imageView>
+                            <slider hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="rz2-MD-w4V">
+                                <rect key="frame" x="35" y="491" width="304" height="31"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="UBj-lz-Ipw"/>
+                                </constraints>
+                            </slider>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="T0Q-zt-HRT">
+                                <rect key="frame" x="267" y="571" width="30" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="xVI-j4-ahC"/>
+                                    <constraint firstAttribute="width" constant="30" id="ytl-0q-9zC"/>
+                                </constraints>
+                                <state key="normal" image="forward-30-50"/>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <gestureRecognizers/>
+                        <constraints>
+                            <constraint firstItem="eHz-Y0-755" firstAttribute="top" secondItem="fyI-76-o8u" secondAttribute="top" constant="12" id="0Jc-3T-ATW"/>
+                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="top" secondItem="6m5-Gp-nX0" secondAttribute="bottom" constant="20" id="4bi-tc-hFi"/>
+                            <constraint firstItem="6m5-Gp-nX0" firstAttribute="top" secondItem="Fg5-NU-g8Y" secondAttribute="bottom" constant="8" id="5ck-0Z-klB"/>
+                            <constraint firstItem="rz2-MD-w4V" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="9jd-jZ-3QD"/>
+                            <constraint firstItem="rz2-MD-w4V" firstAttribute="top" secondItem="yvE-SS-Ab0" secondAttribute="bottom" constant="8" id="ABU-l1-DmN"/>
+                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Agy-Ru-bVm"/>
+                            <constraint firstItem="6m5-Gp-nX0" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Gz3-6y-iVf"/>
+                            <constraint firstItem="5sS-ge-T9F" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="OkR-hH-lAY"/>
+                            <constraint firstItem="Fg5-NU-g8Y" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="QYQ-U2-jh2"/>
+                            <constraint firstItem="eHz-Y0-755" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Rc0-Ck-hCJ"/>
+                            <constraint firstItem="T0Q-zt-HRT" firstAttribute="leading" secondItem="5sS-ge-T9F" secondAttribute="trailing" constant="60" id="Xai-5k-d85"/>
+                            <constraint firstItem="T0Q-zt-HRT" firstAttribute="centerY" secondItem="5sS-ge-T9F" secondAttribute="centerY" id="YB0-k9-G17"/>
+                            <constraint firstItem="5sS-ge-T9F" firstAttribute="leading" secondItem="Hyw-Pe-rlC" secondAttribute="trailing" constant="60" id="YeS-Qi-Rgt"/>
+                            <constraint firstItem="Hyw-Pe-rlC" firstAttribute="centerY" secondItem="5sS-ge-T9F" secondAttribute="centerY" id="Zz3-Ua-gem"/>
+                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="centerY" secondItem="fyI-76-o8u" secondAttribute="centerY" id="oOS-NW-Vfx"/>
+                            <constraint firstItem="Xuh-0X-H2U" firstAttribute="bottom" secondItem="5sS-ge-T9F" secondAttribute="bottom" constant="61" id="w0Y-sD-BI7"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="Xuh-0X-H2U"/>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="6Fn-0Z-rcI" appends="YES" id="oNE-68-KS0"/>
+                        </connections>
+                    </view>
+                    <connections>
+                        <outlet property="artImageView" destination="yvE-SS-Ab0" id="Ojw-2i-CUk"/>
+                        <outlet property="chevronImage" destination="eHz-Y0-755" id="QQZ-Bn-45f"/>
+                        <outlet property="episodeTitle" destination="6m5-Gp-nX0" id="TxN-Jy-HeD"/>
+                        <outlet property="playPauseButton" destination="5sS-ge-T9F" id="qkl-Dz-4PV"/>
+                        <outlet property="podcastTitle" destination="Fg5-NU-g8Y" id="Fvf-Xz-04Y"/>
+                        <outlet property="progressSlider" destination="rz2-MD-w4V" id="eYF-s0-nzf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TQq-q4-u6C" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <panGestureRecognizer minimumNumberOfTouches="1" id="6Fn-0Z-rcI">
+                    <connections>
+                        <action selector="handleGestureWithSender:" destination="fFV-2T-Tw5" id="mf3-UC-6w7"/>
+                    </connections>
+                </panGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="-810" y="628"/>
+        </scene>
     </scenes>
     <resources>
         <image name="addPlaylist" width="96" height="96"/>
+        <image name="chevron" width="50" height="50"/>
         <image name="first" width="30" height="30"/>
+        <image name="forward-30-50" width="50" height="50"/>
+        <image name="play-50" width="50" height="50"/>
+        <image name="replay-10-50" width="50" height="50"/>
         <image name="second" width="30" height="30"/>
     </resources>
 </document>

@@ -29,6 +29,8 @@ class BaseViewController: UIViewController {
     @IBOutlet weak var sliderView: UISlider!
     let originalMiniPlayerHeightConstant: CGFloat = 70
     
+    var interactor = Interactor()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         baseViewController = self
@@ -36,15 +38,7 @@ class BaseViewController: UIViewController {
         miniPlayerView.artImageView.layer.cornerRadius = 10
         miniPlayerView.artImageView.layer.masksToBounds = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
-        swipeUp.direction = .up
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(self.handleSwipe(_:)))
-        swipeDown.direction = .down
         miniPlayerView.addGestureRecognizer(tap)
-        miniPlayerView.addGestureRecognizer(swipeUp)
-        miniPlayerView.addGestureRecognizer(swipeDown)
-//        miniPlayerView.layer.cornerRadius = 15
-//        miniPlayerView.layer.masksToBounds = true
         
         sliderView.setValue(0, animated: false)
         sliderView.maximumTrackTintColor = .clear
@@ -54,6 +48,8 @@ class BaseViewController: UIViewController {
         } else {
             hideMiniPlayer(animated: false)
         }
+        
+        
         
         self.view.backgroundColor = .white
         
@@ -116,8 +112,6 @@ class BaseViewController: UIViewController {
         if audioPlayer != nil {
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
             miniPlayerView.artImageView.image = imageArt
-            miniPlayerView.podcastTitle.text = nowPlayingEpisode.podcast?.title
-            miniPlayerView.episodeTitle.text = nowPlayingEpisode.title
             if audioPlayer.isPlaying {
                 miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
             } else {
@@ -157,21 +151,20 @@ class BaseViewController: UIViewController {
 //    }
     
     @objc public func startUpdatingSlider() {
-        if !miniPlayerView.progressSlider.isTracking {
-            if let player = audioPlayer {
-                if player.isPlaying
-                {
-                    // Update progress
-                    sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
-                    miniPlayerView.progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
-                }
-            }
-        }
+//        if !miniPlayerView.progressSlider.isTracking {
+//            if let player = audioPlayer {
+//                if player.isPlaying
+//                {
+//                    // Update progress
+//                    sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
+//                    miniPlayerView.progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
+//                }
+//            }
+//        }
     }
     
     public func setProgressBarColor(red: CGFloat, green: CGFloat, blue: CGFloat) {
         sliderView.minimumTrackTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
-        miniPlayerView.progressSlider.minimumTrackTintColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
     }
     
     public func getAverageColorOf(image: CGImage) -> UIColor {
@@ -196,177 +189,55 @@ class BaseViewController: UIViewController {
         return result
     }
     
-    @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        if miniPlayerHeightConstraint.constant <= originalMiniPlayerHeightConstant { // make mini player full page
-            // disable old leading and bottom constraints
-            miniPlayerView.artImageViewLeadingConstraint.isActive = false
-            miniPlayerView.artImageViewBottomConstraint.isActive = false
-            
-            // enable new constraints
-            miniPlayerHeightConstraint.constant += baseView.bounds.height
-            miniPlayerView.artImageViewCenterXConstraint.isActive = true
-            miniPlayerView.artImageViewCenterYConstraint.isActive = true
-            miniPlayerView.artImageViewHeightConstraint.constant = 300
-            miniPlayerView.artImageViewWidthConstraint.constant = 300
-            miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
-            miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
-            miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
-            miniPlayerView.playPauseHeightConstraint.constant += 40
-            miniPlayerView.playPauseWidthConstraint.constant += 40
-            miniPlayerView.chevronImage.isHidden = false
-            miniPlayerView.podcastTitle.isHidden = false
-            miniPlayerView.episodeTitle.isHidden = false
-            
-            miniPlayerView.progressSlider.isHidden = false
-            
-            UIView.animate(withDuration: 0.75, animations: {
-                self.miniPlayerView.layoutSubviews()
-                self.view.layoutSubviews()
-            })
+    @IBAction func openPlayerGesture(sender: UIPanGestureRecognizer) {
+        let translation = sender.translation(in: view)
+        
+        let progress = MiniPlayerTransitionHelper.calculateProgress(translationInView: translation, viewBounds: view.bounds, direction: .Up)
+        
+        MiniPlayerTransitionHelper.mapGestureStateToInteractor(
+            gestureState: sender.state,
+            progress: progress,
+            interactor: interactor){
+                self.performSegue(withIdentifier: "openPlayer", sender: nil)
         }
     }
     
-    @objc func handleSwipe(_ sender: UISwipeGestureRecognizer) {
-        
-//        if sender.state == .began || sender.state == .changed {
-//            let translation = sender.translation(in: self.view)
-//            // note: 'view' is optional and need to be unwrapped
-//            miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant-(translation.y)
-//            self.view.layoutSubviews()
-//        }
-//        if sender.state == .ended {
-//            let translation = sender.translation(in: self.view)
-//
-//            if miniPlayerHeightConstraint.constant == originalMiniPlayerHeightConstant { // show expanded mini player if threshold broken
-//                if -translation.y < self.view.frame.maxY/8 { // if threshold is not broken
-//                    miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
-//                    UIView.animate(withDuration: 0.25, animations: {
-//                        self.miniPlayerView.layoutSubviews()
-//                        self.view.layoutSubviews()
-//                    })
-//                } else { // threshold is broken, enlarge mini player
-//                 //disable old leading and bottom constraints
-//                    miniPlayerView.artImageViewLeadingConstraint.isActive = false
-//                    miniPlayerView.artImageViewBottomConstraint.isActive = false
-//
-//                    // enable new constraints
-//                    miniPlayerHeightConstraint.constant += baseView.bounds.height
-//                    miniPlayerView.artImageViewCenterXConstraint.isActive = true
-//                    miniPlayerView.artImageViewCenterYConstraint.isActive = true
-//                    miniPlayerView.artImageViewHeightConstraint.constant = 300
-//                    miniPlayerView.artImageViewWidthConstraint.constant = 300
-//                    miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
-//                    miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
-//                    miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
-//                    miniPlayerView.playPauseHeightConstraint.constant += 40
-//                    miniPlayerView.playPauseWidthConstraint.constant += 40
-//                    miniPlayerView.chevronImage.isHidden = false
-//                    miniPlayerView.podcastTitle.isHidden = false
-//                    miniPlayerView.episodeTitle.isHidden = false
-//
-//                    miniPlayerView.progressSlider.isHidden = false
-//
-//                    UIView.animate(withDuration: 0.25, animations: {
-//                        self.miniPlayerView.layoutSubviews()
-//                        self.view.layoutSubviews()
-//                    })
-//                }
-//            } else {
-//                if translation.y < -self.view.frame.maxY/8 { // if threshold is not broken
-//                    // enable new constraints
-//                    miniPlayerHeightConstraint.constant = baseView.bounds.height + translation.y
-//
-//
-//                    UIView.animate(withDuration: 0.25, animations: {
-//                        self.miniPlayerView.layoutSubviews()
-//                        self.view.layoutSubviews()
-//                    })
-//                } else { // threshold is broken, shrink mini player
-//                    //disable old leading and bottom constraints
-//                    miniPlayerView.artImageViewCenterXConstraint.isActive = false
-//                    miniPlayerView.artImageViewCenterYConstraint.isActive = false
-//
-//                    // enable new constraints
-//                    miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
-//                    miniPlayerView.artImageViewLeadingConstraint.isActive = true
-//                    miniPlayerView.artImageViewBottomConstraint.isActive = true
-//                    miniPlayerView.artImageViewHeightConstraint.constant = 60
-//                    miniPlayerView.artImageViewWidthConstraint.constant = 60
-//                    miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
-//                    miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
-//                    miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
-//                    miniPlayerView.playPauseHeightConstraint.constant -= 40
-//                    miniPlayerView.playPauseWidthConstraint.constant -= 40
-//                    miniPlayerView.chevronImage.isHidden = true
-//                    miniPlayerView.podcastTitle.isHidden = true
-//                    miniPlayerView.episodeTitle.isHidden = true
-//
-//                    miniPlayerView.progressSlider.isHidden = true
-//
-//                    UIView.animate(withDuration: 0.75, animations: {
-//                        self.miniPlayerView.layoutSubviews()
-//                        self.view.layoutSubviews()
-//                    })
-//                }
-//            }
-//        }
-        print(sender.direction)
-        if miniPlayerHeightConstraint.constant > originalMiniPlayerHeightConstant { // make mini player small
-            if sender.direction == .down {
-                // disable old leading and bottom constraints
-                miniPlayerView.artImageViewCenterXConstraint.isActive = false
-                miniPlayerView.artImageViewCenterYConstraint.isActive = false
-
-                // enable new constraints
-                miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
-                miniPlayerView.artImageViewLeadingConstraint.isActive = true
-                miniPlayerView.artImageViewBottomConstraint.isActive = true
-                miniPlayerView.artImageViewHeightConstraint.constant = 60
-                miniPlayerView.artImageViewWidthConstraint.constant = 60
-                miniPlayerView.playPauseDistanceFromBottomConstraint.constant -= 50
-                miniPlayerView.backTenDistanceFromPlayConstraint.constant -= 15
-                miniPlayerView.forward30DistanceFromPlayConstraint.constant -= 15
-                miniPlayerView.playPauseHeightConstraint.constant -= 40
-                miniPlayerView.playPauseWidthConstraint.constant -= 40
-                miniPlayerView.chevronImage.isHidden = true
-                miniPlayerView.podcastTitle.isHidden = true
-                miniPlayerView.episodeTitle.isHidden = true
-
-                miniPlayerView.progressSlider.isHidden = true
-
-                UIView.animate(withDuration: 0.75, animations: {
-                    self.miniPlayerView.layoutSubviews()
-                    self.view.layoutSubviews()
-                })
-            }
-        } else { // make mini player full screen
-            if sender.direction == .up {
-                // disable old leading and bottom constraints
-                miniPlayerView.artImageViewLeadingConstraint.isActive = false
-                miniPlayerView.artImageViewBottomConstraint.isActive = false
-
-                // enable new constraints
-                miniPlayerHeightConstraint.constant += baseView.bounds.height
-                miniPlayerView.artImageViewCenterXConstraint.isActive = true
-                miniPlayerView.artImageViewCenterYConstraint.isActive = true
-                miniPlayerView.artImageViewHeightConstraint.constant = 300
-                miniPlayerView.artImageViewWidthConstraint.constant = 300
-                miniPlayerView.playPauseDistanceFromBottomConstraint.constant += 50
-                miniPlayerView.backTenDistanceFromPlayConstraint.constant += 15
-                miniPlayerView.forward30DistanceFromPlayConstraint.constant += 15
-                miniPlayerView.playPauseHeightConstraint.constant += 40
-                miniPlayerView.playPauseWidthConstraint.constant += 40
-                miniPlayerView.chevronImage.isHidden = false
-                miniPlayerView.podcastTitle.isHidden = false
-                miniPlayerView.episodeTitle.isHidden = false
-
-                miniPlayerView.progressSlider.isHidden = false
-
-                UIView.animate(withDuration: 0.75, animations: {
-                    self.miniPlayerView.layoutSubviews()
-                    self.view.layoutSubviews()
-                })
-            }
+    @IBAction func openMenu(sender: AnyObject) {
+        performSegue(withIdentifier: "openMenu", sender: nil)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if let destinationViewController = segue.destination as? PlayerViewController {
+            destinationViewController.transitioningDelegate = self
+            destinationViewController.interactor = interactor
+            
+            let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
+            //destinationViewController.artImageView.image = imageArt
+            //destinationViewController.episodeTitle.text = nowPlayingEpisode.title!
+            //destinationViewController.podcastTitle.text = nowPlayingEpisode.podcast!.title!
+            //destinationViewController.progressSlider.minimumTrackTintColor = sliderView.minimumTrackTintColor
         }
+    }
+    
+    @objc func handleTap(_ sender: UITapGestureRecognizer) {
+        performSegue(withIdentifier: "openPlayer", sender: nil)
+    }
+}
+
+extension BaseViewController: UIViewControllerTransitioningDelegate {
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return PresentMiniPlayerAnimator()
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        return DismissMiniPlayerAnimator()
+    }
+    
+    func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactor.hasStarted ? interactor : nil
+    }
+    
+    func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        return interactor.hasStarted ? interactor : nil
     }
 }

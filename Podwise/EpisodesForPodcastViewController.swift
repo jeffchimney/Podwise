@@ -199,8 +199,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         CoreDataHelper.save(context: managedContext!)
         
         nowPlayingEpisode = episode
-        baseViewController.miniPlayerView.podcastTitle.text = podcast.title
-        baseViewController.miniPlayerView.episodeTitle.text = episode.title
         baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(for: episode)
@@ -434,8 +432,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     
                     let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = podcastImage
-                    baseViewController.miniPlayerView.podcastTitle.text = episodeToPlay.podcast?.title
-                    baseViewController.miniPlayerView.episodeTitle.text = episodeToPlay.title
                     
                     let backgroundColor = baseViewController.getAverageColorOf(image: podcastImage!.cgImage!)
                     baseViewController.sliderView.minimumTrackTintColor = backgroundColor
@@ -485,8 +481,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                         self.startAudioSession()
                         let nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-                        baseViewController.miniPlayerView.podcastTitle.text = self.podcast.title
-                        baseViewController.miniPlayerView.episodeTitle.text = episode.title
                         
                         baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))
                         

@@ -162,6 +162,12 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         }
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if searching {
+            
+        }
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if searching {
             let rowData: [String: Any] = self.podcastResults[indexPath.row]

@@ -15,5 +15,6 @@ class PodcastCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     var collectionID: String!
+    var downloaded = false
     
 }
