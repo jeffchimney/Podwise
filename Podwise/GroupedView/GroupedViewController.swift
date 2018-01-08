@@ -104,6 +104,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         if let optionalHours = Int(thisEpisode.duration!) {
             hours = (optionalHours/60)/60
         }  else {
+            print(thisEpisode.duration!)
             let durationArray = thisEpisode.duration?.split(separator: ":")
             if let optionalHours = Int(durationArray![0]) {
                 hours = optionalHours

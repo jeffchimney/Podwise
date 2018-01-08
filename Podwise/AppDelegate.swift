@@ -35,6 +35,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillResignActive(_ application: UIApplication) {
         // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
         // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
+        
+        //baseViewController.dismiss(animated: false, completion: nil)
 
         if nowPlayingEpisode != nil {
             nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
@@ -179,6 +181,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func registerDeviceTokenWithMicrosoft(deviceToken: String) {
         AzureDBDataHelper.registerDeviceTokenWithMicrosoft(deviceToken: deviceToken, using: client)
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        print(userInfo)
+//        guard
+//            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
+//            let alert = aps["alert"] as? NSDictionary,
+//            let body = alert["body"] as? String,
+//            let title = alert["title"] as? String
+//            else {
+//                // handle any error here
+//                return
+//        }
+        
+        //print("Title: \(title) \nBody:\(body)")
     }
     
     //  Tags that can be send from server in a push notification:

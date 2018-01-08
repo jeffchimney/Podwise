@@ -93,6 +93,11 @@ class BaseViewController: UIViewController {
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(true)
+        print("Base View is Disappearing")
+    }
+    
     public func hideMiniPlayer(animated: Bool) {
         
         baseView.layer.shadowOpacity = 0.0
