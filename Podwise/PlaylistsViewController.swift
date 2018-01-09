@@ -11,7 +11,7 @@ import CoreData
 import AVFoundation
 
 public protocol relayoutSectionDelegate: class {
-    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist)
+    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int)
     func reloadCollectionView()
 }
 
@@ -288,10 +288,16 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
-    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist) {
+    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int) {
         if playlistStructArray[row].episodes.contains(deleted) {
             let indexToDelete = playlistStructArray[row].episodes.index(of: deleted)
             playlistStructArray[row].episodes.remove(at: indexToDelete!)
+            
+            if episodesInPlaylist == 0 {
+                playlistStructArray.remove(at: row)
+                collectionView.deleteItems(at: [IndexPath(row: row, section: 0)])
+                return
+            }
             
             collectionView.reloadItems(at: [IndexPath(row: row, section: 0)])
             UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: collectionView.layoutSubviews, completion: nil)
@@ -299,7 +305,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     }
     
     func reloadCollectionView() {
-        viewWillAppear(true)
+        viewDidLoad()
     }
     
     func edit(playlist: CDPlaylist) {

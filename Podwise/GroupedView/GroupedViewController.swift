@@ -200,7 +200,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
                 tableView.deleteRows(at: [indexPath], with: .automatic)
                 tableView.endUpdates()
                 
-                self.relayoutSectionDelegate?.relayoutSection(row: self.rowInTableView, deleted: cdEpisode, playlist: cdPlaylist)
+                self.relayoutSectionDelegate?.relayoutSection(row: self.rowInTableView, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist: self.episodesInPlaylist.count)
                 success(true)
             })
     
