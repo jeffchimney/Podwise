@@ -23,7 +23,7 @@ class MiniPlayerView: UIView {
     @IBOutlet weak var forward30DistanceFromPlayConstraint: NSLayoutConstraint!
     @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
     override init(frame: CGRect) {

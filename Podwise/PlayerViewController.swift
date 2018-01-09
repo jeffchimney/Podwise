@@ -22,7 +22,7 @@ class PlayerViewController: UIViewController {
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var chevronButton: UIButton!
     @IBOutlet weak var progressSlider: UISlider!
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
     override func viewDidLoad() {
@@ -35,7 +35,7 @@ class PlayerViewController: UIViewController {
             }
         }
         
-        var thumbImage = UIImage(named: "first")
+        weak var thumbImage = UIImage(named: "first")
         
         let horizontalRatio: CGFloat = 0.5
         let verticalRatio: CGFloat = 0.5

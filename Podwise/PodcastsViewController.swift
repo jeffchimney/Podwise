@@ -17,7 +17,7 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
     
     var subscribedPodcasts: [CDPodcast] = []
     var unSubscribedPodcasts: [CDPodcast] = []
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
 
     @IBOutlet weak var collectionView: UICollectionView!

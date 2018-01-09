@@ -13,7 +13,8 @@ import WebKit
 import SafariServices
 import AVFoundation
 
-var timer: Timer!
+weak var timer: Timer!
+var managedContext: NSManagedObjectContext!
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

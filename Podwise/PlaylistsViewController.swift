@@ -35,7 +35,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     var playlists: [CDPlaylist] = []
     var episodesForPlaylists: [CDPlaylist: [CDEpisode]] = [CDPlaylist: [CDEpisode]]()
     var playlistStructArray = [PlaylistEpisodes]()
-    var managedContext: NSManagedObjectContext?
+    //var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
     private var interactionController: UIPercentDrivenInteractiveTransition?
@@ -123,6 +123,15 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
 //            runTimer()
 //        }
     }
+    
+//    override func viewWillDisappear(_ animated: Bool) {
+//        podcasts = []
+//        episodes = []
+//        misfitEpisodes = []
+//        playlists = []
+//        episodesForPlaylists = [:]
+//        playlistStructArray = []
+//    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

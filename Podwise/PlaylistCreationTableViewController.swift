@@ -17,7 +17,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
     var podcasts: [CDPodcast] = []
     var podcastsInPlaylist: [CDPodcast] = []
     @IBOutlet weak var saveButton: UIBarButtonItem!
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     weak var relayoutSectionDelegate: relayoutSectionDelegate!
     var colour = UIColor()
     var colourSet = false

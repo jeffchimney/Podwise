@@ -21,7 +21,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     var episodesInPlaylist: [CDEpisode] = []
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
-    var managedContext: NSManagedObjectContext!
+    //weak var managedContext: NSManagedObjectContext!
     weak var editPlaylistParentDelegate: editPlaylistParentDelegate!
     
     override init(frame: CGRect, style: UITableViewStyle) {
@@ -194,7 +194,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
                     print("not deleted, couldnt find file.")
                 }
                 tableView.beginUpdates()
-                CoreDataHelper.delete(episode: cdEpisode, in: self.managedContext!)
+                CoreDataHelper.delete(episode: cdEpisode, in: managedContext!)
                 self.episodesInPlaylist.remove(at: indexPath.row)
                 
                 tableView.deleteRows(at: [indexPath], with: .automatic)

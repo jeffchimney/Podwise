@@ -17,7 +17,7 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
     var subscribed: Bool!
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
-    var managedContext: NSManagedObjectContext!
+    //weak var managedContext: NSManagedObjectContext!
     weak var previousViewController: PodcastsViewController!
     
     override init(frame: CGRect, style: UITableViewStyle) {
@@ -129,7 +129,7 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
             
-            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+            let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
             
             for eachPlaylist in playlists {
                 alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in

@@ -14,7 +14,7 @@ import MediaPlayer
 
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     weak var reloadCollectionViewDelegate: reloadCollectionViewDelegate?
     
     @IBOutlet weak var imageView: UIImageView!
@@ -227,7 +227,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
             
-            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+            let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
             
             for eachPlaylist in playlists {
                 if self.segmentedViewController.selectedSegmentIndex == 0 {
@@ -250,7 +250,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         })
         
         let deleteFromDownloadedEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.downloadedEpisodes[indexPath.row].id!, in: self.managedContext!)
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.downloadedEpisodes[indexPath.row].id!, in: managedContext!)
             if cdEpisode.count > 0 {
                 do {
                     let filemanager = FileManager.default
@@ -259,7 +259,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
                         tableView.beginUpdates()
-                        CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                        CoreDataHelper.delete(episode: cdEpisode[0], in: managedContext!)
                         self.downloadedEpisodes.remove(at: indexPath.row)
                         tableView.deleteRows(at: [indexPath], with: .automatic)
                         tableView.endUpdates()
@@ -272,7 +272,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         })
         
         let deleteFromUndownloadedEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
-            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.unDownloadedEpisodes[indexPath.row].id, in: self.managedContext!)
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.unDownloadedEpisodes[indexPath.row].id, in: managedContext!)
             if cdEpisode.count > 0 {
                 do {
                     let filemanager = FileManager.default
@@ -283,7 +283,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     } else {
                         print("not deleted, couldnt find file.")
                     }
-                    CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                    CoreDataHelper.delete(episode: cdEpisode[0], in: managedContext!)
                     if self.downloadedEpisodes.contains(cdEpisode[0]) {
                         let indexToDelete = self.downloadedEpisodes.index(of: cdEpisode[0])
                         self.downloadedEpisodes.remove(at: indexToDelete!)
@@ -488,7 +488,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                             nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
                         }
                         
-                        CoreDataHelper.save(context: self.managedContext!)
+                        CoreDataHelper.save(context: managedContext!)
                         
                         nowPlayingEpisode = thisDownload.episode
                         
@@ -589,7 +589,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     @IBAction func playlistButtonPressed(_ sender: Any) {
         let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
         
-        let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+        let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         
         for eachPlaylist in playlists {
             alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
@@ -624,7 +624,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     }
     
     override var previewActionItems: [UIPreviewActionItem] {
-        let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+        let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
         var playlistActionList: [UIPreviewAction] = []
         for eachPlaylist in playlists {
             let addToPlaylist = UIPreviewAction(title: "\(eachPlaylist.name!)", style: .default, handler: {_,_ in
@@ -637,14 +637,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         if podcast.subscribed {
             subscribe = UIPreviewAction(title: "Unsubscribe", style: .default, handler: {_,_ in
                 self.podcast.subscribed = false
-                CoreDataHelper.save(context: self.managedContext!)
+                CoreDataHelper.save(context: managedContext!)
                 AzureDBDataHelper.handle(subscribe: false, to: self.podcast)
                 self.reloadCollectionViewDelegate?.reloadCollectionView()
             })
         } else {
             subscribe = UIPreviewAction(title: "Subscribe", style: .default, handler: {_,_ in
                 self.podcast.subscribed = true
-                CoreDataHelper.save(context: self.managedContext!)
+                CoreDataHelper.save(context: managedContext!)
                 AzureDBDataHelper.handle(subscribe: true, to: self.podcast)
                 self.reloadCollectionViewDelegate?.reloadCollectionView()
             })

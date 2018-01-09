@@ -14,7 +14,7 @@ import MediaPlayer
 
 class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate, UISearchBarDelegate, URLSessionDownloadDelegate {
     
-    var managedContext: NSManagedObjectContext?
+    //weak var managedContext: NSManagedObjectContext?
     
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var tableView: UITableView!
@@ -204,7 +204,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print("Adding to playlist...")
             let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
             
-            let playlists = CoreDataHelper.fetchAllPlaylists(in: self.managedContext!)
+            let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
             
             for eachPlaylist in playlists {
                 alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
@@ -221,7 +221,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         })
         let deleteEpisodeAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
             print("Delete action ...")
-            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id, in: self.managedContext!)
+            let cdEpisode = CoreDataHelper.getEpisodeWith(id: self.episodes[indexPath.row].id, in: managedContext!)
             if cdEpisode.count > 0 {
                 do {
                     let filemanager = FileManager.default
@@ -232,7 +232,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     } else {
                         print("not deleted, couldnt find file.")
                     }
-                    CoreDataHelper.delete(episode: cdEpisode[0], in: self.managedContext!)
+                    CoreDataHelper.delete(episode: cdEpisode[0], in: managedContext!)
                 }
             }
             
