@@ -72,6 +72,7 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="activityIndicator" destination="sPf-fO-81O" id="fzp-5e-O2g"/>
+                <outlet property="artImageView" destination="Xh9-db-FqZ" id="Mxi-bl-HgP"/>
                 <outlet property="durationLabel" destination="APp-BJ-YwY" id="qP3-ib-FuQ"/>
                 <outlet property="episodeCounterLabel" destination="KfR-oV-35L" id="b5E-c5-dEw"/>
                 <outlet property="titleLabel" destination="Rlr-ni-ulW" id="MOG-gm-27g"/>

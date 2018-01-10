@@ -25,7 +25,7 @@ public protocol editPlaylistDelegate: class {
     func edit()
 }
 
-class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, relayoutSectionDelegate, editPlaylistDelegate {
+class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, UICollectionViewDragDelegate, UICollectionViewDropDelegate, relayoutSectionDelegate, editPlaylistDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -41,6 +41,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     var headers: [PlaylistHeaderView] = []
     var episodesForPlaylists: [CDPlaylist: [CDEpisode]] = [CDPlaylist: [CDEpisode]]()
     var playlistStructArray = [PlaylistEpisodes]()
+    var sectionDragging = 0
     //var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
@@ -52,11 +53,15 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         super.viewDidLoad()
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.dragDelegate = self
+        collectionView.dropDelegate = self
+        
+        collectionView.dragInteractionEnabled = true
         
         self.transitioningDelegate = self
         
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
-        collectionView.addGestureRecognizer(longPressGesture)
+        //collectionView.addGestureRecognizer(longPressGesture)
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -150,45 +155,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
 //        tableView.reloadData()
 //    }
     
-    func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
-        if indexPath.section < playlistStructArray.count && indexPath.row == 0 {
-            return true
-        }
-        return false
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        if destinationIndexPath.section < playlistStructArray.count {
-            let movedObject = playlistStructArray[sourceIndexPath.row]
-            playlistStructArray.remove(at: sourceIndexPath.row)
-            playlistStructArray.insert(movedObject, at: destinationIndexPath.row)
-            
-            var sortIndex = 0
-            for item in playlistStructArray {
-                let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
-                if thisPlaylist.count > 0 {
-                    thisPlaylist[0].sortIndex = Int64(sortIndex)
-                }
-                
-                item.name.sortIndex = Int64(sortIndex)
-                CoreDataHelper.save(context: managedContext!)
-                sortIndex += 1
-            }
-            collectionView.collectionViewLayout.invalidateLayout()
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt originalIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
-        if( originalIndexPath.section != proposedIndexPath.section )
-        {
-            return originalIndexPath;
-        }
-        else
-        {
-            return proposedIndexPath;
-        }
-    }
-    
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return playlistStructArray.count + 1
     }
@@ -231,7 +197,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             if indexPath.row == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderViewCell", for: indexPath as IndexPath) as! PlaylistHeaderView
                 
-                //headerView.editDelegate = self
+                cell.editDelegate = self
                 if playlistStructArray[indexPath.section].episodes.count > 0 {
                     if let podcastPlaylist = playlistStructArray[indexPath.section].episodes[0].podcast?.playlist {
                         cell.playlist = podcastPlaylist
@@ -251,6 +217,18 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                     cell.isUserInteractionEnabled = true
                     
                     headers.append(cell)
+                    
+                    // round top left and right corners
+                    let cornerRadius: CGFloat = 10
+                    let maskLayer = CAShapeLayer()
+                    
+                    maskLayer.path = UIBezierPath(
+                        roundedRect: cell.bounds,
+                        byRoundingCorners: [.topLeft, .topRight],
+                        cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+                        ).cgPath
+                    
+                    cell.layer.mask = maskLayer
                     
                     return cell
                 } else {
@@ -316,7 +294,21 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                         }
                     }
                 }
-                //cell.setNeedsDisplay()
+
+                if indexPath.row == playlistStructArray[indexPath.section].episodes.count {
+                    // round top left and right corners
+                    let cornerRadius: CGFloat = 10
+                    let maskLayer = CAShapeLayer()
+                    
+                    maskLayer.path = UIBezierPath(
+                        roundedRect: cell.bounds,
+                        byRoundingCorners: [.bottomLeft, .bottomRight],
+                        cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+                        ).cgPath
+                    
+                    cell.layer.mask = maskLayer
+                }
+                
                 return cell
             }
         } else {
@@ -436,6 +428,135 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         let presentation = PresentationController.init(presentedViewController: presented, presenting: presenting)
         
         return presentation;
+    }
+    
+    // MARK: collection view Drag and Drop Delegate methods
+    
+    // Drag
+    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        var item: String
+        if indexPath.row == 0 && indexPath.section != playlistStructArray.count {
+            sectionDragging = indexPath.section
+            item = playlistStructArray[indexPath.section].name.name!
+            let itemProvider = NSItemProvider(object: item as NSString)
+            let dragItem = UIDragItem(itemProvider: itemProvider)
+            dragItem.localObject = item
+            
+//            // remove dragging items
+//            collectionView.performBatchUpdates({
+//                playlistBeingDragged = objectDragging
+//                playlistStructArray.remove(at: indexPath.section)
+//
+//                let indexSet = NSMutableIndexSet()
+//                indexSet.add(indexPath.section)
+//
+//                collectionView.deleteSections(indexSet as IndexSet)
+//            })
+            
+            return [dragItem]
+        } else {
+            return []
+        }
+    }
+    
+//    func collectionView(_ collectionView: UICollectionView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] {
+//        var item: String
+//        if indexPath.row == 0 {
+//            item = playlistStructArray[indexPath.section].name.name!
+//        } else {
+//            item = playlistStructArray[indexPath.section].episodes[indexPath.row-1].title!
+//        }
+//        let itemProvider = NSItemProvider(object: item as NSString)
+//        let dragItem = UIDragItem(itemProvider: itemProvider)
+//        dragItem.localObject = item
+//        return [dragItem]
+//    }
+    
+    // Drop
+    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
+        if session.localDragSession != nil
+        {
+            if collectionView.hasActiveDrag
+            {
+                return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
+            }
+            else
+            {
+                return UICollectionViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
+            }
+        }
+        else
+        {
+            return UICollectionViewDropProposal(operation: .forbidden)
+        }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
+        let destinationIndexPath: IndexPath
+        if let indexPath = coordinator.destinationIndexPath
+        {
+            destinationIndexPath = indexPath
+        }
+        else
+        {
+            // Get index path of original playlist
+            destinationIndexPath = IndexPath(row: 0, section: playlistStructArray.count)
+        }
+        
+        switch coordinator.proposal.operation
+        {
+        case .move:
+            // remove dragging items
+            let indexSetToDelete = NSMutableIndexSet()
+            indexSetToDelete.add(sectionDragging)
+            
+            let indexSetToAdd = NSMutableIndexSet()
+            indexSetToAdd.add(destinationIndexPath.section)
+            
+            collectionView.performBatchUpdates({
+                // remove dragged section
+                let sectionToInsert = playlistStructArray[sectionDragging]
+                
+                playlistStructArray.remove(at: sectionDragging)
+                collectionView.deleteSections(indexSetToDelete as IndexSet)
+                
+                // add in dropped section
+                playlistStructArray.insert(sectionToInsert, at: destinationIndexPath.section)
+                collectionView.insertSections(indexSetToAdd as IndexSet)
+                
+                var sortIndex = 0
+                for item in playlistStructArray {
+                    let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
+                    if thisPlaylist.count > 0 {
+                        thisPlaylist[0].sortIndex = Int64(sortIndex)
+                    }
+    
+                    item.name.sortIndex = Int64(sortIndex)
+                    CoreDataHelper.save(context: managedContext!)
+                    sortIndex += 1
+                }
+            })
+            var dIndexPath = destinationIndexPath
+            if dIndexPath.row >= collectionView.numberOfItems(inSection: 0)
+            {
+                dIndexPath.row = collectionView.numberOfItems(inSection: 0) - 1
+            }
+            let item = coordinator.items[0]
+            coordinator.drop(item.dragItem, toItemAt: dIndexPath)
+//            let indexSetToReload = NSMutableIndexSet()
+//            indexSetToReload.add(indexSetToAdd as IndexSet)
+//            indexSetToReload.add(indexSetToDelete as IndexSet)
+            
+            //collectionView.reloadSections(indexSetToReload as IndexSet)
+            break
+            
+        case .copy:
+            //Add the code to copy items
+            break
+            
+        default:
+            return
+        }
     }
 }
 
