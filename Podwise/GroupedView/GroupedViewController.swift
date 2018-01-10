@@ -11,18 +11,18 @@ import CoreData
 import AVFoundation
 import MediaPlayer
 
-public protocol editPlaylistDelegate: class {
-    func edit(playlist: CDPlaylist)
-    func edit()
-}
+//public protocol editPlaylistDelegate: class {
+//    func edit(playlist: CDPlaylist)
+//    func edit()
+//}
 
-class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate, editPlaylistDelegate {
+class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDelegate {//editPlaylistDelegate {
     
     var episodesInPlaylist: [CDEpisode] = []
     var rowInTableView: Int!
     weak var relayoutSectionDelegate: relayoutSectionDelegate?
     //weak var managedContext: NSManagedObjectContext!
-    weak var editPlaylistParentDelegate: editPlaylistParentDelegate!
+    //weak var editPlaylistParentDelegate: editPlaylistParentDelegate!
     
     override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
@@ -71,7 +71,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         // Dequeue with the reuse identifier
         let headerView = self.dequeueReusableHeaderFooterView(withIdentifier: "TableSectionHeader") as! HeaderView
 
-        headerView.editDelegate = self
+        //headerView.editDelegate = self
         if episodesInPlaylist.count > 0 {
             if let podcastPlaylist = episodesInPlaylist[0].podcast?.playlist {
                 headerView.playlist = podcastPlaylist
@@ -270,13 +270,13 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         self.reloadData()
     }
     
-    func edit(playlist: CDPlaylist) {
-        editPlaylistParentDelegate.edit(playlist: playlist)
-    }
-    
-    func edit() {
-        editPlaylistParentDelegate.edit()
-    }
+//    func edit(playlist: CDPlaylist) {
+//        editPlaylistParentDelegate.edit(playlist: playlist)
+//    }
+//    
+//    func edit() {
+//        editPlaylistParentDelegate.edit()
+//    }
 }
 
 

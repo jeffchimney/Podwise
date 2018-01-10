@@ -12,7 +12,7 @@ import UIKit
 class AddPlaylistCell: UICollectionViewCell {
     
     @IBOutlet weak var playlistButton: UIButton!
-    weak var editDelegate: editPlaylistParentDelegate!
+    weak var editDelegate: editPlaylistDelegate!
     
     @IBAction func addPlaylistPressed(_ sender: Any) {
         editDelegate.edit()
