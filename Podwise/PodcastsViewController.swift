@@ -87,7 +87,7 @@ class PodcastsViewController: UIViewController, UICollectionViewDelegate, UIColl
         cell.subscriptionsTableView.previousViewController = self
         cell.subscriptionsTableView.reloadData()
         
-        cell.contentView.layer.cornerRadius = 15
+        cell.contentView.layer.cornerRadius = 10
         cell.contentView.layer.masksToBounds = true
         
         cell.layer.shadowColor = UIColor.black.cgColor
