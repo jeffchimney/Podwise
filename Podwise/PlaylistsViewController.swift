@@ -682,12 +682,12 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             
             //collectionView.reloadSections(indexSetToReload as IndexSet)
             break
-            
         case .copy:
             //Add the code to copy items
             break
             
         default:
+            sectionDragging = nil
             return
         }
     }
