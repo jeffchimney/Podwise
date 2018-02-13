@@ -41,9 +41,6 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="sPf-fO-81O">
-                        <rect key="frame" x="177.5" y="29" width="20" height="20"/>
-                    </activityIndicatorView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KfR-oV-35L">
                         <rect key="frame" x="349" y="31" width="18" height="18"/>
                         <constraints>
@@ -62,16 +59,13 @@
                     <constraint firstItem="APp-BJ-YwY" firstAttribute="top" secondItem="Rlr-ni-ulW" secondAttribute="bottom" constant="5" id="GaV-te-ejq"/>
                     <constraint firstItem="Xh9-db-FqZ" firstAttribute="centerY" secondItem="heG-pN-hUX" secondAttribute="centerY" id="M62-No-Vrf"/>
                     <constraint firstItem="Rlr-ni-ulW" firstAttribute="leading" secondItem="Xh9-db-FqZ" secondAttribute="trailing" constant="8" id="UBT-Dh-TqA"/>
-                    <constraint firstItem="sPf-fO-81O" firstAttribute="centerY" secondItem="heG-pN-hUX" secondAttribute="centerY" id="VYp-o5-xJS"/>
                     <constraint firstItem="APp-BJ-YwY" firstAttribute="leading" secondItem="Xh9-db-FqZ" secondAttribute="trailing" constant="11" id="fTq-zv-syh"/>
                     <constraint firstItem="Rlr-ni-ulW" firstAttribute="trailing" secondItem="heG-pN-hUX" secondAttribute="trailingMargin" constant="-2" id="mIm-de-P83"/>
-                    <constraint firstItem="sPf-fO-81O" firstAttribute="centerX" secondItem="heG-pN-hUX" secondAttribute="centerX" id="pgh-KW-Qzf"/>
                     <constraint firstAttribute="trailing" secondItem="KfR-oV-35L" secondAttribute="trailing" constant="8" id="v3d-gy-Ea8"/>
                     <constraint firstItem="KfR-oV-35L" firstAttribute="centerY" secondItem="heG-pN-hUX" secondAttribute="centerY" id="zr1-Ce-uGx"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
-                <outlet property="activityIndicator" destination="sPf-fO-81O" id="fzp-5e-O2g"/>
                 <outlet property="artImageView" destination="Xh9-db-FqZ" id="Mxi-bl-HgP"/>
                 <outlet property="durationLabel" destination="APp-BJ-YwY" id="qP3-ib-FuQ"/>
                 <outlet property="episodeCounterLabel" destination="KfR-oV-35L" id="b5E-c5-dEw"/>

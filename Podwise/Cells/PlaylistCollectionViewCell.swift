@@ -14,7 +14,6 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
 //    override init(frame: CGRect) {
 //        super.init(frame: frame)

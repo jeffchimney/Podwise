@@ -12,7 +12,7 @@ import AVFoundation
 import MediaPlayer
 
 public protocol relayoutSectionDelegate: class {
-    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int)
+    func relayoutSection(section: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int)
     func reloadCollectionView()
 }
 
@@ -26,7 +26,7 @@ public protocol editPlaylistDelegate: class {
     func edit()
 }
 
-class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, UIViewControllerTransitioningDelegate, UICollectionViewDragDelegate, UICollectionViewDropDelegate, relayoutSectionDelegate, editPlaylistDelegate {
+class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate,  relayoutSectionDelegate, editPlaylistDelegate { //UITableViewDragDelegate, UITableViewDropDelegate,
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -39,7 +39,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     var episodes: [CDEpisode] = []
     var misfitEpisodes: [CDEpisode] = []
     var playlists: [CDPlaylist] = []
-    var headers: [PlaylistHeaderView] = []
     var episodesForPlaylists: [CDPlaylist: [CDEpisode]] = [CDPlaylist: [CDEpisode]]()
     var playlistStructArray = [PlaylistEpisodes]()
     var sectionDragging = 0
@@ -50,21 +49,20 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
     var isTimerRunning: Bool = false
     private var interactionController: UIPercentDrivenInteractiveTransition?
     
-    @IBOutlet weak var collectionView: UICollectionView!
+    @IBOutlet weak var tableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.dragDelegate = self
-        collectionView.dropDelegate = self
+        tableView.delegate = self
+        tableView.dataSource = self
+        //tableView.dragDelegate = self
+        //tableView.dropDelegate = self
         
-        collectionView.dragInteractionEnabled = true
-        
+        tableView.dragInteractionEnabled = true
         self.transitioningDelegate = self
         
-        //let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongGesture(gesture:)))
-        //collectionView.addGestureRecognizer(longPressGesture)
+        let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
+        tableView.addGestureRecognizer(longpress)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -86,8 +84,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                 episodes.append(episode)
             }
         }
-        
-        headers = []
         
         episodesForPlaylists = [:]
         playlistStructArray = [PlaylistEpisodes]()
@@ -132,35 +128,22 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         //collectionView.backgroundColor = .black
         //collectionView.backgroundView?.backgroundColor = .black
         
-        collectionView.reloadData()
+        tableView.reloadData()
 //        if !isTimerRunning {
 //            runTimer()
 //        }
     }
-    
-//    override func viewWillDisappear(_ animated: Bool) {
-//        podcasts = []
-//        episodes = []
-//        misfitEpisodes = []
-//        playlists = []
-//        episodesForPlaylists = [:]
-//        playlistStructArray = []
-//    }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-//    @objc func checkDownloads() {
-//        tableView.reloadData()
-//    }
-    
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return playlistStructArray.count + 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isDragging && section == sectionDragging {
             return 1
         } else {
@@ -176,30 +159,25 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 {
-            return CGSize(width: collectionView.frame.width-16, height: 50)
+            return 50
         } else {
-            return CGSize(width: collectionView.frame.width-16, height: 80)
+            return 80
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        insetForSectionAt section: Int) -> UIEdgeInsets {
-        return sectionInsets
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        if indexPath.row == 0 {
+            return true
+        } else {
+            return false
+        }
     }
     
-    // 4
-    func collectionView(_ collectionView: UICollectionView,
-                        layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isDragging && indexPath.section == sectionDragging {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderViewCell", for: indexPath as IndexPath) as! PlaylistHeaderView
+            let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath as IndexPath) as! PlaylistTitleCell
             
             cell.editDelegate = self
             if let podcastPlaylist = episodesToAddBack[0].podcast?.playlist {
@@ -207,19 +185,17 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                 
                 let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
                 
-                cell.cellBackgroundView.backgroundColor = playlistColour as? UIColor
+                cell.backgroundColor = playlistColour as? UIColor
                 
-                cell.label.text = podcastPlaylist.name!
+                cell.titleTextField.text = podcastPlaylist.name!
                 if podcastPlaylist.name! == "Unsorted" {
-                    cell.button.isHidden = true
+                    cell.editPlaylistButton.isHidden = true
                 } else {
-                    cell.button.isHidden = false
+                    cell.editPlaylistButton.isHidden = false
                 }
             }
             
             cell.isUserInteractionEnabled = true
-            
-            headers.append(cell)
             
             // round top left and right corners
             let cornerRadius: CGFloat = 10
@@ -232,12 +208,11 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                 ).cgPath
             
             cell.layer.mask = maskLayer
-            
             return cell
         } else {
             if indexPath.section < playlistStructArray.count {
                 if indexPath.row == 0 {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "HeaderViewCell", for: indexPath as IndexPath) as! PlaylistHeaderView
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath as IndexPath) as! PlaylistTitleCell
                     
                     cell.editDelegate = self
                     if playlistStructArray[indexPath.section].episodes.count > 0 {
@@ -246,19 +221,17 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                             
                             let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
                             
-                            cell.cellBackgroundView.backgroundColor = playlistColour as? UIColor
+                            cell.backgroundColor = playlistColour as? UIColor
                             
-                            cell.label.text = podcastPlaylist.name!
+                            cell.titleTextField.text = podcastPlaylist.name!
                             if podcastPlaylist.name! == "Unsorted" {
-                                cell.button.isHidden = true
+                                cell.editPlaylistButton.isHidden = true
                             } else {
-                                cell.button.isHidden = false
+                                cell.editPlaylistButton.isHidden = false
                             }
                         }
                         
                         cell.isUserInteractionEnabled = true
-                        
-                        headers.append(cell)
                         
                         // round top left and right corners
                         let cornerRadius: CGFloat = 10
@@ -275,10 +248,10 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                         return cell
                     } else {
                         // Shouldnt ever hit this.
-                        return UICollectionViewCell()
+                        return UITableViewCell()
                     }
                 } else {
-                    let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCollectionViewCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
                     let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
                     cell.titleLabel.text = thisEpisode.title
                     
@@ -287,7 +260,6 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                     if let optionalHours = Int(thisEpisode.duration!) {
                         hours = (optionalHours/60)/60
                     }  else {
-                        print(thisEpisode.duration!)
                         let durationArray = thisEpisode.duration?.split(separator: ":")
                         if let optionalHours = Int(durationArray![0]) {
                             hours = optionalHours
@@ -319,19 +291,14 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                         
                         cell.artImageView.layer.cornerRadius = 10
                         cell.artImageView.layer.masksToBounds = true
-                        cell.activityIndicator.isHidden = true
                     }
                     
                     if downloads != nil {
                         for download in downloads {
                             if download.episode == thisEpisode {
-                                cell.activityIndicator.startAnimating()
-                                cell.activityIndicator.isHidden = false
                                 cell.isUserInteractionEnabled = false
                                 break
                             } else {
-                                cell.activityIndicator.isHidden = true
-                                cell.activityIndicator.stopAnimating()
                                 cell.isUserInteractionEnabled = true
                             }
                         }
@@ -354,7 +321,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
                     return cell
                 }
             } else {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
                 
                 cell.playlistButton.backgroundColor = UIColor.white
                 cell.playlistButton.layer.cornerRadius = 15
@@ -366,7 +333,7 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row != 0 {
             let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
             let podcast = thisEpisode.podcast!
@@ -380,6 +347,74 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
             playDownload(for: thisEpisode)
         }
+    }
+    
+    func tableView(_ tableView: UITableView,
+                   trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration?
+    {
+        if indexPath.row != 0 {
+            let addToPlaylistAction = UIContextualAction(style: .normal, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+                let alert = UIAlertController(title: "Add To Playlist", message: "", preferredStyle: .actionSheet)
+                
+                let playlists = CoreDataHelper.fetchAllPlaylists(in: managedContext!)
+                
+                for eachPlaylist in playlists {
+                    alert.addAction(UIAlertAction(title: eachPlaylist.name, style: .default, handler: { (action) in
+                        self.add(episode: self.playlistStructArray[indexPath.section].episodes[indexPath.row-1], to: eachPlaylist)
+                    }))
+                }
+                
+                alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+                
+                self.present(alert, animated: true, completion: {
+                    self.tableView.reloadData()
+                })
+                success(true)
+            })
+            
+            let deleteEpisodeAction = UIContextualAction(style: .destructive, title:  "", handler: { (ac:UIContextualAction, view:UIView, success:(Bool) -> Void) in
+                print("Delete action ...")
+                let cdEpisode: CDEpisode = self.playlistStructArray[indexPath.section].episodes[indexPath.row-1]
+                let cdPlaylist: CDPlaylist = cdEpisode.playlist ?? (cdEpisode.podcast?.playlist)!
+                let filemanager = FileManager.default
+                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                let destinationPath = documentsPath.appendingPathComponent(cdEpisode.localURL!.lastPathComponent)
+                print("Deleting From: \(destinationPath)")
+                if filemanager.fileExists(atPath: destinationPath) {
+                    try! filemanager.removeItem(atPath: destinationPath)
+                } else {
+                    print("not deleted, couldnt find file.")
+                }
+                tableView.beginUpdates()
+                CoreDataHelper.delete(episode: cdEpisode, in: managedContext!)
+                self.playlistStructArray[indexPath.section].episodes.remove(at: indexPath.row-1)
+                
+                if self.playlistStructArray[indexPath.section].episodes.count == 0 {
+                    tableView.deleteRows(at: [IndexPath(row: 0, section: indexPath.section),indexPath], with: .automatic)
+                } else {
+                    tableView.deleteRows(at: [indexPath], with: .automatic)
+                }
+                tableView.endUpdates()
+                
+                self.relayoutSection(section: indexPath.section, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist:self.playlistStructArray[indexPath.section].episodes.count)
+                success(true)
+            })
+            
+            deleteEpisodeAction.image = UIImage(named: "trash")
+            deleteEpisodeAction.backgroundColor = .red
+            
+            addToPlaylistAction.image = UIImage(named: "playlist")
+            addToPlaylistAction.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+            
+            return UISwipeActionsConfiguration(actions: [deleteEpisodeAction, addToPlaylistAction])
+        } else {
+            return UISwipeActionsConfiguration(actions: [])
+        }
+    }
+    
+    func add(episode: CDEpisode, to playlist: CDPlaylist) {
+        episode.playlist = playlist
+        CoreDataHelper.save(context: managedContext!)
     }
     
     func playDownload(for episode: CDEpisode) {
@@ -435,80 +470,24 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         }
     }
     
-//    @objc func handleLongGesture(gesture: UILongPressGestureRecognizer) {
-//        switch(gesture.state) {
-//        case .began:
-//            let point: CGPoint = gesture.location(in: collectionView)
-//
-//            var index = 0
-//            for header in headers {
-//                if header.frame.contains(point) {
-//                    print("YOU ARE PRESSING: \(header.playlist.name!)")
-//                    collectionView.beginInteractiveMovementForItem(at: IndexPath(row: 0, section: index))
-//
-//                    let numberOfEpisodes = playlistStructArray[index].episodes.count
-////                    for episodeNumber in 0...numberOfEpisodes-1 {
-////                        let thisCell = collectionView.cellForItem(at: IndexPath(row: episodeNumber+1, section: index))
-////                        thisCell?.isHidden = true
-////                    }
-//                }
-//                index += 1
-//                return
-//            }
-////            if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
-////                print("\(indexPath.row) \(indexPath.section)")
-////                if indexPath.section == 0 {
-//
-//
-////                    cell = (collectionView.cellForItem(at: indexPath) as! PlaylistHeaderView)
-////                    pointInCell = cell?.convert(point, from: collectionView)
-////
-////                    if cell != nil && pointInCell != nil {
-////                        if (pointInCell?.y)! < CGFloat(50) {
-////                            if let selectedIndexPath = self.collectionView.indexPathForItem(at: gesture.location(in: self.collectionView)) {
-////                                self.collectionView.beginInteractiveMovementForItem(at: selectedIndexPath)
-////                            }
-////                        }
-////                    }
-////                }
-////            } else {
-////                print("long press on table view but not on a row");
-////            }
-//        case .changed:
-//            collectionView.updateInteractiveMovementTargetPosition(gesture.location(in: gesture.view!))
-//        case .ended:
-//            let point: CGPoint = gesture.location(in: collectionView)
-//            if let indexPath: IndexPath = collectionView.indexPathForItem(at: point) {
-//                if indexPath.section == 0 {
-//                    collectionView.endInteractiveMovement()
-//                } else {
-//                    collectionView.cancelInteractiveMovement()
-//                }
-//            }
-//            collectionView.endInteractiveMovement()
-//        default:
-//            collectionView.cancelInteractiveMovement()
-//        }
-//    }
-    
-    func relayoutSection(row: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int) {
-        if playlistStructArray[row].episodes.contains(deleted) {
-            let indexToDelete = playlistStructArray[row].episodes.index(of: deleted)
-            playlistStructArray[row].episodes.remove(at: indexToDelete!)
+    func relayoutSection(section: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int) {
+        if playlistStructArray[section].episodes.contains(deleted) {
+            let indexToDelete = playlistStructArray[section].episodes.index(of: deleted)
+            playlistStructArray[section].episodes.remove(at: indexToDelete!)
             
             if episodesInPlaylist == 0 {
-                playlistStructArray.remove(at: row)
-                collectionView.deleteItems(at: [IndexPath(row: row, section: 0)])
+                playlistStructArray.remove(at: section)
+                tableView.deleteRows(at: [IndexPath(row: 0, section: section)], with: .automatic)
                 return
             }
             
-            collectionView.reloadItems(at: [IndexPath(row: row, section: 0)])
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: collectionView.layoutSubviews, completion: nil)
+            tableView.reloadRows(at: [IndexPath(row: 0, section: section)], with: .automatic)
+            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: tableView.layoutSubviews, completion: nil)
         }
     }
     
     func reloadCollectionView() {
-        viewDidLoad()
+        viewWillAppear(true)
     }
     
     func edit(playlist: CDPlaylist) {
@@ -541,155 +520,89 @@ class PlaylistsViewController: UIViewController, UICollectionViewDelegate, UICol
         
         return presentation;
     }
-    
-    // MARK: collection view Drag and Drop Delegate methods
-    
-    // Drag
-    func collectionView(_ collectionView: UICollectionView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
-        var item: String
-        if indexPath.row == 0 && indexPath.section != playlistStructArray.count {
-            sectionDragging = indexPath.section
-            item = playlistStructArray[indexPath.section].name.name!
-            let itemProvider = NSItemProvider(object: item as NSString)
-            let dragItem = UIDragItem(itemProvider: itemProvider)
-            dragItem.localObject = item
-            isDragging = true
-            
-            // remove dragging items
-            collectionView.performBatchUpdates({
-                var indicesToRemove: [IndexPath] = []
-                var index = 1
-                for episode in playlistStructArray[sectionDragging].episodes {
-                    episodesToAddBack.append(episode)
-                    indicesToRemove.append(IndexPath(row: index, section: sectionDragging))
-                    index += 1
-                }
-                playlistStructArray[sectionDragging].episodes = []
-                
-                collectionView.deleteItems(at: indicesToRemove)
-            })
-            
-            return [dragItem]
-        } else {
-            return []
-        }
-    }
-    
-//    func collectionView(_ collectionView: UICollectionView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] {
-//        var item: String
-//        if indexPath.row == 0 {
-//            item = playlistStructArray[indexPath.section].name.name!
-//        } else {
-//            item = playlistStructArray[indexPath.section].episodes[indexPath.row-1].title!
-//        }
-//        let itemProvider = NSItemProvider(object: item as NSString)
-//        let dragItem = UIDragItem(itemProvider: itemProvider)
-//        dragItem.localObject = item
-//        return [dragItem]
-//    }
-    
-    // Drop
-    func collectionView(_ collectionView: UICollectionView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UICollectionViewDropProposal {
-        if session.localDragSession != nil
-        {
-            if collectionView.hasActiveDrag
-            {
-                if destinationIndexPath != nil {
-                    if destinationIndexPath!.section < playlistStructArray.count {
-                        //if destinationIndexPath!.row < playlistStructArray[destinationIndexPath!.section].episodes.count {
-                        return UICollectionViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
-                        //} else {
-                        //    return UICollectionViewDropProposal(operation: .forbidden)
-                        //}
-                    } else {
-                        return UICollectionViewDropProposal(operation: .forbidden)
-                    }
-                } else {
-                    return UICollectionViewDropProposal(operation: .forbidden)
-                }
-            }
-            else
-            {
-                return UICollectionViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
-            }
-        }
-        else
-        {
-            return UICollectionViewDropProposal(operation: .forbidden)
-        }
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, performDropWith coordinator: UICollectionViewDropCoordinator) {
-        isDragging = false
-        let destinationIndexPath: IndexPath
-        if let indexPath = coordinator.destinationIndexPath
-        {
-            destinationIndexPath = indexPath
-        }
-        else
-        {
-            // Get index path of original playlist
-            destinationIndexPath = IndexPath(row: 0, section: playlistStructArray.count)
-        }
-        
-        switch coordinator.proposal.operation
-        {
-        case .move:
-            // remove dragging items
-            let indexSetToDelete = NSMutableIndexSet()
-            indexSetToDelete.add(sectionDragging)
-            
-            let indexSetToAdd = NSMutableIndexSet()
-            indexSetToAdd.add(destinationIndexPath.section)
-            
-            collectionView.performBatchUpdates({
-                // remove dragged section
-                //let sectionToInsert = playlistStructArray[sectionDragging]
-                
-                playlistStructArray.remove(at: sectionDragging)
-                collectionView.deleteSections(indexSetToDelete as IndexSet)
 
-                let playlistEpisodesToInsert = PlaylistEpisodes(name: episodesToAddBack[0].podcast!.playlist!, episodes: episodesToAddBack)
-                playlistStructArray.insert(playlistEpisodesToInsert, at: destinationIndexPath.section)
+    var cellSnapshot : UIView? = nil
+    var initialIndexPath : IndexPath? = nil
+    @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
+        let longPress = gestureRecognizer as! UILongPressGestureRecognizer
+        let state = longPress.state
+        let locationInView = longPress.location(in: tableView)
+        var indexPath = tableView.indexPathForRow(at: locationInView)
+        
+        switch state {
+        case .began:
+            if indexPath != nil {
+                initialIndexPath = indexPath
+                let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
+                cellSnapshot = snapshopOfCell(inputView: cell!)
+                var center = cell?.center
+                cellSnapshot!.center = center!
+                cellSnapshot!.alpha = 0.0
+                tableView.addSubview(cellSnapshot!)
                 
-                // add in dropped section
-                //playlistStructArray.insert(sectionToInsert, at: destinationIndexPath.section)
-                collectionView.insertSections(indexSetToAdd as IndexSet)
-                
-                var sortIndex = 0
-                for item in playlistStructArray {
-                    let thisPlaylist = CoreDataHelper.fetchAllPlaylists(with: item.name.id!, in: managedContext!)
-                    if thisPlaylist.count > 0 {
-                        thisPlaylist[0].sortIndex = Int64(sortIndex)
+                UIView.animate(withDuration: 0.25, animations: { () -> Void in
+                    center?.y = locationInView.y
+                    self.cellSnapshot!.center = center!
+                    self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+                    self.cellSnapshot!.alpha = 0.98
+                    cell?.alpha = 0.0
+                    
+                }, completion: { (finished) -> Void in
+                    if finished {
+                        cell?.isHidden = true
                     }
-    
-                    item.name.sortIndex = Int64(sortIndex)
-                    CoreDataHelper.save(context: managedContext!)
-                    sortIndex += 1
+                })
+            }
+        case .changed:
+            var center = cellSnapshot!.center
+            center.y = locationInView.y
+            cellSnapshot!.center = center
+            
+            if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section)) {
+                if indexPath!.section < playlistStructArray.count {
+                    tableView.beginUpdates()
+                    let original = playlistStructArray[initialIndexPath!.section]
+                    let target = playlistStructArray[indexPath!.section]
+                    
+                    playlistStructArray[indexPath!.section] = original
+                    playlistStructArray[initialIndexPath!.section] = target
+                    
+                    tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
+                    initialIndexPath = indexPath
+                    tableView.endUpdates()
+                }
+            }
+        default:
+            let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
+            let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
+            cell.isHidden = false
+            cell.alpha = 0.0
+            UIView.animate(withDuration: 0.25, animations: { () -> Void in
+                self.cellSnapshot!.center = (cell.center)
+                self.cellSnapshot!.transform = CGAffineTransform.identity
+                self.cellSnapshot!.alpha = 0.0
+                cell.alpha = 1.0
+            }, completion: { (finished) -> Void in
+                if finished {
+                    self.initialIndexPath = nil
+                    self.cellSnapshot!.removeFromSuperview()
+                    self.cellSnapshot = nil
                 }
             })
-            episodesToAddBack = []
-            var dIndexPath = destinationIndexPath
-            if dIndexPath.row >= collectionView.numberOfItems(inSection: 0)
-            {
-                dIndexPath.row = collectionView.numberOfItems(inSection: 0) - 1
-            }
-            let item = coordinator.items[0]
-            coordinator.drop(item.dragItem, toItemAt: dIndexPath)
-//            let indexSetToReload = NSMutableIndexSet()
-//            indexSetToReload.add(indexSetToAdd as IndexSet)
-//            indexSetToReload.add(indexSetToDelete as IndexSet)
-            
-            //collectionView.reloadSections(indexSetToReload as IndexSet)
-            break
-        case .copy:
-            //Add the code to copy items
-            break
-            
-        default:
-            sectionDragging = nil
-            return
         }
+    }
+        
+    func snapshopOfCell(inputView: UIView) -> UIView {
+        UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0.0)
+        inputView.layer.render(in: UIGraphicsGetCurrentContext()!)
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        let cellSnapshot : UIView = UIImageView(image: image)
+        cellSnapshot.layer.masksToBounds = false
+        cellSnapshot.layer.cornerRadius = 0.0
+        cellSnapshot.layer.shadowRadius = 5.0
+        cellSnapshot.layer.shadowOpacity = 0.4
+        return cellSnapshot
     }
 }
 

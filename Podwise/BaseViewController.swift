@@ -42,7 +42,7 @@ class BaseViewController: UIViewController {
         miniPlayerView.addGestureRecognizer(tap)
         
         sliderView.setValue(0, animated: false)
-        sliderView.maximumTrackTintColor = .clear
+        sliderView.maximumTrackTintColor = UIColor.lightText
         if audioPlayer != nil {
             showMiniPlayer(animated: false)
         } else {
@@ -117,10 +117,10 @@ class BaseViewController: UIViewController {
     }
     
     public func showMiniPlayer(animated: Bool) {
-        baseView.layer.shadowColor = UIColor.black.cgColor
-        baseView.layer.shadowOpacity = 0.75
-        baseView.layer.shadowOffset = CGSize.zero
-        baseView.layer.shadowRadius = 5
+//        baseView.layer.shadowColor = UIColor.black.cgColor
+//        baseView.layer.shadowOpacity = 0.75
+//        baseView.layer.shadowOffset = CGSize.zero
+//        baseView.layer.shadowRadius = 5
         
         if audioPlayer != nil {
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)

@@ -14,23 +14,7 @@ class PlaylistCell: UITableViewCell {
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var episodeCounterLabel: UILabel!
     
-    override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        commonInit()
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        commonInit()
-    }
-    
-    func commonInit() {
-        DispatchQueue.main.async {
-            Bundle.main.loadNibNamed("PlaylistCell", owner: self, options: nil)
-        }
-    }
 }
 

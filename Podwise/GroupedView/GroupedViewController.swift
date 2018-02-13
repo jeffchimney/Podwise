@@ -136,19 +136,14 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             
             cell.artImageView.layer.cornerRadius = 10
             cell.artImageView.layer.masksToBounds = true
-            cell.activityIndicator.isHidden = true
         }
        
         if downloads != nil {
             for download in downloads {
                 if download.episode == thisEpisode {
-                    cell.activityIndicator.startAnimating()
-                    cell.activityIndicator.isHidden = false
                     cell.isUserInteractionEnabled = false
                     break
                 } else {
-                    cell.activityIndicator.isHidden = true
-                    cell.activityIndicator.stopAnimating()
                     cell.isUserInteractionEnabled = true
                 }
             }
@@ -200,7 +195,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             tableView.deleteRows(at: [indexPath], with: .automatic)
             tableView.endUpdates()
             
-            self.relayoutSectionDelegate?.relayoutSection(row: self.rowInTableView, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist: self.episodesInPlaylist.count)
+            self.relayoutSectionDelegate?.relayoutSection(section: self.rowInTableView, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist: self.episodesInPlaylist.count)
             success(true)
         })
 

@@ -111,7 +111,6 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
             cell.artImageView.image = UIImage(data: imageData)
         }
         
-        cell.activityIndicator.isHidden = true
         cell.artImageView.layer.cornerRadius = 10
         cell.artImageView.layer.masksToBounds = true
 

@@ -104,7 +104,6 @@ class SubscriptionsViewController: UITableView, UITableViewDataSource, UITableVi
         
         cell.artImageView.layer.cornerRadius = 10
         cell.artImageView.layer.masksToBounds = true
-        cell.activityIndicator.isHidden = true
         
         cell.episodeCounterLabel.backgroundColor = .black
         cell.episodeCounterLabel.textColor = .white

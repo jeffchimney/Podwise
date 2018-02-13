@@ -9,8 +9,16 @@
 import Foundation
 import UIKit
 
-class PlaylistTitleCell: UICollectionViewCell {
+class PlaylistTitleCell: UITableViewCell {
     
-    @IBOutlet weak var titleTextField: UITextField!
+    @IBOutlet weak var titleTextField: UILabel!
+    @IBOutlet weak var editPlaylistButton: UIButton!
     
+    var playlist: CDPlaylist!
+    var headerTitle = ""
+    weak var editDelegate: editPlaylistDelegate!
+    
+    @IBAction func editPlaylist(_ sender: UIButton) {
+        editDelegate.edit(playlist: playlist)
+    }
 }

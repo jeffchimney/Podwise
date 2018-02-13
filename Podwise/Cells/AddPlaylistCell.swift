@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class AddPlaylistCell: UICollectionViewCell {
+class AddPlaylistCell: UITableViewCell {
     
     @IBOutlet weak var playlistButton: UIButton!
     weak var editDelegate: editPlaylistDelegate!
