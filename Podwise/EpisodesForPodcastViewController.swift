@@ -113,16 +113,20 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 hours = (optionalHours/60)/60
             } else {
                 let durationArray = episode.duration?.split(separator: ":")
-                if let optionalHours = Int(durationArray![0]) {
-                    hours = optionalHours
+                if durationArray?.count ?? 0 > 0 {
+                    if let optionalHours = Int(durationArray![0]) {
+                        hours = optionalHours
+                    }
                 }
             }
             if let optionalMinutes = Int(episode.duration!) {
                 minutes = (optionalMinutes/60)%60
             } else {
                 let durationArray = episode.duration?.split(separator: ":")
-                if let optionalMinutes = Int(durationArray![1]) {
-                    minutes = optionalMinutes
+                if durationArray?.count ?? 0 > 0 {
+                    if let optionalMinutes = Int(durationArray![1]) {
+                        minutes = optionalMinutes
+                    }
                 }
             }
             
