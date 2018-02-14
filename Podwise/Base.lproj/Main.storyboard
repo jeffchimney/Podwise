@@ -1145,6 +1145,18 @@
                                     <action selector="closeMenuWithSender:" destination="fFV-2T-Tw5" eventType="touchUpInside" id="hhW-J6-pYg"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="taZ-DU-9FT">
+                                <rect key="frame" x="16" y="529" width="36" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0:00" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1ns-pT-Wip">
+                                <rect key="frame" x="323" y="529" width="36" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <gestureRecognizers/>
@@ -1157,14 +1169,18 @@
                             <constraint firstItem="yvE-SS-Ab0" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Agy-Ru-bVm"/>
                             <constraint firstItem="Znn-OS-IJ1" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Av4-zu-aRK"/>
                             <constraint firstItem="6m5-Gp-nX0" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="Gz3-6y-iVf"/>
+                            <constraint firstItem="taZ-DU-9FT" firstAttribute="top" secondItem="rz2-MD-w4V" secondAttribute="bottom" constant="8" id="JRP-Yl-5d2"/>
                             <constraint firstItem="5sS-ge-T9F" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="OkR-hH-lAY"/>
                             <constraint firstItem="Fg5-NU-g8Y" firstAttribute="centerX" secondItem="fyI-76-o8u" secondAttribute="centerX" id="QYQ-U2-jh2"/>
+                            <constraint firstItem="taZ-DU-9FT" firstAttribute="leading" secondItem="Xuh-0X-H2U" secondAttribute="leading" constant="16" id="VId-nt-mWs"/>
                             <constraint firstItem="T0Q-zt-HRT" firstAttribute="leading" secondItem="5sS-ge-T9F" secondAttribute="trailing" constant="60" id="Xai-5k-d85"/>
                             <constraint firstItem="T0Q-zt-HRT" firstAttribute="centerY" secondItem="5sS-ge-T9F" secondAttribute="centerY" id="YB0-k9-G17"/>
                             <constraint firstItem="5sS-ge-T9F" firstAttribute="leading" secondItem="Hyw-Pe-rlC" secondAttribute="trailing" constant="60" id="YeS-Qi-Rgt"/>
                             <constraint firstItem="Hyw-Pe-rlC" firstAttribute="centerY" secondItem="5sS-ge-T9F" secondAttribute="centerY" id="Zz3-Ua-gem"/>
+                            <constraint firstItem="1ns-pT-Wip" firstAttribute="top" secondItem="rz2-MD-w4V" secondAttribute="bottom" constant="8" id="etn-gY-bhs"/>
                             <constraint firstItem="yvE-SS-Ab0" firstAttribute="centerY" secondItem="fyI-76-o8u" secondAttribute="centerY" id="oOS-NW-Vfx"/>
                             <constraint firstItem="Xuh-0X-H2U" firstAttribute="bottom" secondItem="5sS-ge-T9F" secondAttribute="bottom" constant="61" id="w0Y-sD-BI7"/>
+                            <constraint firstItem="Xuh-0X-H2U" firstAttribute="trailing" secondItem="1ns-pT-Wip" secondAttribute="trailing" constant="16" id="yA1-bu-r5H"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Xuh-0X-H2U"/>
                         <connections>
@@ -1174,10 +1190,12 @@
                     <connections>
                         <outlet property="artImageView" destination="yvE-SS-Ab0" id="Ojw-2i-CUk"/>
                         <outlet property="chevronButton" destination="Znn-OS-IJ1" id="L7T-ZZ-mqz"/>
+                        <outlet property="elapsedTimeLabel" destination="taZ-DU-9FT" id="gvs-9E-woA"/>
                         <outlet property="episodeTitle" destination="6m5-Gp-nX0" id="TxN-Jy-HeD"/>
                         <outlet property="playPauseButton" destination="5sS-ge-T9F" id="qkl-Dz-4PV"/>
                         <outlet property="podcastTitle" destination="Fg5-NU-g8Y" id="Fvf-Xz-04Y"/>
                         <outlet property="progressSlider" destination="rz2-MD-w4V" id="eYF-s0-nzf"/>
+                        <outlet property="remainingTImeLabel" destination="1ns-pT-Wip" id="6Dj-2t-Uoa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TQq-q4-u6C" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1187,7 +1205,7 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-810" y="628"/>
+            <point key="canvasLocation" x="-810" y="727"/>
         </scene>
     </scenes>
     <resources>

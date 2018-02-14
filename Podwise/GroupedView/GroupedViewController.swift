@@ -209,7 +209,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     }
     
     func playDownload(for episode: CDEpisode) {
-        startAudioSession()
+        //startAudioSession()
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         

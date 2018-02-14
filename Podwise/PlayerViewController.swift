@@ -22,6 +22,8 @@ class PlayerViewController: UIViewController {
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var chevronButton: UIButton!
     @IBOutlet weak var progressSlider: UISlider!
+    @IBOutlet weak var elapsedTimeLabel: UILabel!
+    @IBOutlet weak var remainingTImeLabel: UILabel!
     //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
@@ -54,6 +56,8 @@ class PlayerViewController: UIViewController {
         podcastTitle.text = podcastTitleText
         
         progressSlider.setThumbImage(thumbImage, for: .normal)
+        
+        startUpdatingSlider()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +117,17 @@ class PlayerViewController: UIViewController {
                 {
                     // Update progress
                     progressSlider.setValue(Float(player.currentTime/player.duration), animated: true)
+                    
+                    let formatter = DateComponentsFormatter()
+                    formatter.unitsStyle = .positional
+                    formatter.allowedUnits = [ .minute, .second ]
+                    formatter.zeroFormattingBehavior = [ .pad ]
+                    
+                    let elapsedTime = formatter.string(from: player.currentTime)
+                    let remainingTime = formatter.string(from: player.duration - player.currentTime)
+                    
+                    elapsedTimeLabel.text = elapsedTime
+                    remainingTImeLabel.text = remainingTime
                 }
             }
         }
@@ -141,6 +156,18 @@ class PlayerViewController: UIViewController {
             // Update progress
             let percentComplete = progressSlider.value
             player.currentTime = player.duration * Double(percentComplete)
+            
+            let formatter = DateComponentsFormatter()
+            formatter.unitsStyle = .positional
+            formatter.allowedUnits = [ .minute, .second ]
+            formatter.zeroFormattingBehavior = [ .pad ]
+            
+            let elapsedTime = formatter.string(from: player.currentTime)
+            let remainingTime = formatter.string(from: player.duration - player.currentTime)
+            
+            elapsedTimeLabel.text = elapsedTime
+            remainingTImeLabel.text = remainingTime
+            
             updateMediaPlayer(player: player)
         }
     }

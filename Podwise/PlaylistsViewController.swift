@@ -271,7 +271,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                         minutes = (optionalMinutes/60)%60
                     }  else {
                         let durationArray = thisEpisode.duration!.split(separator: ":")
-                        if durationArray.count ?? 0 > 0 {
+                        if durationArray.count > 0 {
                             if let optionalMinutes = Int(durationArray[1]) {
                                 minutes = optionalMinutes
                             }
@@ -435,7 +435,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             
             player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
-            startAudioSession()
+            //startAudioSession()
             player.play()
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
@@ -532,67 +532,86 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         let state = longPress.state
         let locationInView = longPress.location(in: tableView)
         var indexPath = tableView.indexPathForRow(at: locationInView)
-        
+        let impact = UIImpactFeedbackGenerator()
+        impact.prepare()
         switch state {
         case .began:
             if indexPath != nil {
-                initialIndexPath = indexPath
-                let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
-                cellSnapshot = snapshopOfCell(inputView: cell!)
-                var center = cell?.center
-                cellSnapshot!.center = center!
-                cellSnapshot!.alpha = 0.0
-                tableView.addSubview(cellSnapshot!)
-                
-                UIView.animate(withDuration: 0.25, animations: { () -> Void in
-                    center?.y = locationInView.y
-                    self.cellSnapshot!.center = center!
-                    self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
-                    self.cellSnapshot!.alpha = 0.98
-                    cell?.alpha = 0.0
+                if indexPath!.row == 0 {
+                    impact.impactOccurred()
+                    initialIndexPath = indexPath
+                    let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
+                    cellSnapshot = snapshopOfCell(inputView: cell!)
+                    var center = cell?.center
+                    cellSnapshot!.center = center!
+                    cellSnapshot!.alpha = 0.0
+                    tableView.addSubview(cellSnapshot!)
                     
-                }, completion: { (finished) -> Void in
-                    if finished {
-                        cell?.isHidden = true
-                    }
-                })
+                    UIView.animate(withDuration: 0.25, animations: { () -> Void in
+                        center?.y = locationInView.y
+                        self.cellSnapshot!.center = center!
+                        self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+                        self.cellSnapshot!.alpha = 0.98
+                        cell?.alpha = 0.0
+                        
+                    }, completion: { (finished) -> Void in
+                        if finished {
+                            cell?.isHidden = true
+                        }
+                    })
+                }
             }
         case .changed:
-            var center = cellSnapshot!.center
-            center.y = locationInView.y
-            cellSnapshot!.center = center
-            
-            if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section)) {
-                if indexPath!.section < playlistStructArray.count {
-                    tableView.beginUpdates()
-                    let original = playlistStructArray[initialIndexPath!.section]
-                    let target = playlistStructArray[indexPath!.section]
-                    
-                    playlistStructArray[indexPath!.section] = original
-                    playlistStructArray[initialIndexPath!.section] = target
-                    
-                    tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
-                    initialIndexPath = indexPath
-                    tableView.endUpdates()
+            if cellSnapshot != nil {
+                var center = cellSnapshot!.center
+                center.y = locationInView.y
+                cellSnapshot!.center = center
+                
+                if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section) && (indexPath?.row == 0)) {
+                    impact.impactOccurred()
+                    if indexPath!.section < playlistStructArray.count {
+                        tableView.beginUpdates()
+                        let original = playlistStructArray[initialIndexPath!.section]
+                        let target = playlistStructArray[indexPath!.section]
+                        
+                        playlistStructArray[indexPath!.section] = original
+                        playlistStructArray[initialIndexPath!.section] = target
+                        
+                        tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
+                        initialIndexPath = indexPath
+                        tableView.endUpdates()
+                        
+                        playlistStructArray[indexPath!.section].name.sortIndex = Int64(indexPath!.section)
+                        playlistStructArray[initialIndexPath!.section].name.sortIndex = Int64(initialIndexPath!.section)
+                        
+                        var index = 0
+                        for playlist in playlistStructArray {
+                            playlist.name.sortIndex = Int64(index)
+                            index += 1
+                        }
+                        CoreDataHelper.save(context: managedContext)
+                    }
                 }
             }
         default:
-            let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
-            let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
-            cell.isHidden = false
-            cell.alpha = 0.0
-            UIView.animate(withDuration: 0.25, animations: { () -> Void in
-                self.cellSnapshot!.center = (cell.center)
-                self.cellSnapshot!.transform = CGAffineTransform.identity
-                self.cellSnapshot!.alpha = 0.0
-                cell.alpha = 1.0
-            }, completion: { (finished) -> Void in
-                if finished {
-                    self.initialIndexPath = nil
-                    self.cellSnapshot!.removeFromSuperview()
-                    self.cellSnapshot = nil
-                }
-            })
+            if cellSnapshot != nil {
+                let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
+                let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
+                cell.isHidden = false
+                cell.alpha = 0.0
+                UIView.animate(withDuration: 0.25, animations: { () -> Void in
+                    self.cellSnapshot!.center = (cell.center)
+                    self.cellSnapshot!.transform = CGAffineTransform.identity
+                    self.cellSnapshot!.alpha = 0.0
+                    cell.alpha = 1.0
+                }, completion: { (finished) -> Void in
+                    if finished {
+                        self.initialIndexPath = nil
+                        self.cellSnapshot!.removeFromSuperview()
+                        self.cellSnapshot = nil
+                    }
+                })
+            }
         }
     }
         
