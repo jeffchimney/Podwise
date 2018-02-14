@@ -174,6 +174,40 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             return false
         }
     }
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if (cell.responds(to: #selector(getter: UIView.tintColor))) {
+            let cornerRadius: CGFloat = 0;
+            //cell.backgroundColor = .clear
+            let layer: CAShapeLayer  = CAShapeLayer()
+            let pathRef: CGMutablePath  = CGMutablePath()
+            let bounds: CGRect  = cell.bounds
+            var addLine: Bool = false
+            if (indexPath.section != tableView.numberOfSections-1) {
+                pathRef.move(to: CGPoint(x: bounds.minX, y: bounds.minY))
+                pathRef.addLine(to: CGPoint(x: bounds.minX, y: bounds.maxY))
+                let playlistColour: UIColor = NSKeyedUnarchiver.unarchiveObject(with: playlistStructArray[indexPath.section].name.colour!) as! UIColor
+                layer.strokeColor = playlistColour.cgColor
+                addLine = true
+                
+                layer.path = pathRef;
+                //set the border color
+                layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor;
+                //set the border width
+                layer.lineWidth = 2;
+                
+                
+                if (addLine == true) {
+                    //                let lineLayer: CALayer = CALayer();
+                    //                let lineHeight: CGFloat  = (1 / UIScreen.main.scale);
+                    //                lineLayer.frame = CGRect(x: bounds.minX, y: bounds.size.height-lineHeight, width: bounds.size.width, height: lineHeight);
+                    //                lineLayer.backgroundColor = tableView.separatorColor!.cgColor;
+                    //layer.addSublayer(lineLayer);
+                }
+                
+                cell.layer.insertSublayer(layer, at: 100)
+            }
+        }
+    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isDragging && indexPath.section == sectionDragging {
@@ -232,19 +266,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                         }
                         
                         cell.isUserInteractionEnabled = true
-                        
-                        // round top left and right corners
-                        let cornerRadius: CGFloat = 10
-                        let maskLayer = CAShapeLayer()
-                        
-                        maskLayer.path = UIBezierPath(
-                            roundedRect: cell.bounds,
-                            byRoundingCorners: [.topLeft, .topRight],
-                            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
-                            ).cgPath
-                        
-                        cell.layer.mask = maskLayer
-                        
                         return cell
                     } else {
                         // Shouldnt ever hit this.
