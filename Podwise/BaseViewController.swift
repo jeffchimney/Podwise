@@ -248,6 +248,8 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
                 
                 if playlistQueue.count > 0 {
                     playDownload(for: playlistQueue[0])
+                } else {
+                    hideMiniPlayer(animated: true)
                 }
             }
         }

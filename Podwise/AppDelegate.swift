@@ -20,9 +20,9 @@ var managedContext: NSManagedObjectContext!
 class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
 
     var window: UIWindow?
-    var client: MSClient!
-    let endpoint = "Endpoint=sb://podwise.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=99efNs84C80JoCaZdQyrCPiV5CShshoAU8G1Q5E9ojg="
-    let hubName = "PodwiseHub"
+    //var client: MSClient!
+//    let endpoint = "Endpoint=sb://podwise.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=99efNs84C80JoCaZdQyrCPiV5CShshoAU8G1Q5E9ojg="
+//    let hubName = "PodwiseHub"
     var eName: String = String()
     var episodeID: String = String()
     var episodeTitle: String = String()
@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
         // Override point for customization after application launch.
         registerForPushNotifications()
         
-        client = MSClient(applicationURLString: "https://podwise.azurewebsites.net")
+        //client = MSClient(applicationURLString: "https://podwise.azurewebsites.net")
         
         return true
     }
@@ -156,21 +156,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
 //            }
 //        })
         
-        let tokenParts = deviceToken.map { data -> String in
-            return String(format: "%02.2hhx", data)
-        }
-        
-        let token = tokenParts.joined()
-        
-        let managedContext = persistentContainer.viewContext
-        let tokenEntity = NSEntityDescription.entity(forEntityName: "CDAPNSToken", in: managedContext)!
-        let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
-        apnsToken.token = token
-        CoreDataHelper.save(context: managedContext)
-        
-        registerDeviceTokenWithMicrosoft(deviceToken: token)
-        
-        print("Device Token: \(token)")
+//        let tokenParts = deviceToken.map { data -> String in
+//            return String(format: "%02.2hhx", data)
+//        }
+//
+//        let token = tokenParts.joined()
+//
+//        let managedContext = persistentContainer.viewContext
+//        let tokenEntity = NSEntityDescription.entity(forEntityName: "CDAPNSToken", in: managedContext)!
+//        let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
+//        apnsToken.token = token
+//        CoreDataHelper.save(context: managedContext)
+//
+//        registerDeviceTokenWithMicrosoft(deviceToken: token)
+//
+//        print("Device Token: \(token)")
     }
     
     func application(_ application: UIApplication,
@@ -189,7 +189,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     }
     
     func registerDeviceTokenWithMicrosoft(deviceToken: String) {
-        AzureDBDataHelper.registerDeviceTokenWithMicrosoft(deviceToken: deviceToken, using: client)
+        //AzureDBDataHelper.registerDeviceTokenWithMicrosoft(deviceToken: deviceToken, using: client)
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
