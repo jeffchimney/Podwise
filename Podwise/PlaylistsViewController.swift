@@ -371,6 +371,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
             playDownload(for: thisEpisode)
+            playlistQueue = playlistStructArray[indexPath.section].episodes
         }
     }
     
@@ -453,11 +454,12 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
             guard let player = audioPlayer else { return }
-            
+            audioPlayer.delegate = baseViewController
             player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
             //startAudioSession()
             player.play()
+            autoPlay = true
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in

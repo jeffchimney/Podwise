@@ -16,8 +16,10 @@ var downloads: [Download]!
 var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
 let audioSession = AVAudioSession.sharedInstance()
+var autoPlay = false
+var playlistQueue: [CDEpisode] = []
 
-class BaseViewController: UIViewController {
+class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     
 //    override var preferredStatusBarStyle: UIStatusBarStyle {
 //        return .lightContent
@@ -233,6 +235,59 @@ class BaseViewController: UIViewController {
     
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
         performSegue(withIdentifier: "openPlayer", sender: nil)
+    }
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        if autoPlay {
+            if playlistQueue.contains(nowPlayingEpisode) {
+                let indexToRemove = playlistQueue.index(of: nowPlayingEpisode)
+                if indexToRemove != nil {
+                    playlistQueue.remove(at: indexToRemove!)
+                }
+                CoreDataHelper.delete(episode: nowPlayingEpisode, in: managedContext)
+                
+                if playlistQueue.count > 0 {
+                    playDownload(for: playlistQueue[0])
+                }
+            }
+        }
+    }
+    
+    func playDownload(for episode: CDEpisode) {
+        // then lets create your document folder url
+        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // lets create your destination file url
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
+            guard let player = audioPlayer else { return }
+            player.delegate = self
+            player.currentTime = TimeInterval(episode.progress)
+            player.prepareToPlay()
+            //startAudioSession()
+            player.play()
+            nowPlayingEpisode = episode
+            autoPlay = true
+            
+            let artworkImage = UIImage(data: episode.podcast!.image!)
+            let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
+                return artworkImage!
+            })
+            
+            let mpic = MPNowPlayingInfoCenter.default()
+            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!,
+                                   MPMediaItemPropertyArtist:episode.podcast!.title!,
+                                   MPMediaItemPropertyArtwork: artwork,
+                                   MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
+                                   MPMediaItemPropertyPlaybackDuration: player.duration
+            ]
+            
+            showMiniPlayer(animated: true)
+        } catch let error {
+            print(error.localizedDescription)
+        }
     }
 }
 

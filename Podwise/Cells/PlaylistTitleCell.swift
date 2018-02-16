@@ -25,12 +25,12 @@ class PlaylistTitleCell: UITableViewCell {
     override func layoutSubviews() {
         self.bounds = CGRect(x: self.bounds.origin.x,
                              y: self.bounds.origin.y,
-                             width: self.bounds.size.width - 16,
+                             width: self.bounds.size.width - 2, // - 16
                              height: self.bounds.size.height)
         super.layoutSubviews()
         
         // round top left and right corners
-        let cornerRadius: CGFloat = 10
+        let cornerRadius: CGFloat = 5
         let maskLayer = CAShapeLayer()
         
         maskLayer.path = UIBezierPath(

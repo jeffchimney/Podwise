@@ -535,10 +535,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
             guard let player = audioPlayer else { return }
-            
+            player.delegate = baseViewController
             player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
             player.play()
+            autoPlay = false
+            playlistQueue = []
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
