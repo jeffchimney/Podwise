@@ -19,7 +19,7 @@ class PlaylistCell: UITableViewCell {
     override func layoutSubviews() {
         self.bounds = CGRect(x: self.bounds.origin.x,
                              y: self.bounds.origin.y,
-                             width: self.bounds.size.width - 2, // - 16
+                             width: self.bounds.size.width - 4, // - 16
                              height: self.bounds.size.height)
         super.layoutSubviews()
     }

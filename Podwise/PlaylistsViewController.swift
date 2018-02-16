@@ -174,40 +174,97 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             return false
         }
     }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 4
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let backgroundView = UIView()
+        backgroundView.backgroundColor = .white
+        return UIView()
+    }
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if (cell.responds(to: #selector(getter: UIView.tintColor))) {
-            let cornerRadius: CGFloat = 0;
-            //cell.backgroundColor = .clear
+            let cornerRadius: CGFloat = 10
+            //cell.backgroundColor = UIColor.clear
             let layer: CAShapeLayer  = CAShapeLayer()
             let pathRef: CGMutablePath  = CGMutablePath()
             let bounds: CGRect  = cell.bounds
-            var addLine: Bool = false
-            if (indexPath.section != tableView.numberOfSections-1) {
-                pathRef.move(to: CGPoint(x: bounds.minX, y: bounds.minY))
-                pathRef.addLine(to: CGPoint(x: bounds.minX, y: bounds.maxY))
-                let playlistColour: UIColor = NSKeyedUnarchiver.unarchiveObject(with: playlistStructArray[indexPath.section].name.colour!) as! UIColor
-                layer.strokeColor = playlistColour.cgColor
+            var addLine: Bool  = false
+            if (indexPath.row == 0 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
+                //pathRef.__addRoundedRect(transform: nil, rect: bounds, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
+            } else if (indexPath.row == 0) {
+                // do basically nothing
+            } else if (indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
+                
+                pathRef.move(to: CGPoint(x:bounds.minX,y:bounds.minY))
+                pathRef.addArc(tangent1End: CGPoint(x:bounds.minX,y:bounds.maxY), tangent2End: CGPoint(x:bounds.midX,y:bounds.maxY), radius: cornerRadius)
+                
+                pathRef.addArc(tangent1End: CGPoint(x:bounds.maxX-4,y:bounds.maxY), tangent2End: CGPoint(x:bounds.maxX-4,y:bounds.midY), radius: cornerRadius)
+                pathRef.addLine(to: CGPoint(x:bounds.maxX-4,y:bounds.minY))
+            } else {
+                pathRef.addRect(CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width-4, height: bounds.height))
                 addLine = true
-                
-                layer.path = pathRef;
-                //set the border color
-                layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor;
-                //set the border width
-                layer.lineWidth = 2;
-                
-                
-                if (addLine == true) {
-                    //                let lineLayer: CALayer = CALayer();
-                    //                let lineHeight: CGFloat  = (1 / UIScreen.main.scale);
-                    //                lineLayer.frame = CGRect(x: bounds.minX, y: bounds.size.height-lineHeight, width: bounds.size.width, height: lineHeight);
-                    //                lineLayer.backgroundColor = tableView.separatorColor!.cgColor;
-                    //layer.addSublayer(lineLayer);
-                }
-                
-                cell.layer.insertSublayer(layer, at: 100)
             }
+            layer.path = pathRef
+            //set the border color
+            layer.strokeColor = UIColor.lightGray.cgColor;
+            //set the border width
+            layer.lineWidth = 1
+            layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor
+            
+            
+            if (addLine == true) {
+                let lineLayer: CALayer = CALayer()
+                let lineHeight: CGFloat  = (1 / UIScreen.main.scale)
+                lineLayer.frame = CGRect(x:bounds.minX, y:bounds.size.height-lineHeight, width:bounds.size.width, height:lineHeight)
+                lineLayer.backgroundColor = tableView.separatorColor!.cgColor
+                layer.addSublayer(lineLayer)
+            }
+            
+            let testView: UIView = UIView(frame:bounds)
+            testView.layer.insertSublayer(layer, at: 0)
+            testView.backgroundColor = UIColor.clear
+            cell.backgroundView = testView
         }
     }
+    
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        if (cell.responds(to: #selector(getter: UIView.tintColor))) {
+//            let cornerRadius: CGFloat = 0;
+//            //cell.backgroundColor = .clear
+//            let layer: CAShapeLayer  = CAShapeLayer()
+//            let pathRef: CGMutablePath  = CGMutablePath()
+//            let bounds: CGRect  = cell.bounds
+//            var addLine: Bool = false
+//            if (indexPath.section != tableView.numberOfSections-1) {
+//                pathRef.move(to: CGPoint(x: bounds.minX, y: bounds.minY))
+//                pathRef.addLine(to: CGPoint(x: bounds.minX, y: bounds.maxY))
+//                let playlistColour: UIColor = NSKeyedUnarchiver.unarchiveObject(with: playlistStructArray[indexPath.section].name.colour!) as! UIColor
+//                layer.strokeColor = playlistColour.cgColor
+//                addLine = true
+//
+//                layer.path = pathRef;
+//                //set the border color
+//                layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor;
+//                //set the border width
+//                layer.lineWidth = 2;
+//
+//
+//                if (addLine == true) {
+//                    //                let lineLayer: CALayer = CALayer();
+//                    //                let lineHeight: CGFloat  = (1 / UIScreen.main.scale);
+//                    //                lineLayer.frame = CGRect(x: bounds.minX, y: bounds.size.height-lineHeight, width: bounds.size.width, height: lineHeight);
+//                    //                lineLayer.backgroundColor = tableView.separatorColor!.cgColor;
+//                    //layer.addSublayer(lineLayer);
+//                }
+//
+//                cell.layer.insertSublayer(layer, at: 100)
+//            }
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if isDragging && indexPath.section == sectionDragging {
@@ -232,7 +289,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             cell.isUserInteractionEnabled = true
             
             // round top left and right corners
-            let cornerRadius: CGFloat = 10
+            let cornerRadius: CGFloat = 15
             let maskLayer = CAShapeLayer()
             
             maskLayer.path = UIBezierPath(

@@ -17,12 +17,20 @@ weak var timer: Timer!
 var managedContext: NSManagedObjectContext!
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
 
     var window: UIWindow?
     var client: MSClient!
     let endpoint = "Endpoint=sb://podwise.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=99efNs84C80JoCaZdQyrCPiV5CShshoAU8G1Q5E9ojg="
     let hubName = "PodwiseHub"
+    var eName: String = String()
+    var episodeID: String = String()
+    var episodeTitle: String = String()
+    var episodeDescription = String()
+    var episodeDuration = String()
+    var episodeURL: URL!
+    var skippedChannelTitle = false
+    var skippedChannelDescription = false
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -186,17 +194,131 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         print(userInfo)
-//        guard
-//            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
-//            let alert = aps["alert"] as? NSDictionary,
-//            let body = alert["body"] as? String,
-//            let title = alert["title"] as? String
-//            else {
-//                // handle any error here
-//                return
-//        }
+        guard
+            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
+            let alert = aps["alert"] as? NSDictionary,
+            let body = alert["body"] as? String,
+            let title = alert["title"] as? String,
+            let rssFeed = userInfo[AnyHashable("rssFeed")] as? String
+            else {
+                // handle any error here
+                return
+        }
         
-        //print("Title: \(title) \nBody:\(body)")
+        print("Title: \(title) \nBody:\(body)")
+        print(rssFeed)
+        
+        if let parser = XMLParser(contentsOf: URL(string: rssFeed)!) {
+            parser.delegate = self
+            parser.parse()
+        }
+        print("Looking for: \(rssFeed)")
+    }
+    
+    func downloadFile(at: URL) {
+        // then lets create your document folder url
+        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
+        
+        // lets create your destination file url
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
+        print(destinationUrl)
+        
+        var podcast: CDPodcast!
+        let podcasts = CoreDataHelper.getPodcastWith(url: at, in: managedContext)
+        if podcasts.count > 0 {
+            podcast = podcasts[0]
+        }
+        // to check if it exists before downloading it
+        if !FileManager.default.fileExists(atPath: destinationUrl.path) {
+            let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
+            let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
+            
+            let parsedEpisode = Episode()
+            parsedEpisode.id = episodeID
+            parsedEpisode.title = episodeTitle
+            parsedEpisode.itunesSubtitle = episodeDescription
+            parsedEpisode.itunesDuration = episodeDuration
+            parsedEpisode.audioUrl = at
+            
+            episode.id = episodeID
+            episode.title = episodeTitle
+            episode.subTitle = episodeDescription
+            episode.audioURL = at
+            episode.localURL = destinationUrl
+            episode.duration = episodeDuration
+            episode.podcast = podcast
+            
+            CoreDataHelper.save(context: managedContext!)
+            
+            // you can use NSURLSession.sharedSession to download the data asynchronously
+            URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
+                guard let location = location, error == nil else { return }
+                do {
+                    // after downloading your file you need to move it to your destination url
+                    print("Target Path: \(destinationUrl)")
+                    try FileManager.default.moveItem(at: location, to: destinationUrl)
+                    print("File moved to documents folder")
+                    
+                    downloads.removeFirst()
+                } catch let error as NSError {
+                    print(error.localizedDescription)
+                }
+            }).resume()
+        }
+        
+        // XMLParser Delegate Methods
+        func parser(parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+            
+            if elementName == "enclosure" {
+                let audioURL = attributeDict["url"]
+                let urlString: String = audioURL!
+                let url: URL = URL(string: urlString)!
+                print("URL for podcast download: \(url)")
+                episodeURL = url
+            }
+            
+            eName = elementName
+            if elementName == "item" {
+                episodeID = String()
+                episodeTitle = String()
+                episodeDescription = String()
+                episodeDuration = String()
+            }
+        }
+
+        func parser(parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+            if elementName == "item" {
+                downloadFile(at: episodeURL)
+                parser.abortParsing()
+            }
+        }
+        
+        func parser(parser: XMLParser, foundCharacters string: String) {
+            let data = string.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+            
+            if (!data.isEmpty) {
+                switch eName {
+                case "title":
+                    if skippedChannelTitle == false {
+                        skippedChannelTitle = true
+                    } else {
+                        episodeTitle += data
+                    }
+                case "description":
+                    if skippedChannelDescription == false {
+                        skippedChannelDescription = true
+                    } else {
+                        episodeDescription += data
+                    }
+                case "guid":
+                    episodeID = data
+                case "itunes:duration":
+                    episodeDuration = data
+                default:
+                    break
+                }
+            }
+        }
     }
     
     //  Tags that can be send from server in a push notification:
