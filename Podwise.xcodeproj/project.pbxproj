@@ -59,6 +59,8 @@
 		BEE0A1591FBE57C300AA111F /* PodwiseUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1581FBE57C300AA111F /* PodwiseUITests.swift */; };
 		BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */; };
 		BEE0A16A1FBE5EBA00AA111F /* BrowseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */; };
+		BEE3E34E203A621C00ACAC51 /* CloudKitDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE3E34D203A621C00ACAC51 /* CloudKitDataHelper.swift */; };
+		BEE3E350203A649500ACAC51 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEE3E34F203A649500ACAC51 /* CloudKit.framework */; };
 		BEE7BA6B1FC77C22005345FB /* EpisodesForPodcastViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */; };
 		BEF807E21FE07B8C0088F16F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */; };
 		BEFBDB231FE88494007C4CA4 /* SubscribedPodcastsPlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEFBDB221FE88494007C4CA4 /* SubscribedPodcastsPlaylistViewController.swift */; };
@@ -145,6 +147,8 @@
 		BEE0A15A1FBE57C300AA111F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		BEE0A1671FBE5C6600AA111F /* PodcastCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodcastCell.swift; sourceTree = "<group>"; };
 		BEE0A1691FBE5EBA00AA111F /* BrowseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowseViewController.swift; sourceTree = "<group>"; };
+		BEE3E34D203A621C00ACAC51 /* CloudKitDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudKitDataHelper.swift; sourceTree = "<group>"; };
+		BEE3E34F203A649500ACAC51 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		BEE7BA6A1FC77C22005345FB /* EpisodesForPodcastViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodesForPodcastViewController.swift; sourceTree = "<group>"; };
 		BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		BEFBDB221FE88494007C4CA4 /* SubscribedPodcastsPlaylistViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscribedPodcastsPlaylistViewController.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BEF807E21FE07B8C0088F16F /* MediaPlayer.framework in Frameworks */,
+				BEE3E350203A649500ACAC51 /* CloudKit.framework in Frameworks */,
 				BEB608D01FD133CF004FE0ED /* MicrosoftAzureMobile.framework in Frameworks */,
 				BE0FC1D61FE238F200457EDD /* WindowsAzureMessaging.framework in Frameworks */,
 			);
@@ -202,6 +207,7 @@
 			children = (
 				BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */,
 				BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */,
+				BEE3E34D203A621C00ACAC51 /* CloudKitDataHelper.swift */,
 			);
 			path = DataHelpers;
 			sourceTree = "<group>";
@@ -241,6 +247,7 @@
 		BEB608CE1FD133CF004FE0ED /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BEE3E34F203A649500ACAC51 /* CloudKit.framework */,
 				BE0FC1D71FE238F800457EDD /* WindowsAzureMessaging.framework */,
 				BEF807E11FE07B8C0088F16F /* MediaPlayer.framework */,
 				BEB608CF1FD133CF004FE0ED /* MicrosoftAzureMobile.framework */,
@@ -416,6 +423,9 @@
 							com.apple.Push = {
 								enabled = 1;
 							};
+							com.apple.iCloud = {
+								enabled = 1;
+							};
 						};
 					};
 					BEE0A1481FBE57C300AA111F = {
@@ -506,6 +516,7 @@
 				BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */,
 				BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */,
 				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
+				BEE3E34E203A621C00ACAC51 /* CloudKitDataHelper.swift in Sources */,
 				BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */,
 				BEB0B7351FE380B3006FA0E5 /* SubscriptionsViewController.swift in Sources */,
 				BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */,
