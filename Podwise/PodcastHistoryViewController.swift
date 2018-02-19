@@ -590,7 +590,9 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             if episodes.count > 0 {
                 downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], addTo: nil, playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
             }
+            CloudKitDataHelper.subscribeToPodcastWith(title: channelLabel.text!, rssFeed: url.absoluteString)
         } else {
+            
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
             let podcast = CoreDataHelper.getPodcastWith(id: collectionID!, in: managedContext!)
@@ -617,6 +619,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 CoreDataHelper.save(context: managedContext!)
                 AzureDBDataHelper.handle(subscribe: false, to: podcast)
             }
+            CloudKitDataHelper.unsubscribeFromPodcastWith(title: channelLabel.text!, rssFeed: url.absoluteString)
         }
     }
     

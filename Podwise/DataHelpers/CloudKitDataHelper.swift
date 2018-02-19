@@ -23,15 +23,46 @@ class CloudKitDataHelper {
             if results != nil {
                 print(results!.count)
                 if results!.count >= 1 {
-                    print(results!.count)
                     result = true
+                    print(result)
                     completionHandler(result, results![0])
+                } else {
+                    result = false
+                    print(result)
+                    completionHandler(result, CKRecord(recordType: "Podcasts"))
                 }
             }
         })
     }
     
-    static func createPodcastRecordWith(title: String, rssFeed: String, completionHandler:@escaping (_ success: Bool) -> Void) {
+    static func subscriptionExistsInCloud(deviceToken: String, record: CKRecord, completionHandler:@escaping (_ success: Bool, _ record: CKRecord) -> Void) {
+        let container: CKContainer = CKContainer.default()
+        let publicDB: CKDatabase = container.publicCloudDatabase
+        
+        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+        let predicate1 = NSPredicate(format: "deviceToken == %@", deviceToken)
+        let predicate2 = NSPredicate(format: "podcast == %@", podcastReference)
+        let predicateList = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate1, predicate2])
+        let query = CKQuery(recordType: "Subscriptions", predicate: predicateList)
+        var result = false
+        publicDB.perform(query, inZoneWith: nil, completionHandler: {results, er in
+            
+            if results != nil {
+                print(results!.count)
+                if results!.count >= 1 {
+                    result = true
+                    print(result)
+                    completionHandler(result, results![0])
+                } else {
+                    result = false
+                    print(result)
+                    completionHandler(result, CKRecord(recordType: "Subscriptions"))
+                }
+            }
+        })
+    }
+    
+    static func createPodcastRecordWith(title: String, rssFeed: String, completionHandler:@escaping (_ success: Bool, _ record: CKRecord) -> Void) {
         let container: CKContainer = CKContainer.default()
         let publicDB: CKDatabase = container.publicCloudDatabase
         
@@ -44,11 +75,11 @@ class CloudKitDataHelper {
         publicDB.save(ckRecord, completionHandler: { (record, error) in
             if error != nil {
                 print(error!)
-                completionHandler(false)
+                completionHandler(false, ckRecord)
                 return
             }
             print("Successfully added record")
-            completionHandler(true)
+            completionHandler(true, ckRecord)
         })
     }
     
@@ -59,49 +90,63 @@ class CloudKitDataHelper {
         podcastExistsInCloud(rssFeed: rssFeed, completionHandler:{(success: Bool, record: CKRecord) -> Void in
             if success {
                 // subscribe to Podcast
-                let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
-                
-                ckRecord.setObject(title as CKRecordValue?, forKey: "title")
-                ckRecord.setObject(rssFeed as CKRecordValue?, forKey: "rssFeed")
-                ckRecord.setObject("" as CKRecordValue, forKey: "latestEpisode")
+                let deviceID = UIDevice.current.identifierForVendor!.uuidString
+                subscriptionExistsInCloud(deviceToken: deviceID, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
+                    if !foundSubRecord {
+                        let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
+                        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+                        ckRecord.setObject(podcastReference, forKey: "podcast")
+                        ckRecord.setObject(deviceID as CKRecordValue?, forKey: "deviceToken")
+                        
+                        publicDB.save(ckRecord, completionHandler: { (record, error) in
+                            if error != nil {
+                                print(error!)
+                                return
+                            }
+                            print("Successfully subscribed to podcast in cloud")
+                        })
+                    }
+                })
             } else {
                 // create new Podcast record and subscribe
-            }
-        })
-        
-        let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: "Podcasts", predicate: predicate)
-        //let zoneID = CKRecordZoneID(zoneName: "Records", ownerName: CKCurrentUserDefaultName)
-        publicDB.perform(query, inZoneWith: nil, completionHandler: { (results, error) in
-            if error != nil {
-                print("Error retrieving from cloudkit")
-            } else {
-//                let ckRecord = CKRecord(recordType: "Podcasts", recordID: CKRecordID(recordName: UUID().uuidString))
-//
-//                ckRecord.setObject(title as CKRecordValue?, forKey: "title")
-//                ckRecord.setObject(rssFeed as CKRecordValue?, forKey: "rssFeed")
-//                ckRecord.setObject(startDate as CKRecordValue, forKey: "warrantyStarts")
-//
-//                let syncedDate = Date()
-//                ckRecord.setObject(syncedDate as CKRecordValue?, forKey: "lastSynced")
-//
-//                if cdRecord.recentlyDeleted {
-//                    let dateDeleted = dateFormatter.string(from: cdRecord.dateDeleted! as Date)
-//                    ckRecord.setObject(dateDeleted as CKRecordValue?, forKey: "dateDeleted")
-//                }
-//
-//                privateDatabase.save(ckRecord, completionHandler: { (record, error) in
-//                    if error != nil {
-//                        print(error!)
-//                        return
-//                    }
-//                    print("Successfully added record")
-//
-//                    self.importAssociatedImages(cdRecord: cdRecord, syncedDate: syncedDate, context: context)
-//                    self.importAssociatedNotes(cdRecord: cdRecord, syncedDate: syncedDate, context: context)
-//                })
+                createPodcastRecordWith(title: title, rssFeed: rssFeed, completionHandler: { (success: Bool, record: CKRecord) in
+                    if success {
+                        let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
+                        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+                        ckRecord.setObject(podcastReference, forKey: "podcast")
+                        ckRecord.setObject(UIDevice.current.identifierForVendor!.uuidString as CKRecordValue?, forKey: "deviceToken")
+                        
+                        publicDB.save(ckRecord, completionHandler: { (record, error) in
+                            if error != nil {
+                                print(error!)
+                                return
+                            }
+                            print("Successfully subscribed to podcast in cloud")
+                        })
+                    }
+                })
             }
         })
     }
     
+    static func unsubscribeFromPodcastWith(title: String, rssFeed: String) {
+        let container: CKContainer = CKContainer.default()
+        let publicDB: CKDatabase = container.publicCloudDatabase
+        
+        podcastExistsInCloud(rssFeed: rssFeed, completionHandler:{(success: Bool, record: CKRecord) -> Void in
+            if success {
+                // unsubscribe to Podcast
+                let deviceID = UIDevice.current.identifierForVendor!.uuidString
+                subscriptionExistsInCloud(deviceToken: deviceID, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
+                    if foundSubRecord {
+                        publicDB.delete(withRecordID: subRecord.recordID, completionHandler: { (recordID, error) in
+                            if error != nil {
+                                print("Record \(String(describing: recordID)) was not successfully deleted")
+                            }
+                        })
+                    }
+                })
+            }
+        })
+    }
 }
