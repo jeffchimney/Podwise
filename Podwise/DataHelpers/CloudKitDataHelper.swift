@@ -90,23 +90,26 @@ class CloudKitDataHelper {
         podcastExistsInCloud(rssFeed: rssFeed, completionHandler:{(success: Bool, record: CKRecord) -> Void in
             if success {
                 // subscribe to Podcast
-                let deviceID = UIDevice.current.identifierForVendor!.uuidString
-                subscriptionExistsInCloud(deviceToken: deviceID, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
-                    if !foundSubRecord {
-                        let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
-                        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
-                        ckRecord.setObject(podcastReference, forKey: "podcast")
-                        ckRecord.setObject(deviceID as CKRecordValue?, forKey: "deviceToken")
-                        
-                        publicDB.save(ckRecord, completionHandler: { (record, error) in
-                            if error != nil {
-                                print(error!)
-                                return
-                            }
-                            print("Successfully subscribed to podcast in cloud")
-                        })
-                    }
-                })
+                let deviceTokens = CoreDataHelper.getAPNSToken(context: managedContext!)
+                if deviceTokens.count > 0 {
+                    let deviceID = deviceTokens[0]
+                    subscriptionExistsInCloud(deviceToken: deviceID.token!, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
+                        if !foundSubRecord {
+                            let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
+                            let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+                            ckRecord.setObject(podcastReference, forKey: "podcast")
+                            ckRecord.setObject(deviceID.token as CKRecordValue?, forKey: "deviceToken")
+                            
+                            publicDB.save(ckRecord, completionHandler: { (record, error) in
+                                if error != nil {
+                                    print(error!)
+                                    return
+                                }
+                                print("Successfully subscribed to podcast in cloud")
+                            })
+                        }
+                    })
+                }
             } else {
                 // create new Podcast record and subscribe
                 createPodcastRecordWith(title: title, rssFeed: rssFeed, completionHandler: { (success: Bool, record: CKRecord) in
@@ -114,15 +117,19 @@ class CloudKitDataHelper {
                         let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
                         let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
                         ckRecord.setObject(podcastReference, forKey: "podcast")
-                        ckRecord.setObject(UIDevice.current.identifierForVendor!.uuidString as CKRecordValue?, forKey: "deviceToken")
-                        
-                        publicDB.save(ckRecord, completionHandler: { (record, error) in
-                            if error != nil {
-                                print(error!)
-                                return
-                            }
-                            print("Successfully subscribed to podcast in cloud")
-                        })
+                        let deviceTokens = CoreDataHelper.getAPNSToken(context: managedContext!)
+                        if deviceTokens.count > 0 {
+                            let deviceID = deviceTokens[0]
+                            ckRecord.setObject(deviceID.token! as CKRecordValue?, forKey: "deviceToken")
+                            
+                            publicDB.save(ckRecord, completionHandler: { (record, error) in
+                                if error != nil {
+                                    print(error!)
+                                    return
+                                }
+                                print("Successfully subscribed to podcast in cloud")
+                            })
+                        }
                     }
                 })
             }
@@ -136,16 +143,19 @@ class CloudKitDataHelper {
         podcastExistsInCloud(rssFeed: rssFeed, completionHandler:{(success: Bool, record: CKRecord) -> Void in
             if success {
                 // unsubscribe to Podcast
-                let deviceID = UIDevice.current.identifierForVendor!.uuidString
-                subscriptionExistsInCloud(deviceToken: deviceID, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
-                    if foundSubRecord {
-                        publicDB.delete(withRecordID: subRecord.recordID, completionHandler: { (recordID, error) in
-                            if error != nil {
-                                print("Record \(String(describing: recordID)) was not successfully deleted")
-                            }
-                        })
-                    }
-                })
+                let deviceTokens = CoreDataHelper.getAPNSToken(context: managedContext!)
+                if deviceTokens.count > 0 {
+                    let deviceID = deviceTokens[0]
+                    subscriptionExistsInCloud(deviceToken: deviceID.token!, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
+                        if foundSubRecord {
+                            publicDB.delete(withRecordID: subRecord.recordID, completionHandler: { (recordID, error) in
+                                if error != nil {
+                                    print("Record \(String(describing: recordID)) was not successfully deleted")
+                                }
+                            })
+                        }
+                    })
+                }
             }
         })
     }

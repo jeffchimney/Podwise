@@ -145,32 +145,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     
     func application(_ application: UIApplication,
                      didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        
-//        let hub: SBNotificationHub = SBNotificationHub(connectionString: endpoint, notificationHubPath: hubName)
-//        
-//        hub.registerNative(withDeviceToken: deviceToken, tags: nil, completion: { error in
-//            if error != nil {
-//                print("Error registering for notifications: \(String(describing: error))")
-//            } else {
-//                print("Registered with NotificationHub")
-//            }
-//        })
-        
-//        let tokenParts = deviceToken.map { data -> String in
-//            return String(format: "%02.2hhx", data)
-//        }
-//
-//        let token = tokenParts.joined()
-//
-//        let managedContext = persistentContainer.viewContext
-//        let tokenEntity = NSEntityDescription.entity(forEntityName: "CDAPNSToken", in: managedContext)!
-//        let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
-//        apnsToken.token = token
-//        CoreDataHelper.save(context: managedContext)
-//
-//        registerDeviceTokenWithMicrosoft(deviceToken: token)
-//
-//        print("Device Token: \(token)")
+        let tokenParts = deviceToken.map { data -> String in
+            return String(format: "%02.2hhx", data)
+        }
+
+        let token = tokenParts.joined()
+
+        let managedContext = persistentContainer.viewContext
+        let tokenEntity = NSEntityDescription.entity(forEntityName: "CDAPNSToken", in: managedContext)!
+        let apnsToken = NSManagedObject(entity: tokenEntity, insertInto: managedContext) as! CDAPNSToken
+        apnsToken.token = token
+        CoreDataHelper.save(context: managedContext)
+
+        print("Device Token: \(token)")
     }
     
     func application(_ application: UIApplication,
@@ -186,10 +173,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
                 UIApplication.shared.registerForRemoteNotifications()
             }
         }
-    }
-    
-    func registerDeviceTokenWithMicrosoft(deviceToken: String) {
-        //AzureDBDataHelper.registerDeviceTokenWithMicrosoft(deviceToken: deviceToken, using: client)
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
