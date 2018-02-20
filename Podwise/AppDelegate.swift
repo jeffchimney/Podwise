@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import CloudKit
 import UserNotifications
 import WebKit
 import SafariServices
@@ -176,26 +177,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        print(userInfo)
-        guard
-            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
-            let alert = aps["alert"] as? NSDictionary,
-            let body = alert["body"] as? String,
-            let title = alert["title"] as? String,
-            let rssFeed = userInfo[AnyHashable("rssFeed")] as? String
-            else {
-                // handle any error here
-                return
-        }
+//        print(userInfo)
+//        guard
+//            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
+//            let alert = aps["alert"] as? NSDictionary,
+//            let body = alert["body"] as? String,
+//            let title = alert["title"] as? String,
+//            let rssFeed = userInfo[AnyHashable("rssFeed")] as? String
+//            else {
+//                // handle any error here
+//                return
+//        }
+//
+//        print("Title: \(title) \nBody:\(body)")
+//        print(rssFeed)
+//
+//        if let parser = XMLParser(contentsOf: URL(string: rssFeed)!) {
+//            parser.delegate = self
+//            parser.parse()
+//        }
+//        print("Looking for: \(rssFeed)")
+        let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
+        let alertBody = cloudKitNotification.alertBody
         
-        print("Title: \(title) \nBody:\(body)")
-        print(rssFeed)
-        
-        if let parser = XMLParser(contentsOf: URL(string: rssFeed)!) {
-            parser.delegate = self
-            parser.parse()
+        if cloudKitNotification.notificationType == .query {
+            let record = cloudKitNotification as! CKQueryNotification
+            let recordID = record.recordID
         }
-        print("Looking for: \(rssFeed)")
     }
     
     func downloadFile(at: URL) {

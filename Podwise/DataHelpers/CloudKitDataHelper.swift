@@ -106,6 +106,7 @@ class CloudKitDataHelper {
                                     return
                                 }
                                 print("Successfully subscribed to podcast in cloud")
+                                createCloudKitSubscriptionFor(record: record!)
                             })
                         }
                     })
@@ -122,12 +123,13 @@ class CloudKitDataHelper {
                             let deviceID = deviceTokens[0]
                             ckRecord.setObject(deviceID.token! as CKRecordValue?, forKey: "deviceToken")
                             
-                            publicDB.save(ckRecord, completionHandler: { (record, error) in
+                            publicDB.save(ckRecord, completionHandler: { (subRecord, error) in
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
                                 print("Successfully subscribed to podcast in cloud")
+                                createCloudKitSubscriptionFor(record: record)
                             })
                         }
                     }
@@ -158,5 +160,29 @@ class CloudKitDataHelper {
                 }
             }
         })
+    }
+    
+    static func createCloudKitSubscriptionFor(record: CKRecord) {
+        
+        let predicate = NSPredicate(format: "rssFeed == %@", record.object(forKey: "rssFeed") as! String)
+        let subscription = CKQuerySubscription(recordType: "Podcasts", predicate: predicate, options: .firesOnRecordUpdate)
+        
+        let notificationInfo = CKNotificationInfo()
+        notificationInfo.alertLocalizationKey = "New \(record.object(forKey: "title") as! String)"
+        notificationInfo.shouldBadge = true
+        notificationInfo.shouldSendContentAvailable = true
+        
+        subscription.notificationInfo = notificationInfo
+        
+        let container: CKContainer = CKContainer.default()
+        let publicDB: CKDatabase = container.publicCloudDatabase
+        
+        publicDB.save(subscription) {(savedSubscription, error) in
+            if error == nil {
+                print("CloudKit Subscription saved!")
+            } else {
+                print("Couldn't save subscription")
+            }
+        }
     }
 }
