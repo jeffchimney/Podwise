@@ -199,7 +199,7 @@ class CoreDataHelper {
     static func getPodcastWith(url: URL, in context: NSManagedObjectContext) -> [CDPodcast] {
         // Get associated images
         let podcastFetchRequest = NSFetchRequest<NSManagedObject>(entityName: "CDPodcast")
-        let predicate = NSPredicate(format: "url = \(url)")
+        let predicate = NSPredicate(format: "feedURL = %@", url.absoluteString)
         podcastFetchRequest.predicate = predicate
         
         var podcastRecords: [NSManagedObject] = []

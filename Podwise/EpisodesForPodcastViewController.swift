@@ -556,13 +556,13 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
             CoreDataHelper.save(context: managedContext!)
-            CloudKitDataHelper.unsubscribeFromPodcastWith(title: podcast.title!, rssFeed: podcast.feedURL!.absoluteString)
+            CloudKitDataHelper.unsubscribeFromPodcastWith(title: podcast.title!, rssFeed: podcast.feedURL!)
         } else {
             podcast.subscribed = true
             subscribeButton.setTitle("  Unubscribe  ", for: .normal)
             subscribeButton.backgroundColor = .red
             CoreDataHelper.save(context: managedContext!)
-            CloudKitDataHelper.subscribeToPodcastWith(title: podcast.title!, rssFeed: podcast.feedURL!.absoluteString)
+            CloudKitDataHelper.subscribeToPodcastWith(title: podcast.title!, rssFeed: podcast.feedURL!)
         }
     }
     
@@ -618,7 +618,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             tableView.reloadData()
         } else {
             if !hasParsedXML {
-                if let parser = XMLParser(contentsOf: podcast.feedURL!) {
+                let rssURL = URL(string: podcast.feedURL!)
+                if let parser = XMLParser(contentsOf: rssURL!) {
                     parser.delegate = self
                     parser.parse()
                 }

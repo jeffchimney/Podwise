@@ -168,7 +168,8 @@ class CloudKitDataHelper {
         let subscription = CKQuerySubscription(recordType: "Podcasts", predicate: predicate, options: .firesOnRecordUpdate)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.alertLocalizationKey = "New \(record.object(forKey: "title") as! String)"
+        notificationInfo.title = "New \(record.object(forKey: "title") as! String) Episode!"
+        notificationInfo.alertBody = record.object(forKey: "latestEpisode") as? String
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendContentAvailable = true
         
@@ -182,6 +183,20 @@ class CloudKitDataHelper {
                 print("CloudKit Subscription saved!")
             } else {
                 print("Couldn't save subscription")
+            }
+        }
+    }
+    
+    static func fetchRecordWith(id: CKRecordID, completionHandler:@escaping (_ success: Bool, _ record: CKRecord?) -> Void) {
+        let container: CKContainer = CKContainer.default()
+        let publicDB: CKDatabase = container.publicCloudDatabase
+        
+        publicDB.fetch(withRecordID: id) { (record, error) in
+            if error != nil {
+                print(error?.localizedDescription ?? "")
+                completionHandler(false, nil)
+            } else {
+                completionHandler(true, record)
             }
         }
     }

@@ -21,9 +21,6 @@ var managedContext: NSManagedObjectContext!
 class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
 
     var window: UIWindow?
-    //var client: MSClient!
-//    let endpoint = "Endpoint=sb://podwise.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=99efNs84C80JoCaZdQyrCPiV5CShshoAU8G1Q5E9ojg="
-//    let hubName = "PodwiseHub"
     var eName: String = String()
     var episodeID: String = String()
     var episodeTitle: String = String()
@@ -32,22 +29,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     var episodeURL: URL!
     var skippedChannelTitle = false
     var skippedChannelDescription = false
+    var parser = XMLParser()
+    var podcastURL: URL!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         registerForPushNotifications()
-        
-        //client = MSClient(applicationURLString: "https://podwise.azurewebsites.net")
+        UIApplication.shared.applicationIconBadgeNumber = 0
         
         return true
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
-        // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
-        // Use this method to pause ongoing tasks, disable timers, and invalidate graphics rendering callbacks. Games should use this method to pause the game.
-        
-        //baseViewController.dismiss(animated: false, completion: nil)
-
         if nowPlayingEpisode != nil {
             nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
         }
@@ -56,20 +49,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     }
 
     func applicationDidEnterBackground(_ application: UIApplication) {
-        // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
-        // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-        
         if timer != nil {
             timer.invalidate()
         }
-        
-//        if let window = window {
-//            if let viewControllers = window.rootViewController?.childViewControllers {
-//                for viewController in viewControllers {
-//                    viewController.dismiss(animated: false, completion: nil)
-//                }
-//            }
-//        }
     }
 
     func applicationWillEnterForeground(_ application: UIApplication) {
@@ -177,32 +159,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-//        print(userInfo)
-//        guard
-//            let aps = userInfo[AnyHashable("aps")] as? NSDictionary,
-//            let alert = aps["alert"] as? NSDictionary,
-//            let body = alert["body"] as? String,
-//            let title = alert["title"] as? String,
-//            let rssFeed = userInfo[AnyHashable("rssFeed")] as? String
-//            else {
-//                // handle any error here
-//                return
-//        }
-//
-//        print("Title: \(title) \nBody:\(body)")
-//        print(rssFeed)
-//
-//        if let parser = XMLParser(contentsOf: URL(string: rssFeed)!) {
-//            parser.delegate = self
-//            parser.parse()
-//        }
-//        print("Looking for: \(rssFeed)")
+
+        parser.delegate = self
+        
         let cloudKitNotification = CKNotification(fromRemoteNotificationDictionary: userInfo)
         let alertBody = cloudKitNotification.alertBody
         
         if cloudKitNotification.notificationType == .query {
             let record = cloudKitNotification as! CKQueryNotification
-            let recordID = record.recordID
+            if let recordID = record.recordID {
+                CloudKitDataHelper.fetchRecordWith(id: recordID, completionHandler: { (success, record) in
+                    if success {
+                        let record = record!
+                        let rssFeed = record.object(forKey: "rssFeed") as! String
+                        
+                        if let rssURL = URL(string: rssFeed) {
+                            self.podcastURL = rssURL
+                            self.parser = XMLParser(contentsOf: rssURL)!
+                            self.parser.delegate = self
+                            let parsed = self.parser.parse()
+                            print(parsed)
+
+                            print("Looking for: \(rssFeed)")
+                            completionHandler(UIBackgroundFetchResult.newData)
+                        }
+                    } else {
+                        completionHandler(UIBackgroundFetchResult.noData)
+                    }
+                })
+            }
         }
     }
     
@@ -215,7 +200,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
         print(destinationUrl)
         
         var podcast: CDPodcast!
-        let podcasts = CoreDataHelper.getPodcastWith(url: at, in: managedContext)
+        let podcasts = CoreDataHelper.getPodcastWith(url: podcastURL, in: managedContext)
         if podcasts.count > 0 {
             podcast = podcasts[0]
         }
@@ -249,65 +234,63 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
                     print("Target Path: \(destinationUrl)")
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
-                    
-                    downloads.removeFirst()
                 } catch let error as NSError {
                     print(error.localizedDescription)
                 }
             }).resume()
         }
-        
-        // XMLParser Delegate Methods
-        func parser(parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
-            
-            if elementName == "enclosure" {
-                let audioURL = attributeDict["url"]
-                let urlString: String = audioURL!
-                let url: URL = URL(string: urlString)!
-                print("URL for podcast download: \(url)")
-                episodeURL = url
-            }
-            
-            eName = elementName
-            if elementName == "item" {
-                episodeID = String()
-                episodeTitle = String()
-                episodeDescription = String()
-                episodeDuration = String()
-            }
-        }
+    }
 
-        func parser(parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
-            if elementName == "item" {
-                downloadFile(at: episodeURL)
-                parser.abortParsing()
-            }
+    // XMLParser Delegate Methods
+    func parser(_ parser: XMLParser, didStartElement: String, namespaceURI: String?, qualifiedName: String?, attributes: [String : String]) {
+        
+        if didStartElement == "enclosure" {
+            let audioURL = attributes["url"]
+            let urlString: String = audioURL!
+            let url: URL = URL(string: urlString)!
+            print("URL for podcast download: \(url)")
+            episodeURL = url
         }
         
-        func parser(parser: XMLParser, foundCharacters string: String) {
-            let data = string.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
-            
-            if (!data.isEmpty) {
-                switch eName {
-                case "title":
-                    if skippedChannelTitle == false {
-                        skippedChannelTitle = true
-                    } else {
-                        episodeTitle += data
-                    }
-                case "description":
-                    if skippedChannelDescription == false {
-                        skippedChannelDescription = true
-                    } else {
-                        episodeDescription += data
-                    }
-                case "guid":
-                    episodeID = data
-                case "itunes:duration":
-                    episodeDuration = data
-                default:
-                    break
+        eName = didStartElement
+        if didStartElement == "item" {
+            episodeID = String()
+            episodeTitle = String()
+            episodeDescription = String()
+            episodeDuration = String()
+        }
+    }
+    
+    func parser(_ parser: XMLParser, didEndElement: String, namespaceURI: String?, qualifiedName: String?) {
+        if didEndElement == "item" {
+            downloadFile(at: episodeURL)
+            parser.abortParsing()
+        }
+    }
+    
+    func parser(_ parser: XMLParser, foundCharacters: String) {
+        let data = foundCharacters.trimmingCharacters(in: NSCharacterSet.whitespacesAndNewlines)
+        
+        if (!data.isEmpty) {
+            switch eName {
+            case "title":
+                if skippedChannelTitle == false {
+                    skippedChannelTitle = true
+                } else {
+                    episodeTitle += data
                 }
+            case "description":
+                if skippedChannelDescription == false {
+                    skippedChannelDescription = true
+                } else {
+                    episodeDescription += data
+                }
+            case "guid":
+                episodeID = data
+            case "itunes:duration":
+                episodeDuration = data
+            default:
+                break
             }
         }
     }

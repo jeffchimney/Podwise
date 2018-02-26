@@ -36,7 +36,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var episodeURL: URL!
     var imageSet: Bool = false
     var feedURL: String!
-    var url: URL!
+    var url: String!
     var collectionID: Int!
     var authorName: String!
     var searchActive: Bool = false
@@ -64,10 +64,10 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         let searchBarButtonItem = UIBarButtonItem(customView: searchBar)
         navigationItem.rightBarButtonItem = searchBarButtonItem
         
-        let urlString: String = feedURL
-        url = URL(string: urlString)!
+        url = feedURL
+        let rssURL = URL(string: url)!
         
-        if let parser = XMLParser(contentsOf: url) {
+        if let parser = XMLParser(contentsOf: rssURL) {
             parser.delegate = self
             parser.parse()
         }
@@ -588,7 +588,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             if episodes.count > 0 {
                 downloadFile(at: episodes[0].audioUrl, relatedTo: episodes[0], addTo: nil, playNow: false, cellIndexPath: IndexPath(row: 0, section: 0))
             }
-            CloudKitDataHelper.subscribeToPodcastWith(title: channelLabel.text!, rssFeed: url.absoluteString)
+            CloudKitDataHelper.subscribeToPodcastWith(title: channelLabel.text!, rssFeed: url)
         } else {
             
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
@@ -617,7 +617,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 CoreDataHelper.save(context: managedContext!)
                 AzureDBDataHelper.handle(subscribe: false, to: podcast)
             }
-            CloudKitDataHelper.unsubscribeFromPodcastWith(title: channelLabel.text!, rssFeed: url.absoluteString)
+            CloudKitDataHelper.unsubscribeFromPodcastWith(title: channelLabel.text!, rssFeed: url)
         }
     }
     
