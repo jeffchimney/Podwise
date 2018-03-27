@@ -38,9 +38,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     var episodeDuration = String()
     var episodeURL: URL!
     var imageSet: Bool = false
+//    var colors: UIImageColors!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        colors = UIImageColors(background: UIColor.white, primary: UIColor.black, secondary: UIColor.black, detail: UIColor.black)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
@@ -55,6 +57,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         playlistButton.layer.cornerRadius = 15
         playlistButton.layer.masksToBounds = true
         playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
+        segmentedViewController.tintColor = UIColor(displayP3Red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB), alpha: 1.0)
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -71,6 +74,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.setTitle("  Subscribe  ", for: .normal)
             subscribeButton.backgroundColor = .green
         }
+        
+//        colors = (imageView.image?.getColors())!
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -104,7 +109,14 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath) as! EpisodeCell
+        
+//        cell.contentView.backgroundColor = colors.background
+//        cell.titleLabel.textColor = colors.primary
+//        cell.descriptionLabel.textColor = colors.secondary
+//        cell.durationLabel.textColor = colors.detail
+        
         var hours = 0
         var minutes = 0
         if segmentedViewController.selectedSegmentIndex == 0 { // already downloaded
@@ -206,6 +218,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(for: episode)
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        let selectedCell:UITableViewCell = tableView.cellForRow(at: indexPath)!
+        selectedCell.contentView.backgroundColor = UIColor.white
     }
     
     func tableView(_ tableView: UITableView,

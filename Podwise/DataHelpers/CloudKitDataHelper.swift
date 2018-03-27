@@ -100,13 +100,13 @@ class CloudKitDataHelper {
                             ckRecord.setObject(podcastReference, forKey: "podcast")
                             ckRecord.setObject(deviceID.token as CKRecordValue?, forKey: "deviceToken")
                             
-                            publicDB.save(ckRecord, completionHandler: { (record, error) in
+                            publicDB.save(ckRecord, completionHandler: { (subsRecord, error) in
                                 if error != nil {
                                     print(error!)
                                     return
                                 }
                                 print("Successfully subscribed to podcast in cloud")
-                                createCloudKitSubscriptionFor(record: record!)
+                                createCloudKitSubscriptionFor(record: record)
                             })
                         }
                     })
@@ -163,7 +163,9 @@ class CloudKitDataHelper {
     }
     
     static func createCloudKitSubscriptionFor(record: CKRecord) {
-        
+        print(record.object(forKey: "deviceToken"))
+        print(record.object(forKey: "title"))
+        print(record.object(forKey: "rssFeed"))
         let predicate = NSPredicate(format: "rssFeed == %@", record.object(forKey: "rssFeed") as! String)
         let subscription = CKQuerySubscription(recordType: "Podcasts", predicate: predicate, options: .firesOnRecordUpdate)
         

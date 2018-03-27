@@ -26,6 +26,7 @@
 		BE7A6F5A20056267005A38EB /* PlaylistCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A6F5920056267005A38EB /* PlaylistCollectionViewCell.swift */; };
 		BE7A6F5C20056748005A38EB /* PlaylistHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE7A6F5B20056748005A38EB /* PlaylistHeaderView.swift */; };
 		BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */; };
+		BE8646B3206B03050002205D /* UIImageColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8646B2206B03050002205D /* UIImageColors.swift */; };
 		BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */; };
 		BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */; };
 		BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */; };
@@ -106,6 +107,7 @@
 		BE7A6F5920056267005A38EB /* PlaylistCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCollectionViewCell.swift; sourceTree = "<group>"; };
 		BE7A6F5B20056748005A38EB /* PlaylistHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistHeaderView.swift; sourceTree = "<group>"; };
 		BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AzureDBDataHelper.swift; sourceTree = "<group>"; };
+		BE8646B2206B03050002205D /* UIImageColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageColors.swift; sourceTree = "<group>"; };
 		BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MiniPlayer.xib; sourceTree = "<group>"; };
 		BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MiniPlayerViewController.swift; sourceTree = "<group>"; };
 		BE9CBDF11FC5053600AB9C44 /* EpisodeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EpisodeCell.swift; sourceTree = "<group>"; };
@@ -304,6 +306,7 @@
 				BEE0A1441FBE57C200AA111F /* Info.plist */,
 				BEA71A601FBFAE5B001B42FC /* RSSParser.swift */,
 				BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */,
+				BE8646B2206B03050002205D /* UIImageColors.swift */,
 			);
 			path = Podwise;
 			sourceTree = "<group>";
@@ -500,6 +503,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */,
+				BE8646B3206B03050002205D /* UIImageColors.swift in Sources */,
 				BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */,
 				BEA55D9C1FE9C05B007B3164 /* NewPlaylistHeaderView.swift in Sources */,
 				BE4B40C71FEB325E00719676 /* PlaylistColourCell.swift in Sources */,
