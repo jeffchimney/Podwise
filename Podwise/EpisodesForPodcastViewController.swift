@@ -42,7 +42,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        colors = UIImageColors(background: UIColor.white, primary: UIColor.black, secondary: UIColor.black, detail: UIColor.black)
+//        colors = UIImageColors(background: UIColor.white, primary: UIColor.black, secondary: UIColor.black, detail: UIColor.black)
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
         }
