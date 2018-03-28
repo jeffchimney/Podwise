@@ -26,14 +26,12 @@ public protocol editPlaylistDelegate: class {
     func edit()
 }
 
-class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate,  relayoutSectionDelegate, editPlaylistDelegate { //UITableViewDragDelegate, UITableViewDropDelegate,
+class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate, UITableViewDragDelegate, UITableViewDropDelegate, relayoutSectionDelegate, editPlaylistDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
         var episodes : [CDEpisode]
     }
-    
-    fileprivate let sectionInsets = UIEdgeInsets(top: 4.0, left: 8.0, bottom: 4.0, right: 8.0)
 
     var podcasts: [CDPodcast] = []
     var episodes: [CDEpisode] = []
@@ -55,14 +53,14 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        //tableView.dragDelegate = self
-        //tableView.dropDelegate = self
+        tableView.dragDelegate = self
+        tableView.dropDelegate = self
         
         tableView.dragInteractionEnabled = true
         self.transitioningDelegate = self
         
-        let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
-        tableView.addGestureRecognizer(longpress)
+//        let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
+//        tableView.addGestureRecognizer(longpress)
         
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
@@ -167,13 +165,15 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        if indexPath.row == 0 {
-            return true
-        } else {
-            return false
-        }
-    }
+//    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+//        print(indexPath.section)
+//        print(playlistStructArray.count)
+//        if indexPath.row == 0 && indexPath.section != playlistStructArray.count - 1{
+//            return true
+//        } else {
+//            return false
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 4
@@ -185,51 +185,51 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         return UIView()
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if (cell.responds(to: #selector(getter: UIView.tintColor))) {
-            let cornerRadius: CGFloat = 10
-            //cell.backgroundColor = UIColor.clear
-            let layer: CAShapeLayer  = CAShapeLayer()
-            let pathRef: CGMutablePath  = CGMutablePath()
-            let bounds: CGRect  = cell.bounds
-            var addLine: Bool  = false
-            if (indexPath.row == 0 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
-                //pathRef.__addRoundedRect(transform: nil, rect: bounds, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
-            } else if (indexPath.row == 0) {
-                // do basically nothing
-            } else if (indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
-                
-                pathRef.move(to: CGPoint(x:bounds.minX,y:bounds.minY))
-                pathRef.addArc(tangent1End: CGPoint(x:bounds.minX,y:bounds.maxY), tangent2End: CGPoint(x:bounds.midX,y:bounds.maxY), radius: cornerRadius)
-                
-                pathRef.addArc(tangent1End: CGPoint(x:bounds.maxX-4,y:bounds.maxY), tangent2End: CGPoint(x:bounds.maxX-4,y:bounds.midY), radius: cornerRadius)
-                pathRef.addLine(to: CGPoint(x:bounds.maxX-4,y:bounds.minY))
-            } else {
-                pathRef.addRect(CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width-4, height: bounds.height))
-                addLine = true
-            }
-            layer.path = pathRef
-            //set the border color
-            layer.strokeColor = UIColor.lightGray.cgColor;
-            //set the border width
-            layer.lineWidth = 1
-            layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor
-            
-            
-            if (addLine == true) {
-                let lineLayer: CALayer = CALayer()
-                let lineHeight: CGFloat  = (1 / UIScreen.main.scale)
-                lineLayer.frame = CGRect(x:bounds.minX, y:bounds.size.height-lineHeight, width:bounds.size.width, height:lineHeight)
-                lineLayer.backgroundColor = tableView.separatorColor!.cgColor
-                layer.addSublayer(lineLayer)
-            }
-            
-            let testView: UIView = UIView(frame:bounds)
-            testView.layer.insertSublayer(layer, at: 0)
-            testView.backgroundColor = UIColor.clear
-            cell.backgroundView = testView
-        }
-    }
+//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+//        if (cell.responds(to: #selector(getter: UIView.tintColor))) {
+//            let cornerRadius: CGFloat = 10
+//            //cell.backgroundColor = UIColor.clear
+//            let layer: CAShapeLayer  = CAShapeLayer()
+//            let pathRef: CGMutablePath  = CGMutablePath()
+//            let bounds: CGRect  = cell.bounds
+//            var addLine: Bool  = false
+//            if (indexPath.row == 0 && indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
+//                //pathRef.__addRoundedRect(transform: nil, rect: bounds, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
+//            } else if (indexPath.row == 0) {
+//                // do basically nothing
+//            } else if (indexPath.row == tableView.numberOfRows(inSection: indexPath.section)-1) {
+//
+//                pathRef.move(to: CGPoint(x:bounds.minX,y:bounds.minY))
+//                pathRef.addArc(tangent1End: CGPoint(x:bounds.minX,y:bounds.maxY), tangent2End: CGPoint(x:bounds.midX,y:bounds.maxY), radius: cornerRadius)
+//
+//                pathRef.addArc(tangent1End: CGPoint(x:bounds.maxX-4,y:bounds.maxY), tangent2End: CGPoint(x:bounds.maxX-4,y:bounds.midY), radius: cornerRadius)
+//                pathRef.addLine(to: CGPoint(x:bounds.maxX-4,y:bounds.minY))
+//            } else {
+//                pathRef.addRect(CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width-4, height: bounds.height))
+//                addLine = true
+//            }
+//            layer.path = pathRef
+//            //set the border color
+//            layer.strokeColor = UIColor.lightGray.cgColor;
+//            //set the border width
+//            layer.lineWidth = 1
+//            layer.fillColor = UIColor(white: 1, alpha: 1.0).cgColor
+//
+//
+//            if (addLine == true) {
+//                let lineLayer: CALayer = CALayer()
+//                let lineHeight: CGFloat  = (1 / UIScreen.main.scale)
+//                lineLayer.frame = CGRect(x:bounds.minX, y:bounds.size.height-lineHeight, width:bounds.size.width, height:lineHeight)
+//                lineLayer.backgroundColor = tableView.separatorColor!.cgColor
+//                layer.addSublayer(lineLayer)
+//            }
+//
+//            let testView: UIView = UIView(frame:bounds)
+//            testView.layer.insertSublayer(layer, at: 0)
+//            testView.backgroundColor = UIColor.clear
+//            cell.backgroundView = testView
+//        }
+//    }
     
 //    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 //        if (cell.responds(to: #selector(getter: UIView.tintColor))) {
@@ -604,97 +604,189 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         return presentation;
     }
-
-    var cellSnapshot : UIView? = nil
-    var initialIndexPath : IndexPath? = nil
-    @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
-        let longPress = gestureRecognizer as! UILongPressGestureRecognizer
-        let state = longPress.state
-        let locationInView = longPress.location(in: tableView)
-        var indexPath = tableView.indexPathForRow(at: locationInView)
+    
+    func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
+        // stop illegal drags before they happen
+        if indexPath.row != 0 || indexPath.section == playlistStructArray.count{
+            return []
+        }
         let impact = UIImpactFeedbackGenerator()
         impact.prepare()
-        switch state {
-        case .began:
-            if indexPath != nil {
-                if indexPath!.row == 0 {
-                    impact.impactOccurred()
-                    initialIndexPath = indexPath
-                    let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
-                    cellSnapshot = snapshopOfCell(inputView: cell!)
-                    var center = cell?.center
-                    cellSnapshot!.center = center!
-                    cellSnapshot!.alpha = 0.0
-                    tableView.addSubview(cellSnapshot!)
-                    
-                    UIView.animate(withDuration: 0.25, animations: { () -> Void in
-                        center?.y = locationInView.y
-                        self.cellSnapshot!.center = center!
-                        self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
-                        self.cellSnapshot!.alpha = 0.98
-                        cell?.alpha = 0.0
-                        
-                    }, completion: { (finished) -> Void in
-                        if finished {
-                            cell?.isHidden = true
-                        }
-                    })
-                }
+        impact.impactOccurred()
+        let item = playlistStructArray[indexPath.section]
+        let itemProvider = NSItemProvider(object: item.name.name! as NSString)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        dragItem.localObject = item
+        return [dragItem]
+    }
+    
+    func tableView(_ tableView: UITableView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] {
+        let item = playlistStructArray[indexPath.section]
+        let itemProvider = NSItemProvider(object: item.name.name! as NSString)
+        let dragItem = UIDragItem(itemProvider: itemProvider)
+        dragItem.localObject = item
+        return [dragItem]
+    }
+    
+    func tableView(_ tableView: UITableView, dropSessionDidUpdate session: UIDropSession, withDestinationIndexPath destinationIndexPath: IndexPath?) -> UITableViewDropProposal {
+        if session.localDragSession != nil
+        {
+            if tableView.hasActiveDrag
+            {
+                return UITableViewDropProposal(operation: .move, intent: .insertAtDestinationIndexPath)
             }
-        case .changed:
-            if cellSnapshot != nil {
-                var center = cellSnapshot!.center
-                center.y = locationInView.y
-                cellSnapshot!.center = center
-                
-                if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section) && (indexPath?.row == 0)) {
-                    impact.impactOccurred()
-                    if indexPath!.section < playlistStructArray.count {
-                        tableView.beginUpdates()
-                        let original = playlistStructArray[initialIndexPath!.section]
-                        let target = playlistStructArray[indexPath!.section]
-                        
-                        playlistStructArray[indexPath!.section] = original
-                        playlistStructArray[initialIndexPath!.section] = target
-                        
-                        tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
-                        initialIndexPath = indexPath
-                        tableView.endUpdates()
-                        
-                        playlistStructArray[indexPath!.section].name.sortIndex = Int64(indexPath!.section)
-                        playlistStructArray[initialIndexPath!.section].name.sortIndex = Int64(initialIndexPath!.section)
-                        
-                        var index = 0
-                        for playlist in playlistStructArray {
-                            playlist.name.sortIndex = Int64(index)
-                            index += 1
-                        }
-                        CoreDataHelper.save(context: managedContext)
-                    }
-                }
-            }
-        default:
-            if cellSnapshot != nil {
-                let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
-                let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
-                cell.isHidden = false
-                cell.alpha = 0.0
-                UIView.animate(withDuration: 0.25, animations: { () -> Void in
-                    self.cellSnapshot!.center = (cell.center)
-                    self.cellSnapshot!.transform = CGAffineTransform.identity
-                    self.cellSnapshot!.alpha = 0.0
-                    cell.alpha = 1.0
-                }, completion: { (finished) -> Void in
-                    if finished {
-                        self.initialIndexPath = nil
-                        self.cellSnapshot!.removeFromSuperview()
-                        self.cellSnapshot = nil
-                    }
-                })
+            else
+            {
+                return UITableViewDropProposal(operation: .copy, intent: .insertAtDestinationIndexPath)
             }
         }
+        else
+        {
+            return UITableViewDropProposal(operation: .forbidden)
+        }
     }
+    
+//    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath)
+//    {
+//        let item = playlistStructArray[sourceIndexPath.section]
+//        self.playlistStructArray.remove(at: sourceIndexPath.section)
+//        self.playlistStructArray.insert(item, at: destinationIndexPath.section)
+//    }
+    
+    func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
+        var destinationIndexPath: IndexPath
+        if let indexPath = coordinator.destinationIndexPath
+        {
+            destinationIndexPath = indexPath
+        }
+        else
+        {
+            // Get last index path of table view. (not including + button)
+            let section = tableView.numberOfSections - 2
+            let row = tableView.numberOfRows(inSection: section)
+            destinationIndexPath = IndexPath(row: row, section: section)
+        }
         
+        switch coordinator.proposal.operation
+        {
+        case .move:
+            var sourceIndexPath = coordinator.items[0].sourceIndexPath
+            
+            if sourceIndexPath != nil {
+                if destinationIndexPath.section == playlistStructArray.count {
+                    destinationIndexPath = sourceIndexPath!
+                }
+                print(sourceIndexPath)
+                //Add the code to reorder items
+                let item = playlistStructArray[sourceIndexPath!.section]
+                tableView.beginUpdates()
+                playlistStructArray.remove(at: sourceIndexPath!.section)
+                playlistStructArray.insert(item, at: destinationIndexPath.section)
+                
+                tableView.moveSection(sourceIndexPath!.section, toSection: destinationIndexPath.section)
+                tableView.endUpdates()
+            }
+            break
+            
+        case .copy:
+            //Add the code to copy items
+            break
+            
+        default:
+            return
+        }
+    }
+
+//    var cellSnapshot : UIView? = nil
+//    var initialIndexPath : IndexPath? = nil
+//    @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
+//        let longPress = gestureRecognizer as! UILongPressGestureRecognizer
+//        let state = longPress.state
+//        let locationInView = longPress.location(in: tableView)
+//        var indexPath = tableView.indexPathForRow(at: locationInView)
+//        let impact = UIImpactFeedbackGenerator()
+//        impact.prepare()
+//        switch state {
+//        case .began:
+//            if indexPath != nil {
+//                if indexPath!.row == 0 {
+//                    impact.impactOccurred()
+//                    initialIndexPath = indexPath
+//                    let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
+//                    cellSnapshot = snapshopOfCell(inputView: cell!)
+//                    var center = cell?.center
+//                    cellSnapshot!.center = center!
+//                    cellSnapshot!.alpha = 0.0
+//                    tableView.addSubview(cellSnapshot!)
+//
+//                    UIView.animate(withDuration: 0.25, animations: { () -> Void in
+//                        center?.y = locationInView.y
+//                        self.cellSnapshot!.center = center!
+//                        self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
+//                        self.cellSnapshot!.alpha = 0.98
+//                        cell?.alpha = 0.0
+//
+//                    }, completion: { (finished) -> Void in
+//                        if finished {
+//                            cell?.isHidden = true
+//                        }
+//                    })
+//                }
+//            }
+//        case .changed:
+//            if cellSnapshot != nil {
+//                var center = cellSnapshot!.center
+//                center.y = locationInView.y
+//                cellSnapshot!.center = center
+//
+//                if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section) && (indexPath?.row == 0)) {
+//                    impact.impactOccurred()
+//                    if indexPath!.section < playlistStructArray.count {
+//                        tableView.beginUpdates()
+//                        let original = playlistStructArray[initialIndexPath!.section]
+//                        let target = playlistStructArray[indexPath!.section]
+//
+//                        playlistStructArray[indexPath!.section] = original
+//                        playlistStructArray[initialIndexPath!.section] = target
+//
+//                        tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
+//                        initialIndexPath = indexPath
+//                        tableView.endUpdates()
+//
+//                        playlistStructArray[indexPath!.section].name.sortIndex = Int64(indexPath!.section)
+//                        playlistStructArray[initialIndexPath!.section].name.sortIndex = Int64(initialIndexPath!.section)
+//
+//                        var index = 0
+//                        for playlist in playlistStructArray {
+//                            playlist.name.sortIndex = Int64(index)
+//                            index += 1
+//                        }
+//                        CoreDataHelper.save(context: managedContext)
+//                    }
+//                }
+//            }
+//        default:
+//            if cellSnapshot != nil {
+//                let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
+//                let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
+//                cell.isHidden = false
+//                cell.alpha = 0.0
+//                UIView.animate(withDuration: 0.25, animations: { () -> Void in
+//                    self.cellSnapshot!.center = (cell.center)
+//                    self.cellSnapshot!.transform = CGAffineTransform.identity
+//                    self.cellSnapshot!.alpha = 0.0
+//                    cell.alpha = 1.0
+//                }, completion: { (finished) -> Void in
+//                    if finished {
+//                        self.initialIndexPath = nil
+//                        self.cellSnapshot!.removeFromSuperview()
+//                        self.cellSnapshot = nil
+//                    }
+//                })
+//            }
+//        }
+//    }
+    
     func snapshopOfCell(inputView: UIView) -> UIView {
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0.0)
         inputView.layer.render(in: UIGraphicsGetCurrentContext()!)

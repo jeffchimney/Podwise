@@ -57,7 +57,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         playlistButton.layer.cornerRadius = 15
         playlistButton.layer.masksToBounds = true
         playlistButton.backgroundColor = UIColor(displayP3Red: 87/255.0, green: 112/255.0, blue: 170/255.0, alpha: 1.0)
-        segmentedViewController.tintColor = UIColor(displayP3Red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB), alpha: 1.0)
+//        segmentedViewController.tintColor = UIColor(displayP3Red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB), alpha: 1.0)
         
         tableView.delegate = self
         tableView.dataSource = self
