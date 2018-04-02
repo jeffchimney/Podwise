@@ -198,14 +198,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
         // lets create your destination file url
         let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
         print(destinationUrl)
-        
+        managedContext = persistentContainer.viewContext
         var podcast: CDPodcast!
         let podcasts = CoreDataHelper.getPodcastWith(url: podcastURL, in: managedContext)
         if podcasts.count > 0 {
             podcast = podcasts[0]
+            print(podcasts[0].feedURL!)
         }
         // to check if it exists before downloading it
-        if !FileManager.default.fileExists(atPath: destinationUrl.path) {
+        print("File exist at \(destinationUrl.path)? \(FileManager.default.fileExists(atPath: destinationUrl.path))")
+        
+        if !CoreDataHelper.episodeIsAlreadyDownloaded(title: episodeTitle, associatedPodcast: podcast, in: managedContext) {
             let episodeEntity = NSEntityDescription.entity(forEntityName: "CDEpisode", in: managedContext!)!
             let episode = NSManagedObject(entity: episodeEntity, insertInto: managedContext) as! CDEpisode
             
@@ -223,6 +226,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
             episode.localURL = destinationUrl
             episode.duration = episodeDuration
             episode.podcast = podcast
+            episode.progress = 0
+            print(episode.podcast!.feedURL!)
             
             CoreDataHelper.save(context: managedContext!)
             

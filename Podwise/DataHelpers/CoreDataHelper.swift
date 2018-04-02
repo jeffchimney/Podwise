@@ -297,6 +297,17 @@ class CoreDataHelper {
         return podcastList
     }
     
+    static func episodeIsAlreadyDownloaded(title: String, associatedPodcast: CDPodcast, in context: NSManagedObjectContext) -> Bool {
+        let episodesForPodcast = fetchEpisodesFor(podcast: associatedPodcast, in: managedContext)
+        
+        for episode in episodesForPodcast {
+            if episode.title! == title {
+                return true
+            }
+        }
+        return false
+    }
+    
     static func save(context: NSManagedObjectContext) {
         // save locally
         do {

@@ -471,6 +471,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             episode.localURL = relatedTo.localURL
             episode.duration = relatedTo.itunesDuration
             episode.podcast = podcast
+            episode.progress = 0
 
             CoreDataHelper.save(context: managedContext!)
             if downloads == nil {
