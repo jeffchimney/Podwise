@@ -14,6 +14,7 @@
 		BE230CEA1FCE7EAB0065192C /* GroupedViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE230CE91FCE7EAB0065192C /* GroupedViewCell.swift */; };
 		BE25226C1FC600B300E6B769 /* Podwise.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */; };
 		BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */; };
+		BE36AD802076D2F10087AAB7 /* TabsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36AD7F2076D2F10087AAB7 /* TabsViewController.swift */; };
 		BE4B40C71FEB325E00719676 /* PlaylistColourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
 		BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */; };
@@ -95,6 +96,7 @@
 		BE230CE91FCE7EAB0065192C /* GroupedViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedViewCell.swift; sourceTree = "<group>"; };
 		BE25226B1FC600B300E6B769 /* Podwise.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Podwise.xcdatamodel; sourceTree = "<group>"; };
 		BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
+		BE36AD7F2076D2F10087AAB7 /* TabsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsViewController.swift; sourceTree = "<group>"; };
 		BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistColourCell.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoryViewController.swift; sourceTree = "<group>"; };
@@ -292,6 +294,7 @@
 				BE25226D1FC607D900E6B769 /* DataHelpers */,
 				BEA9D3B71FC389BC00A140AC /* Classes */,
 				BEE0A1661FBE5C2E00AA111F /* Cells */,
+				BE36AD7F2076D2F10087AAB7 /* TabsViewController.swift */,
 				BEE0A1381FBE57C200AA111F /* PlaylistsViewController.swift */,
 				BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */,
 				BEE0A13A1FBE57C200AA111F /* PodcastsViewController.swift */,
@@ -510,6 +513,7 @@
 				BEE0A13B1FBE57C200AA111F /* PodcastsViewController.swift in Sources */,
 				BE7A6F5C20056748005A38EB /* PlaylistHeaderView.swift in Sources */,
 				BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */,
+				BE36AD802076D2F10087AAB7 /* TabsViewController.swift in Sources */,
 				BEE7BA6B1FC77C22005345FB /* EpisodesForPodcastViewController.swift in Sources */,
 				BEA55D9E1FE9D6B4007B3164 /* PresentationController.swift in Sources */,
 				BEA9D3B91FC389EF00A140AC /* Channel.swift in Sources */,

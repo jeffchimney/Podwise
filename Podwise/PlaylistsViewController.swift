@@ -59,9 +59,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.dragInteractionEnabled = true
         self.transitioningDelegate = self
         
-//        let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized(gestureRecognizer:)))
-//        tableView.addGestureRecognizer(longpress)
-        
         navigationController?.setNavigationBarHidden(true, animated: true)
     }
     
@@ -420,7 +417,11 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
             let podcast = thisEpisode.podcast!
             if nowPlayingEpisode != nil {
-                nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                if audioPlayer != nil {
+                    nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                } else {
+                    nowPlayingEpisode.progress = 0
+                }
             }
             CoreDataHelper.save(context: managedContext)
             nowPlayingEpisode = thisEpisode

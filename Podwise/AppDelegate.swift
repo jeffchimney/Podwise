@@ -230,6 +230,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
             print(episode.podcast!.feedURL!)
             
             CoreDataHelper.save(context: managedContext!)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "EpisodeReceived"), object:nil)
             
             // you can use NSURLSession.sharedSession to download the data asynchronously
             URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
