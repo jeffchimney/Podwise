@@ -15,6 +15,8 @@ class PlaylistCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
     @IBOutlet weak var episodeCounterLabel: UILabel!
+    @IBOutlet weak var percentDowloadedLabel: UILabel!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
 //    override func layoutSubviews() {
 //        self.bounds = CGRect(x: self.bounds.origin.x,

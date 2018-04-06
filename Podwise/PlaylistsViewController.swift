@@ -60,6 +60,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         self.transitioningDelegate = self
         
         navigationController?.setNavigationBarHidden(true, animated: true)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(downloadProgress(notification:)),
+                                               name: NSNotification.Name(rawValue: "DownloadProgress"),
+                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -329,6 +333,15 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                     let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
                     let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
                     cell.titleLabel.text = thisEpisode.title
+                    cell.activityIndicator.isHidden = true
+                    if downloads != nil {
+                        for download in downloads {
+                            if download.episode == thisEpisode {
+                                cell.activityIndicator.startAnimating()
+                                cell.activityIndicator.isHidden = false
+                            }
+                        }
+                    }
                     
                     var hours = 0
                     var minutes = 0
@@ -355,6 +368,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                     
                     cell.titleLabel.text = thisEpisode.title
                     cell.durationLabel.text = thisEpisode.subTitle
+                    cell.percentDowloadedLabel.isHidden = true
                     if hours == 0 && minutes == 0 {
                         cell.durationLabel.text = ""
                     } else if hours == 0 {
@@ -372,16 +386,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                         cell.artImageView.layer.masksToBounds = true
                     }
                     
-                    if downloads != nil {
-                        for download in downloads {
-                            if download.episode == thisEpisode {
-                                cell.isUserInteractionEnabled = false
-                                break
-                            } else {
-                                cell.isUserInteractionEnabled = true
-                            }
-                        }
-                    }
+                    cell.isUserInteractionEnabled = true
                     
                     if indexPath.row == playlistStructArray[indexPath.section].episodes.count {
                         // round top left and right corners
@@ -799,6 +804,37 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         cellSnapshot.layer.shadowRadius = 5.0
         cellSnapshot.layer.shadowOpacity = 0.4
         return cellSnapshot
+    }
+    
+    @objc func downloadProgress(notification: NSNotification){
+        let downloadObject: Download = notification.object as! Download
+        
+        var section = 0
+        var row = 0
+        for playlist in playlistStructArray {
+            if playlist.episodes.contains(downloadObject.episode!) {
+                row = playlist.episodes.index(of: downloadObject.episode!)! + 1
+                break
+            } else {
+                section += 1
+            }
+        }
+        
+        DispatchQueue.main.async {
+            
+            if let cell = self.tableView.cellForRow(at: IndexPath(row: row, section: section)) as? PlaylistCell {
+                if cell.activityIndicator.isAnimating {
+                    cell.activityIndicator.stopAnimating()
+                }
+                cell.activityIndicator.isHidden = true
+                cell.percentDowloadedLabel.text = "\(Int(downloadObject.percentDown * 100))%"
+                cell.percentDowloadedLabel.isHidden = false
+                
+                if downloadObject.percentDown == 1.0 {
+                    cell.percentDowloadedLabel.isHidden = true
+                }
+            }
+        }
     }
 }
 

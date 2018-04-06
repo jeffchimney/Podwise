@@ -18,7 +18,7 @@ weak var timer: Timer!
 var managedContext: NSManagedObjectContext!
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSessionDownloadDelegate {
 
     var window: UIWindow?
     var eName: String = String()
@@ -31,6 +31,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     var skippedChannelDescription = false
     var parser = XMLParser()
     var podcastURL: URL!
+    
+    var downloadTask: URLSessionDownloadTask!
+    var backgroundSession: URLSession!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
@@ -192,6 +195,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
     }
     
     func downloadFile(at: URL) {
+        let backgroundSessionConfiguration = URLSessionConfiguration.background(withIdentifier: "backgroundSession")
+        backgroundSession = Foundation.URLSession(configuration: backgroundSessionConfiguration, delegate: self, delegateQueue: OperationQueue.main)
         // then lets create your document folder url
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
@@ -232,18 +237,69 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate {
             CoreDataHelper.save(context: managedContext!)
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "EpisodeReceived"), object:nil)
             
-            // you can use NSURLSession.sharedSession to download the data asynchronously
-            URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
-                guard let location = location, error == nil else { return }
-                do {
-                    // after downloading your file you need to move it to your destination url
-                    print("Target Path: \(destinationUrl)")
-                    try FileManager.default.moveItem(at: location, to: destinationUrl)
-                    print("File moved to documents folder")
-                } catch let error as NSError {
-                    print(error.localizedDescription)
+            if downloads == nil {
+                downloads = []
+            }
+            
+            let thisDownload = Download(url: destinationUrl, audioUrl: at, episode: episode, parsedEpisode: parsedEpisode, playNow: false, indexPath: IndexPath(row: 0, section: 0), addTo: podcast.playlist!)
+            
+            if downloads.isEmpty {
+                thisDownload.setIsDownloading()
+                downloads.append(thisDownload)
+                downloadTask = backgroundSession.downloadTask(with: at)
+                downloadTask.resume()
+            } else {
+                if downloads[0].isDownloading {
+                    downloads.append(thisDownload)
+                } else {
+                    downloads[0].setIsDownloading()
+                    downloadTask = backgroundSession.downloadTask(with: downloads[0].audioUrl)
+                    downloadTask.resume()
                 }
-            }).resume()
+            }
+            
+            // you can use NSURLSession.sharedSession to download the data asynchronously
+//            URLSession.shared.downloadTask(with: at, completionHandler: { (location, response, error) -> Void in
+//                guard let location = location, error == nil else { return }
+//                do {
+//                    // after downloading your file you need to move it to your destination url
+//                    print("Target Path: \(destinationUrl)")
+//                    try FileManager.default.moveItem(at: location, to: destinationUrl)
+//                    print("File moved to documents folder")
+//                } catch let error as NSError {
+//                    print(error.localizedDescription)
+//                }
+//            }).resume()
+        }
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        if downloads.count > 0 {
+            let progress = Float(totalBytesWritten)/Float(totalBytesExpectedToWrite)
+            //print("downloaded \(progress)%")
+            downloads[0].setPercentDown(to: progress)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "DownloadProgress"), object: downloads[0])
+        }
+    }
+    
+    func urlSession(_ session: URLSession, task: URLSessionTask, didCompleteWithError error: Error?) {
+        print("completed: error: \(String(describing: error))")
+    }
+    
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        do {
+            // after downloading your file you need to move it to your destination url
+            try FileManager.default.moveItem(at: location, to: downloads[0].url)
+            print("File moved to documents folder")
+
+            print(downloads.count)
+            downloads = Array(downloads.dropFirst())
+            print(downloads.count)
+            if downloads.count > 0 {
+                self.downloadFile(at: downloads[0].audioUrl)
+            }
+        } catch let error as NSError {
+            print(error.localizedDescription)
         }
     }
 

@@ -98,22 +98,41 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gQd-aO-5TU">
+                                                    <rect key="frame" x="8" y="30" width="60" height="21"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="21" id="dad-Ex-5SS"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="nFK-XF-Gd9">
+                                                    <rect key="frame" x="28" y="29" width="20" height="20"/>
+                                                </activityIndicatorView>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="jgl-JY-qKq" firstAttribute="centerY" secondItem="aoQ-ah-uk3" secondAttribute="centerY" id="1Yq-3H-Zar"/>
+                                                <constraint firstItem="gQd-aO-5TU" firstAttribute="centerY" secondItem="aoQ-ah-uk3" secondAttribute="centerY" id="3MO-dn-tcZ"/>
+                                                <constraint firstItem="gQd-aO-5TU" firstAttribute="centerX" secondItem="jgl-JY-qKq" secondAttribute="centerX" id="59B-YB-KWx"/>
                                                 <constraint firstItem="Gd0-xi-O9R" firstAttribute="top" secondItem="aoQ-ah-uk3" secondAttribute="top" constant="9" id="7g3-PK-vsF"/>
                                                 <constraint firstItem="Pct-0J-kNJ" firstAttribute="top" secondItem="Gd0-xi-O9R" secondAttribute="bottom" constant="8" id="DZk-Eq-mzY"/>
                                                 <constraint firstItem="jgl-JY-qKq" firstAttribute="leading" secondItem="aoQ-ah-uk3" secondAttribute="leading" constant="8" id="FFf-Pu-dC3"/>
+                                                <constraint firstItem="gQd-aO-5TU" firstAttribute="width" secondItem="jgl-JY-qKq" secondAttribute="width" id="KUF-bl-k8F"/>
+                                                <constraint firstItem="nFK-XF-Gd9" firstAttribute="centerX" secondItem="jgl-JY-qKq" secondAttribute="centerX" id="Lxu-8o-vnX"/>
                                                 <constraint firstItem="Gd0-xi-O9R" firstAttribute="leading" secondItem="jgl-JY-qKq" secondAttribute="trailing" constant="8" id="UqQ-bV-FR4"/>
                                                 <constraint firstItem="Pct-0J-kNJ" firstAttribute="leading" secondItem="jgl-JY-qKq" secondAttribute="trailing" constant="8" id="cva-R4-IbG"/>
+                                                <constraint firstItem="nFK-XF-Gd9" firstAttribute="centerY" secondItem="aoQ-ah-uk3" secondAttribute="centerY" id="ien-nB-vla"/>
                                                 <constraint firstAttribute="trailingMargin" relation="greaterThanOrEqual" secondItem="Pct-0J-kNJ" secondAttribute="trailing" constant="16" id="jND-kA-e57"/>
                                                 <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Gd0-xi-O9R" secondAttribute="trailing" constant="16" id="rpd-tL-BVm"/>
                                             </constraints>
                                         </tableViewCellContentView>
                                         <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                         <connections>
+                                            <outlet property="activityIndicator" destination="nFK-XF-Gd9" id="kH1-hH-uAa"/>
                                             <outlet property="artImageView" destination="jgl-JY-qKq" id="LpB-ab-aTg"/>
                                             <outlet property="durationLabel" destination="Pct-0J-kNJ" id="INz-Rk-PwN"/>
+                                            <outlet property="percentDowloadedLabel" destination="gQd-aO-5TU" id="RLg-VZ-kTi"/>
                                             <outlet property="titleLabel" destination="Gd0-xi-O9R" id="h4s-yd-w7j"/>
                                         </connections>
                                     </tableViewCell>

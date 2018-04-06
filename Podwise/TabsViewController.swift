@@ -19,11 +19,12 @@ class TabsViewController: UITabBarController {
     
     @objc func episodeReceived(notification: NSNotification){
         print(self.selectedIndex)
-        print(self.selectedViewController)
         
         DispatchQueue.main.async {
             self.selectedIndex = 0
-            if let playlistViewController = self.viewControllers![0] as? PlaylistsViewController {
+            print(self.selectedIndex)
+            
+            if let playlistViewController = self.selectedViewController?.childViewControllers[0] as? PlaylistsViewController {
                 playlistViewController.viewWillAppear(true)
             }
         }

@@ -96,6 +96,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistGroupCell", for: indexPath as IndexPath) as! PlaylistCell
         cell.episodeCounterLabel.isHidden = true
+        cell.percentDowloadedLabel.isHidden = true
         let thisEpisode: CDEpisode = episodesInPlaylist[indexPath.row]
         cell.titleLabel.text = thisEpisode.title
 

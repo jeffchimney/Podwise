@@ -98,7 +98,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
         
         cell.titleLabel.text = thisPodcast.title
         cell.durationLabel.text = thisPodcast.author
-        
+        //cell.percentDowloadedLabel.isHidden = true
         if podcastsInPlaylist.contains(podcasts[indexPath.row]) {
             cell.accessoryType = .checkmark
             selectedPodcasts.append(podcasts[indexPath.row])
