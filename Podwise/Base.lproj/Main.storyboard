@@ -783,6 +783,7 @@
                         <outlet property="baseView" destination="Ngy-NA-oNA" id="GOc-Ic-bWL"/>
                         <outlet property="miniPlayerHeightConstraint" destination="fy0-df-lyC" id="WsA-CY-Of1"/>
                         <outlet property="miniPlayerView" destination="FG3-di-WrS" id="EEX-Ni-fzR"/>
+                        <outlet property="panGesture" destination="e0u-L8-OaI" id="3xc-zt-ObZ"/>
                         <outlet property="sliderHeightConstraint" destination="kbi-i1-9Rn" id="rWU-Yj-i09"/>
                         <outlet property="sliderView" destination="i6q-z0-SyV" id="OHY-yw-Exm"/>
                         <segue destination="fFV-2T-Tw5" kind="presentation" identifier="openPlayer" id="qoW-ID-3FU"/>
@@ -796,6 +797,59 @@
                 </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-810.39999999999998" y="-27.436281859070466"/>
+        </scene>
+        <!--Show Notes View Controller-->
+        <scene sceneID="hRb-CD-amz">
+            <objects>
+                <viewController storyboardIdentifier="showNotesViewController" id="yHa-NW-db3" customClass="ShowNotesViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="SiA-zn-bWR">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="spA-Mr-CkB">
+                                <rect key="frame" x="0.0" y="91.5" width="375" height="555.5"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Podcast Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dr9-Yc-8nQ">
+                                <rect key="frame" x="16" y="20" width="145" height="31.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Episode Title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Vpb-R1-IAA">
+                                <rect key="frame" x="32" y="59.5" width="112" height="24"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle2"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="8P4-c2-h5h" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Vpb-R1-IAA" secondAttribute="trailing" constant="16" id="9ko-9g-H4x"/>
+                            <constraint firstItem="spA-Mr-CkB" firstAttribute="leading" secondItem="8P4-c2-h5h" secondAttribute="leading" id="AFe-FS-Wbg"/>
+                            <constraint firstItem="8P4-c2-h5h" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="Dr9-Yc-8nQ" secondAttribute="trailing" constant="16" id="REq-fc-5Ea"/>
+                            <constraint firstItem="Dr9-Yc-8nQ" firstAttribute="top" secondItem="8P4-c2-h5h" secondAttribute="top" id="WG2-MF-rtw"/>
+                            <constraint firstItem="8P4-c2-h5h" firstAttribute="bottom" secondItem="spA-Mr-CkB" secondAttribute="bottom" constant="20" id="YfS-Oz-st1"/>
+                            <constraint firstItem="spA-Mr-CkB" firstAttribute="top" secondItem="Vpb-R1-IAA" secondAttribute="bottom" constant="8" id="dgW-r2-LpJ"/>
+                            <constraint firstItem="8P4-c2-h5h" firstAttribute="trailing" secondItem="spA-Mr-CkB" secondAttribute="trailing" id="hRH-v0-bF1"/>
+                            <constraint firstItem="Dr9-Yc-8nQ" firstAttribute="leading" secondItem="8P4-c2-h5h" secondAttribute="leading" constant="16" id="l3D-Hi-bf7"/>
+                            <constraint firstItem="Vpb-R1-IAA" firstAttribute="leading" secondItem="8P4-c2-h5h" secondAttribute="leading" constant="32" id="ox6-9K-N2H"/>
+                            <constraint firstItem="Vpb-R1-IAA" firstAttribute="top" secondItem="Dr9-Yc-8nQ" secondAttribute="bottom" constant="8" id="rOo-yU-yly"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="8P4-c2-h5h"/>
+                    </view>
+                    <connections>
+                        <outlet property="episodeLabel" destination="Vpb-R1-IAA" id="C2G-Z3-eDP"/>
+                        <outlet property="podcastLabel" destination="Dr9-Yc-8nQ" id="Max-2T-z0o"/>
+                        <outlet property="showNotesView" destination="spA-Mr-CkB" id="kK0-3k-iE6"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="OZH-A0-mfH" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-810.39999999999998" y="-702.99850074962524"/>
         </scene>
         <!--Tabs View Controller-->
         <scene sceneID="yl2-sM-qoP">

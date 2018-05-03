@@ -9,7 +9,7 @@
 import UIKit
 import MediaPlayer
 
-class PlayerViewController: UIViewController {
+class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     
     var image: UIImage!
     var episodeTitleText: String!
@@ -58,6 +58,8 @@ class PlayerViewController: UIViewController {
         progressSlider.setThumbImage(thumbImage, for: .normal)
         
         startUpdatingSlider()
+        
+        artImageView.isUserInteractionEnabled = true
     }
     
     override func viewWillAppear(_ animated: Bool) {

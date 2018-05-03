@@ -26,7 +26,7 @@ public protocol editPlaylistDelegate: class {
     func edit()
 }
 
-class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate, UITableViewDragDelegate, UITableViewDropDelegate, relayoutSectionDelegate, editPlaylistDelegate {
+class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIViewControllerTransitioningDelegate, UITableViewDragDelegate, UITableViewDropDelegate, UIViewControllerPreviewingDelegate, relayoutSectionDelegate, editPlaylistDelegate {
     
     struct PlaylistEpisodes {
         var name : CDPlaylist
@@ -64,6 +64,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self,selector: #selector(downloadProgress(notification:)),
                                                name: NSNotification.Name(rawValue: "DownloadProgress"),
                                                object: nil)
+        
+        if( traitCollection.forceTouchCapability == .available){
+            registerForPreviewing(with: self, sourceView: view)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -400,6 +404,13 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                             ).cgPath
                         
                         cell.layer.mask = maskLayer
+                    }
+                    
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(thisEpisode.localURL!.lastPathComponent)
+                    if !filemanager.fileExists(atPath: destinationPath) {
+                        
                     }
                     
                     return cell
@@ -835,6 +846,59 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 }
             }
         }
+    }
+    
+    // MARK: - Preview Delegate Methods
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        // convert point from position in self.view to position in warrantiesTableView
+        let cellPosition = tableView.convert(location, from: self.view)
+        
+        guard let indexPath = tableView.indexPathForRow(at: cellPosition),
+            let cell = (tableView.cellForRow(at: indexPath) as? PlaylistCell) else {
+                return nil
+        }
+        
+        guard let targetViewController =
+            storyboard?.instantiateViewController(
+                withIdentifier: "showNotesViewController") as?
+            ShowNotesViewController else {
+                return nil
+        }
+        
+        var selectedEpisode: CDEpisode!
+        if indexPath.row != 0 {
+            selectedEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
+        } else {
+            return nil
+        }
+        
+        targetViewController.episode = selectedEpisode
+        targetViewController.preferredContentSize =
+            CGSize(width: 0.0, height: 500)
+
+        previewingContext.sourceRect = view.convert(cell.frame, from: tableView)
+        
+        return targetViewController
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        //present(viewControllerToCommit, animated: true, completion: nil)
+        navigationController?.pushViewController(viewControllerToCommit, animated: true)
+        //show(viewControllerToCommit, sender: self)
+    }
+}
+
+extension String {
+    var htmlToAttributedString: NSAttributedString? {
+        guard let data = data(using: .utf8) else { return NSAttributedString() }
+        do {
+            return try NSAttributedString(data: data, options: [NSAttributedString.DocumentReadingOptionKey.documentType:  NSAttributedString.DocumentType.html], documentAttributes: nil)
+        } catch {
+            return NSAttributedString()
+        }
+    }
+    var htmlToString: String {
+        return htmlToAttributedString?.string ?? ""
     }
 }
 

@@ -12,8 +12,6 @@ import UIKit
 enum Direction {
     case Up
     case Down
-    case Left
-    case Right
 }
 
 struct MiniPlayerTransitionHelper {
@@ -29,19 +27,19 @@ struct MiniPlayerTransitionHelper {
         case .Up, .Down:
             pointOnAxis = translationInView.y
             axisLength = viewBounds.height
-        case .Left, .Right:
-            pointOnAxis = translationInView.x
-            axisLength = viewBounds.width
+//        case .Left, .Right:
+//            pointOnAxis = translationInView.x
+//            axisLength = viewBounds.width
         }
         let movementOnAxis = pointOnAxis / axisLength
         let positiveMovementOnAxis:Float
         let positiveMovementOnAxisPercent:Float
         switch direction {
-        case .Right, .Down: // positive
+        case .Down: // positive // right
             positiveMovementOnAxis = fmaxf(Float(movementOnAxis), 0.0)
             positiveMovementOnAxisPercent = fminf(positiveMovementOnAxis, 1.0)
             return CGFloat(positiveMovementOnAxisPercent)
-        case .Up, .Left: // negative
+        case .Up: // negative // left
             positiveMovementOnAxis = fminf(Float(movementOnAxis), 0.0)
             positiveMovementOnAxisPercent = fmaxf(positiveMovementOnAxis, -1.0)
             return CGFloat(-positiveMovementOnAxisPercent)

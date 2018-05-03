@@ -104,5 +104,9 @@ class MiniPlayerView: UIView {
                                MPMediaItemPropertyPlaybackDuration: player.duration,
         ]
     }
+    
+    @IBAction func showNotes(_ sender: Any) {
+        
+    }
 }
 

@@ -31,6 +31,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var sliderHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderView: UISlider!
     let originalMiniPlayerHeightConstant: CGFloat = 70
+    @IBOutlet var panGesture: UIPanGestureRecognizer!
     
     var interactor = Interactor()
     

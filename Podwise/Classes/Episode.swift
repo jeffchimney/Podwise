@@ -23,6 +23,7 @@ class Episode {
     var itunesExplicit: String = String()
     var itunesDuration: String = String()
     var itunesContent: String = String()
+    var contentEncoded: String = String()
     var itunesImage: String = String()
     var downloaded: Bool!
 }
