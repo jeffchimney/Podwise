@@ -36,8 +36,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     var episodeTitle: String = String()
     var episodeDescription = String()
     var episodeDuration = String()
+    var episodeShowNotes = String()
     var episodeURL: URL!
     var imageSet: Bool = false
+    var lastTitle = ""
+    var thisTitle = ""
 //    var colors: UIImageColors!
     
     override func viewDidLoad() {
@@ -360,6 +363,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             episodeTitle = String()
             episodeDescription = String()
             episodeDuration = String()
+            episodeShowNotes = String()
         }
     }
     
@@ -372,7 +376,11 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             episode.itunesSubtitle = episodeDescription
             episode.itunesDuration = episodeDuration
             episode.audioUrl = episodeURL
-
+            if episodeShowNotes != "" {
+                episode.contentEncoded = episodeShowNotes
+            } else {
+                episode.contentEncoded = episodeDescription
+            }
             unDownloadedEpisodes.append(episode)
             tableView.reloadData()
         }
@@ -388,17 +396,30 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     channelLabel.text! = data
                 } else {
                     episodeTitle += data
+                    lastTitle = thisTitle
+                    thisTitle = episodeTitle
                 }
             case "description":
-                if skippedChannelDescription == false {
-                    skippedChannelDescription = true
-                } else {
+                if thisTitle == "" { //channelDescriptionTextView.text! == ""
+                    channelDescriptionTextView.text! += data
+                }
+            case "itunes:subtitle":
+                if lastTitle == thisTitle || lastTitle == "" {
                     episodeDescription += data
+                } else {
+                    episodeDescription = data
                 }
             case "guid":
                 episodeID = data
             case "itunes:duration":
                 episodeDuration = data
+            case "content:encoded":
+                if lastTitle == thisTitle || lastTitle == "" {
+                    episodeShowNotes += data
+                } else {
+                    episodeShowNotes = data
+                }
+                
             default:
                 break
             }
@@ -470,6 +491,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             episode.audioURL = relatedTo.audioUrl
             episode.localURL = relatedTo.localURL
             episode.duration = relatedTo.itunesDuration
+            episode.showNotes = relatedTo.contentEncoded
             episode.podcast = podcast
             episode.progress = 0
 

@@ -170,15 +170,15 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-//    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-//        print(indexPath.section)
-//        print(playlistStructArray.count)
-//        if indexPath.row == 0 && indexPath.section != playlistStructArray.count - 1{
-//            return true
-//        } else {
-//            return false
-//        }
-//    }
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        print(indexPath.section)
+        print(playlistStructArray.count)
+        if indexPath.section != playlistStructArray.count - 1{
+            return true
+        } else {
+            return false
+        }
+    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 4
@@ -624,17 +624,23 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, itemsForBeginning session: UIDragSession, at indexPath: IndexPath) -> [UIDragItem] {
         // stop illegal drags before they happen
-        if indexPath.row != 0 || indexPath.section == playlistStructArray.count{
-            return []
-        }
         let impact = UIImpactFeedbackGenerator()
         impact.prepare()
-        impact.impactOccurred()
-        let item = playlistStructArray[indexPath.section]
-        let itemProvider = NSItemProvider(object: item.name.name! as NSString)
-        let dragItem = UIDragItem(itemProvider: itemProvider)
-        dragItem.localObject = item
-        return [dragItem]
+        if indexPath.row == 0 || indexPath.section == playlistStructArray.count{ // drag section
+            impact.impactOccurred()
+            let item = playlistStructArray[indexPath.section]
+            let itemProvider = NSItemProvider(object: item.name.name! as NSString)
+            let dragItem = UIDragItem(itemProvider: itemProvider)
+            dragItem.localObject = item
+            return [dragItem]
+        } else { // drag row
+            impact.impactOccurred()
+            let item = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
+            let itemProvider = NSItemProvider(object: item.title! as NSString)
+            let dragItem = UIDragItem(itemProvider: itemProvider)
+            dragItem.localObject = item
+            return [dragItem]
+        }
     }
     
     func tableView(_ tableView: UITableView, itemsForAddingTo session: UIDragSession, at indexPath: IndexPath, point: CGPoint) -> [UIDragItem] {
@@ -672,9 +678,22 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, performDropWith coordinator: UITableViewDropCoordinator) {
         var destinationIndexPath: IndexPath
+        var sourceIndexPath = coordinator.items[0].sourceIndexPath
         if let indexPath = coordinator.destinationIndexPath
         {
-            destinationIndexPath = indexPath
+            if sourceIndexPath?.row == 0 {
+                destinationIndexPath = indexPath
+            } else {
+                if indexPath.row == 0 { // if trying to insert at row 0, insert at last row of previous section
+                    if indexPath.section == 0 { // insert in first row of first section
+                        destinationIndexPath = IndexPath(row: 1, section: 0)
+                    } else { // insert in last row of previous section
+                        destinationIndexPath = IndexPath(row: playlistStructArray[indexPath.section-1].episodes.count, section: indexPath.section-1)
+                    }
+                } else {
+                    destinationIndexPath = indexPath
+                }
+            }
         }
         else
         {
@@ -687,21 +706,42 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         switch coordinator.proposal.operation
         {
         case .move:
-            var sourceIndexPath = coordinator.items[0].sourceIndexPath
-            
             if sourceIndexPath != nil {
-                if destinationIndexPath.section == playlistStructArray.count {
-                    destinationIndexPath = sourceIndexPath!
+                if sourceIndexPath!.row == 0 { // move section
+                    if destinationIndexPath.section == playlistStructArray.count {
+                        destinationIndexPath = sourceIndexPath!
+                    }
+                    print(sourceIndexPath)
+                    //Add the code to reorder items
+                    let item = playlistStructArray[sourceIndexPath!.section]
+                    tableView.beginUpdates()
+                    playlistStructArray.remove(at: sourceIndexPath!.section)
+                    playlistStructArray.insert(item, at: destinationIndexPath.section)
+                    
+                    tableView.moveSection(sourceIndexPath!.section, toSection: destinationIndexPath.section)
+                    tableView.endUpdates()
+                } else { // move row(s)
+                    print(sourceIndexPath)
+                    //Add the code to reorder items
+                    let item = playlistStructArray[sourceIndexPath!.section]
+                    tableView.beginUpdates()
+                    let itemToadd = playlistStructArray[sourceIndexPath!.section].episodes[sourceIndexPath!.row-1]
+                    itemToadd.playlist = playlistStructArray[destinationIndexPath.section].name
+                    CoreDataHelper.save(context: managedContext)
+                    playlistStructArray[sourceIndexPath!.section].episodes.remove(at: sourceIndexPath!.row-1)
+                    playlistStructArray[destinationIndexPath.section].episodes.insert(itemToadd, at: destinationIndexPath.row-1)
+    
+                    tableView.moveRow(at: sourceIndexPath!, to: destinationIndexPath)
+                    // check if there are any episodes left in that section
+                    if  playlistStructArray[sourceIndexPath!.section].episodes.count == 0 {
+                        // if there are none left, remove the section
+                        playlistStructArray.remove(at: sourceIndexPath!.section)
+                        let indexSet = NSMutableIndexSet()
+                        indexSet.add(sourceIndexPath!.section)
+                        tableView.deleteSections(indexSet as IndexSet, with: .automatic)
+                    }
+                    tableView.endUpdates()
                 }
-                print(sourceIndexPath)
-                //Add the code to reorder items
-                let item = playlistStructArray[sourceIndexPath!.section]
-                tableView.beginUpdates()
-                playlistStructArray.remove(at: sourceIndexPath!.section)
-                playlistStructArray.insert(item, at: destinationIndexPath.section)
-                
-                tableView.moveSection(sourceIndexPath!.section, toSection: destinationIndexPath.section)
-                tableView.endUpdates()
             }
             break
             
@@ -713,96 +753,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             return
         }
     }
-
-//    var cellSnapshot : UIView? = nil
-//    var initialIndexPath : IndexPath? = nil
-//    @objc func longPressGestureRecognized(gestureRecognizer: UIGestureRecognizer) {
-//        let longPress = gestureRecognizer as! UILongPressGestureRecognizer
-//        let state = longPress.state
-//        let locationInView = longPress.location(in: tableView)
-//        var indexPath = tableView.indexPathForRow(at: locationInView)
-//        let impact = UIImpactFeedbackGenerator()
-//        impact.prepare()
-//        switch state {
-//        case .began:
-//            if indexPath != nil {
-//                if indexPath!.row == 0 {
-//                    impact.impactOccurred()
-//                    initialIndexPath = indexPath
-//                    let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
-//                    cellSnapshot = snapshopOfCell(inputView: cell!)
-//                    var center = cell?.center
-//                    cellSnapshot!.center = center!
-//                    cellSnapshot!.alpha = 0.0
-//                    tableView.addSubview(cellSnapshot!)
-//
-//                    UIView.animate(withDuration: 0.25, animations: { () -> Void in
-//                        center?.y = locationInView.y
-//                        self.cellSnapshot!.center = center!
-//                        self.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.02, y: 1.02)
-//                        self.cellSnapshot!.alpha = 0.98
-//                        cell?.alpha = 0.0
-//
-//                    }, completion: { (finished) -> Void in
-//                        if finished {
-//                            cell?.isHidden = true
-//                        }
-//                    })
-//                }
-//            }
-//        case .changed:
-//            if cellSnapshot != nil {
-//                var center = cellSnapshot!.center
-//                center.y = locationInView.y
-//                cellSnapshot!.center = center
-//
-//                if ((indexPath != nil) && (indexPath?.section != initialIndexPath?.section) && (indexPath?.row == 0)) {
-//                    impact.impactOccurred()
-//                    if indexPath!.section < playlistStructArray.count {
-//                        tableView.beginUpdates()
-//                        let original = playlistStructArray[initialIndexPath!.section]
-//                        let target = playlistStructArray[indexPath!.section]
-//
-//                        playlistStructArray[indexPath!.section] = original
-//                        playlistStructArray[initialIndexPath!.section] = target
-//
-//                        tableView.moveSection(initialIndexPath!.section, toSection: indexPath!.section)
-//                        initialIndexPath = indexPath
-//                        tableView.endUpdates()
-//
-//                        playlistStructArray[indexPath!.section].name.sortIndex = Int64(indexPath!.section)
-//                        playlistStructArray[initialIndexPath!.section].name.sortIndex = Int64(initialIndexPath!.section)
-//
-//                        var index = 0
-//                        for playlist in playlistStructArray {
-//                            playlist.name.sortIndex = Int64(index)
-//                            index += 1
-//                        }
-//                        CoreDataHelper.save(context: managedContext)
-//                    }
-//                }
-//            }
-//        default:
-//            if cellSnapshot != nil {
-//                let adjustedIndexPath = IndexPath(row: 0, section: initialIndexPath!.section)
-//                let cell = tableView.cellForRow(at: adjustedIndexPath) as! PlaylistTitleCell
-//                cell.isHidden = false
-//                cell.alpha = 0.0
-//                UIView.animate(withDuration: 0.25, animations: { () -> Void in
-//                    self.cellSnapshot!.center = (cell.center)
-//                    self.cellSnapshot!.transform = CGAffineTransform.identity
-//                    self.cellSnapshot!.alpha = 0.0
-//                    cell.alpha = 1.0
-//                }, completion: { (finished) -> Void in
-//                    if finished {
-//                        self.initialIndexPath = nil
-//                        self.cellSnapshot!.removeFromSuperview()
-//                        self.cellSnapshot = nil
-//                    }
-//                })
-//            }
-//        }
-//    }
     
     func snapshopOfCell(inputView: UIView) -> UIView {
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0.0)

@@ -25,12 +25,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
     var episodeID: String = String()
     var episodeTitle: String = String()
     var episodeDescription = String()
+    var episodeShowNotes = String()
     var episodeDuration = String()
     var episodeURL: URL!
     var skippedChannelTitle = false
     var skippedChannelDescription = false
     var parser = XMLParser()
     var podcastURL: URL!
+    
+    var lastTitle = ""
+    var thisTitle = ""
     
     var downloadTask: URLSessionDownloadTask!
     var backgroundSession: URLSession!
@@ -161,6 +165,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
         }
     }
     
+    
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
 
         parser.delegate = self
@@ -230,6 +235,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
             episode.audioURL = at
             episode.localURL = destinationUrl
             episode.duration = episodeDuration
+            if episodeShowNotes != "" {
+                episode.showNotes = episodeShowNotes
+            } else {
+                episode.showNotes = episodeDescription
+            }
             episode.podcast = podcast
             episode.progress = 0
             print(episode.podcast!.feedURL!)
@@ -336,24 +346,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
         if (!data.isEmpty) {
             switch eName {
             case "title":
-                if skippedChannelTitle == false {
-                    skippedChannelTitle = true
-                } else {
-                    episodeTitle += data
-                }
-            case "description":
-                if skippedChannelDescription == false {
-                    skippedChannelDescription = true
-                } else {
+                episodeTitle += data
+                lastTitle = thisTitle
+                thisTitle = episodeTitle
+            case "itunes:subtitle":
+                if lastTitle == thisTitle || lastTitle == "" {
                     episodeDescription += data
+                } else {
+                    episodeDescription = data
                 }
             case "guid":
                 episodeID = data
             case "itunes:duration":
                 episodeDuration = data
+            case "content:encoded":
+                if lastTitle == thisTitle || lastTitle == "" {
+                    episodeShowNotes += data
+                } else {
+                    episodeShowNotes = data
+                }
+                
             default:
                 break
             }
+        } else {
+            
         }
     }
     

@@ -310,6 +310,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             episodeTitle = String()
             episodeDescription = String()
             episodeDuration = String()
+            episodeShowNotes = String()
         }
     }
     
@@ -728,45 +729,49 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         do {
             // after downloading your file you need to move it to your destination url
-            try FileManager.default.moveItem(at: location, to: downloads[0].url)
-            print("File moved to documents folder")
-            
-            if downloads[0].playNow {
-                self.startAudioSession()
-                nowPlayingEpisode = downloads[0].episode
-                let nowPlayingArt = UIImage(data: downloads[0].episode.podcast!.image!)
-                baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
-
-                let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
-                baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+            if downloads != nil {
+                try FileManager.default.moveItem(at: location, to: downloads[0].url)
+                print("File moved to documents folder")
                 
-                if nowPlayingEpisode != nil {
-                    nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                if downloads[0].playNow {
+                    self.startAudioSession()
+                    nowPlayingEpisode = downloads[0].episode
+                    let nowPlayingArt = UIImage(data: downloads[0].episode.podcast!.image!)
+                    baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
+
+                    let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)
+                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                    
+                    if nowPlayingEpisode != nil {
+                        nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
+                    }
+                    
+                    CoreDataHelper.save(context: managedContext!)
+                    
+                    self.playDownload(for: downloads[0].episode)
                 }
                 
-                CoreDataHelper.save(context: managedContext!)
-                
-                self.playDownload(for: downloads[0].episode)
-            }
-            
-            if let indexPath = downloads[0].indexPath {
-                DispatchQueue.main.async {
-                    if self.tableView.cellForRow(at: indexPath) != nil {
-                        let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
-                        cell.titleLabel.textColor = .lightGray
-                        cell.descriptionLabel.textColor = .lightGray
-                        cell.durationLabel.textColor = .lightGray
-                        cell.downloadProgressView.progress = 0
-                        self.episodes[indexPath.row].downloaded = true
-                        self.tableView.reloadRows(at: [indexPath], with: .none)
+                if let indexPath = downloads[0].indexPath {
+                    DispatchQueue.main.async {
+                        if self.tableView.cellForRow(at: indexPath) != nil {
+                            let cell = self.tableView.cellForRow(at: indexPath) as! EpisodeCell
+                            cell.titleLabel.textColor = .lightGray
+                            cell.descriptionLabel.textColor = .lightGray
+                            cell.durationLabel.textColor = .lightGray
+                            cell.downloadProgressView.progress = 0
+                            self.episodes[indexPath.row].downloaded = true
+                            self.tableView.reloadRows(at: [indexPath], with: .none)
+                        }
                     }
                 }
-            }
-            print(downloads.count)
-            downloads = Array(downloads.dropFirst())
-            print(downloads.count)
-            if downloads.count > 0 {
-                self.downloadFile(at: downloads[0].audioUrl, relatedTo: downloads[0].parsedEpisode, addTo: downloads[0].addTo, playNow: downloads[0].playNow, cellIndexPath: downloads[0].indexPath)
+                print(downloads.count)
+                downloads = Array(downloads.dropFirst())
+                print(downloads.count)
+                if downloads.count > 0 {
+                    self.downloadFile(at: downloads[0].audioUrl, relatedTo: downloads[0].parsedEpisode, addTo: downloads[0].addTo, playNow: downloads[0].playNow, cellIndexPath: downloads[0].indexPath)
+                }
+            } else {
+                print("Downloads array has no items in it")
             }
         } catch let error as NSError {
             print(error.localizedDescription)
