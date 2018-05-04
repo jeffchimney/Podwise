@@ -43,6 +43,7 @@ class ShowNotesViewController: UIViewController {
         }
         
         showNotesView.attributedText = newAttributedString
+        navigationController?.setNavigationBarHidden(false, animated: true)
     }
     
     override var previewActionItems: [UIPreviewActionItem] {

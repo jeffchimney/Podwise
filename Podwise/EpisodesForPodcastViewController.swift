@@ -37,6 +37,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     var episodeDescription = String()
     var episodeDuration = String()
     var episodeShowNotes = String()
+    var possibleShowNotes = String()
     var episodeURL: URL!
     var imageSet: Bool = false
     var lastTitle = ""

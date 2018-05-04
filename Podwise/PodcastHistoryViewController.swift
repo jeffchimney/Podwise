@@ -34,6 +34,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     var episodeDescription = String()
     var episodeDuration = String()
     var episodeShowNotes = String()
+    var possibleShowNotes = String()
     var episodeURL: URL!
     var imageSet: Bool = false
     var feedURL: String!
@@ -311,6 +312,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             episodeDescription = String()
             episodeDuration = String()
             episodeShowNotes = String()
+            possibleShowNotes = String()
         }
     }
     
@@ -326,6 +328,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             print(episodeShowNotes)
             if episodeShowNotes != "" {
                 episode.contentEncoded = episodeShowNotes
+            } else if possibleShowNotes != "" {
+                episode.contentEncoded = possibleShowNotes
             } else {
                 episode.contentEncoded = episodeDescription
             }
@@ -354,6 +358,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             case "description":
                 if thisTitle == "" { //channelDescriptionTextView.text! == ""
                     channelDescriptionTextView.text! += data
+                } else {
+                    possibleShowNotes += data
                 }
             case "itunes:subtitle":
                 if lastTitle == thisTitle || lastTitle == "" {

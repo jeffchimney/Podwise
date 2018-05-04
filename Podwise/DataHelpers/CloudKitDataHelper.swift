@@ -170,10 +170,10 @@ class CloudKitDataHelper {
         let subscription = CKQuerySubscription(recordType: "Podcasts", predicate: predicate, options: .firesOnRecordUpdate)
         
         let notificationInfo = CKNotificationInfo()
-        notificationInfo.desiredKeys = ["title", "latestEpisode"]
-        notificationInfo.alertLocalizationArgs = ["title", "latestEpisode"]
-        notificationInfo.title = "\(record.object(forKey: "title") as! String)"
-        notificationInfo.alertBody =  "%2$@"
+        notificationInfo.titleLocalizationKey = "%1$@"
+        notificationInfo.titleLocalizationArgs = ["title"]
+        notificationInfo.alertLocalizationKey = "%1$@"
+        notificationInfo.alertLocalizationArgs = ["latestEpisode"]
         notificationInfo.shouldBadge = true
         notificationInfo.shouldSendMutableContent = true
         notificationInfo.shouldSendContentAvailable = true
