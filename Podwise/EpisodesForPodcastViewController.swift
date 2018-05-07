@@ -452,6 +452,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             playlistObject.id = "unsorted123"
             playlistObject.name = "Unsorted"
             playlistObject.sortIndex = 0
+            playlistObject.isCollapsed = false
             unSortedPlaylist = playlistObject
         }
         

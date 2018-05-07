@@ -444,6 +444,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             playlistObject.id = "unsorted123"
             playlistObject.name = "Unsorted"
             playlistObject.sortIndex = 0
+            playlistObject.isCollapsed = false
             
             let colourData = NSKeyedArchiver.archivedData(withRootObject: UIColor(displayP3Red: 142/255, green: 142/255, blue: 147/255, alpha: 1.0))
             

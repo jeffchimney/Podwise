@@ -168,6 +168,7 @@ class PlaylistCreationTableViewController: UIViewController, UICollectionViewDat
                 newPlaylist.sortIndex = (Int64(sortIndex + Int(1)))
                 newPlaylist.id = UUID().uuidString
                 newPlaylist.colour = colourData
+                newPlaylist.isCollapsed = false
 
                 for podcast in selectedPodcasts {
                     podcast.playlist = newPlaylist
