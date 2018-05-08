@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB" customClass="PlaylistFooterView" customModule="Podwise" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="437" height="30"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rTg-ri-JuI">
+                    <rect key="frame" x="0.0" y="0.0" width="437" height="30"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="P3q-pV-RRr">
+                            <rect key="frame" x="206" y="3" width="24" height="24"/>
+                            <state key="normal" image="down_arrow_24"/>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstItem="P3q-pV-RRr" firstAttribute="centerY" secondItem="rTg-ri-JuI" secondAttribute="centerY" id="JkP-dZ-f5v"/>
+                        <constraint firstItem="P3q-pV-RRr" firstAttribute="centerX" secondItem="rTg-ri-JuI" secondAttribute="centerX" id="PS6-U6-2Ke"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="rTg-ri-JuI" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="37Z-qt-Aar"/>
+                <constraint firstItem="rTg-ri-JuI" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="T9S-ya-kBZ"/>
+                <constraint firstItem="rTg-ri-JuI" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="VgZ-aG-Fsv"/>
+                <constraint firstItem="rTg-ri-JuI" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" id="dzi-Tx-k5R"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <connections>
+                <outlet property="collapseExpandButton" destination="P3q-pV-RRr" id="U8P-vj-Yjf"/>
+                <outlet property="footerBackgroundView" destination="rTg-ri-JuI" id="j4g-4d-vee"/>
+            </connections>
+            <point key="canvasLocation" x="64.5" y="374"/>
+        </view>
+    </objects>
+    <resources>
+        <image name="down_arrow_24" width="24" height="24"/>
+    </resources>
+</document>

@@ -42,6 +42,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     var sectionDragging = 0
     var episodesToAddBack = [CDEpisode]()
     var isDragging = false
+    var episodeToShowNotesFor: CDEpisode?
     //var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
@@ -76,6 +77,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
+        
+        episodeToShowNotesFor = nil
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
             return
@@ -139,6 +142,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
 //        if !isTimerRunning {
 //            runTimer()
 //        }
+        navigationController?.setNavigationBarHidden(true, animated: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -194,33 +198,45 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section != playlistStructArray.count {
-            let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "footerView")
-            
-            if footerView != nil {
+            if let footerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: "footerView") as? PlaylistFooterView  {
                 let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: playlistStructArray[section].name.colour!)
-                footerView!.contentView.backgroundColor = playlistColour as? UIColor
+                footerView.footerBackgroundView.backgroundColor = playlistColour as? UIColor
                 
-                footerView!.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30)
-                footerView!.center = CGPoint(x: tableView.center.x, y: footerView!.center.y)
+                footerView.frame = CGRect(x: 0, y: 0, width: tableView.frame.width, height: 30)
+                footerView.center = CGPoint(x: tableView.center.x, y: footerView.center.y)
                 
                 // round top left and right corners
                 let cornerRadius: CGFloat = 15
                 let maskLayer = CAShapeLayer()
                 
                 maskLayer.path = UIBezierPath(
-                    roundedRect: footerView!.bounds,
+                    roundedRect: footerView.bounds,
                     byRoundingCorners: [.bottomLeft, .bottomRight],
                     cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
                     ).cgPath
                 
-                footerView!.layer.mask = maskLayer
+                footerView.layer.mask = maskLayer
                 
                 let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(gesture:)))
                 tap.delegate = self
-                footerView!.addGestureRecognizer(tap)
+                footerView.addGestureRecognizer(tap)
+                
+                if playlistStructArray[section].name.isCollapsed {
+                    let image = UIImage(named: "down_arrow_24")
+                    footerView.collapseExpandButton.setImage(image, for: .normal)
+                } else {
+                    let image = UIImage(named: "up_arrow_24")
+                    footerView.collapseExpandButton.setImage(image, for: .normal)
+                }
+                footerView.collapseExpandButton.transform = .identity
+                let tapButton = UITapGestureRecognizer(target: self, action: #selector(handleTap(gesture:)))
+                tapButton.delegate = self
+                footerView.collapseExpandButton.addGestureRecognizer(tapButton)
+                
+                return footerView
+            } else {
+                return nil
             }
-            
-            return footerView
         } else {
             return nil
         }
@@ -715,13 +731,23 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         
         for section in 0...tableView.numberOfSections-1 {
             let footerView = tableView.footerView(forSection: section)
-            print(footerView)
-            if (footerView?.frame.contains(position))! {
+            
+            // nil check for sections that are currently off screen
+            if footerView != nil && (footerView?.frame.contains(position))! {
+                let unwrappedFooterView = footerView as! PlaylistFooterView
                 if playlistStructArray[section].name.isCollapsed {
                     expand(section: section)
                 } else {
                     collapse(section: section)
                 }
+                
+                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
+                    if unwrappedFooterView.collapseExpandButton.transform.isIdentity {
+                        unwrappedFooterView.collapseExpandButton.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
+                    } else {
+                        unwrappedFooterView.collapseExpandButton.transform = .identity
+                    }
+                }, completion: nil)
                 break
             }
         }
@@ -824,6 +850,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         targetViewController.episode = selectedEpisode
+        episodeToShowNotesFor = selectedEpisode
         targetViewController.preferredContentSize =
             CGSize(width: 0.0, height: 500)
 
@@ -832,10 +859,20 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         return targetViewController
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "toShowNotes") {
+            
+            let showNotesViewController = segue.destination as! ShowNotesViewController
+            //you can pass parameters like project id
+            showNotesViewController.episode = episodeToShowNotesFor
+        }
+    }
+    
     func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
-        //present(viewControllerToCommit, animated: true, completion: nil)
-        navigationController?.pushViewController(viewControllerToCommit, animated: true)
+//        present(viewControllerToCommit, animated: true, completion: nil)
+        //navigationController!.pushViewController(viewControllerToCommit, animated: true)
         //show(viewControllerToCommit, sender: self)
+        performSegue(withIdentifier: "toShowNotes", sender: self)
     }
 }
 

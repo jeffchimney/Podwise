@@ -195,15 +195,10 @@
 		BE0FC0B21FCE3B2500AC2505 /* GroupedView */ = {
 			isa = PBXGroup;
 			children = (
-				BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */,
 				BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */,
-				BE789B511FE1D4B4005ED126 /* HeaderView.xib */,
 				BE789B531FE1D4C0005ED126 /* HeaderView.swift */,
-				BEB0B7321FE380A0006FA0E5 /* SubscriptionsView.xib */,
 				BEB0B7341FE380B3006FA0E5 /* SubscriptionsViewController.swift */,
-				BEFBDB241FE884B1007C4CA4 /* SubscribedPodcastsPlaylistView.xib */,
 				BEFBDB221FE88494007C4CA4 /* SubscribedPodcastsPlaylistViewController.swift */,
-				BEA55D991FE9C04A007B3164 /* NewPlaylistHeaderView.xib */,
 				BEA55D9B1FE9C05B007B3164 /* NewPlaylistHeaderView.swift */,
 			);
 			path = GroupedView;
@@ -222,10 +217,24 @@
 		BE8DE4691FC7679C00426F2A /* MiniPlayer */ = {
 			isa = PBXGroup;
 			children = (
-				BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */,
 				BE8DE4671FC7678E00426F2A /* MiniPlayerViewController.swift */,
 			);
 			path = MiniPlayer;
+			sourceTree = "<group>";
+		};
+		BE9C8A0E20A15FF000564A66 /* Xibs */ = {
+			isa = PBXGroup;
+			children = (
+				BE8DE4651FC7674D00426F2A /* MiniPlayer.xib */,
+				BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */,
+				BE789B511FE1D4B4005ED126 /* HeaderView.xib */,
+				BEB0B7321FE380A0006FA0E5 /* SubscriptionsView.xib */,
+				BEFBDB241FE884B1007C4CA4 /* SubscribedPodcastsPlaylistView.xib */,
+				BEA55D991FE9C04A007B3164 /* NewPlaylistHeaderView.xib */,
+				BE230CE71FCE759F0065192C /* PlaylistCell.xib */,
+				BE13066720A10719008961C0 /* FooterView.xib */,
+			);
+			path = Xibs;
 			sourceTree = "<group>";
 		};
 		BEA9D3B71FC389BC00A140AC /* Classes */ = {
@@ -287,6 +296,7 @@
 		BEE0A1351FBE57C200AA111F /* Podwise */ = {
 			isa = PBXGroup;
 			children = (
+				BE9C8A0E20A15FF000564A66 /* Xibs */,
 				BED4B0111FCBDA0C00B818A9 /* Podwise.entitlements */,
 				BEE0A1361FBE57C200AA111F /* AppDelegate.swift */,
 				BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */,
@@ -345,7 +355,6 @@
 				BEDFE6431FC6B60A0084D392 /* PodcastListCell.swift */,
 				BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */,
 				BE6853801FCC918900CA32C8 /* PodcastChecklistCell.swift */,
-				BE230CE71FCE759F0065192C /* PlaylistCell.xib */,
 				BEB04D161FCF898D0052BCBF /* AddPlaylistCell.swift */,
 				BE230CE91FCE7EAB0065192C /* GroupedViewCell.swift */,
 				BEB0B7361FE385BD006FA0E5 /* SubscriptionCell.swift */,
@@ -353,7 +362,6 @@
 				BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */,
 				BE7A6F5B20056748005A38EB /* PlaylistHeaderView.swift */,
 				BE13066520A10695008961C0 /* PlaylistFooterView.swift */,
-				BE13066720A10719008961C0 /* FooterView.xib */,
 			);
 			path = Cells;
 			sourceTree = "<group>";

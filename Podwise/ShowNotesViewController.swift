@@ -18,8 +18,6 @@ class ShowNotesViewController: UIViewController {
     @IBOutlet var showNotesView: UITextView!
     
     override func viewDidLoad() {
-        podcastLabel.text = episode.podcast!.title!
-        episodeLabel.text = episode.title!
         
         let newAttributedString = NSMutableAttributedString(attributedString: episode.showNotes!.htmlToAttributedString!)
         
@@ -44,6 +42,10 @@ class ShowNotesViewController: UIViewController {
         
         showNotesView.attributedText = newAttributedString
         navigationController?.setNavigationBarHidden(false, animated: true)
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = episode.podcast?.title
+        navigationItem.prompt = episode.title
+        print(navigationController?.isNavigationBarHidden)
     }
     
     override var previewActionItems: [UIPreviewActionItem] {

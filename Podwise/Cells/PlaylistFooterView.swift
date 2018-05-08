@@ -10,4 +10,7 @@ import Foundation
 
 class PlaylistFooterView: UITableViewHeaderFooterView {
     
+    @IBOutlet weak var collapseExpandButton: UIButton!
+    @IBOutlet weak var footerBackgroundView: UIView!
+    
 }
