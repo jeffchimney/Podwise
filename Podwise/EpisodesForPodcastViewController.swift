@@ -354,7 +354,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let audioURL = attributeDict["url"]
             let urlString: String = audioURL!
             let url: URL = URL(string: urlString)!
-            print("URL for podcast download: \(url)")
+            //print("URL for podcast download: \(url)")
             episodeURL = url
         }
         

@@ -253,159 +253,119 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if isDragging && indexPath.section == sectionDragging {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath as IndexPath) as! PlaylistTitleCell
-            
-            cell.editDelegate = self
-            if let podcastPlaylist = episodesToAddBack[0].podcast?.playlist {
-                cell.playlist = podcastPlaylist
+        if indexPath.section < playlistStructArray.count {
+            if indexPath.row == 0 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath as IndexPath) as! PlaylistTitleCell
                 
-                let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
-                
-                cell.backgroundColor = playlistColour as? UIColor
-                
-                cell.titleTextField.text = podcastPlaylist.name!
-                if podcastPlaylist.name! == "Unsorted" {
-                    cell.editPlaylistButton.isHidden = true
-                } else {
-                    cell.editPlaylistButton.isHidden = false
-                }
-            }
-            
-            cell.isUserInteractionEnabled = true
-            
-            // round top left and right corners
-            let cornerRadius: CGFloat = 15
-            let maskLayer = CAShapeLayer()
-            
-            maskLayer.path = UIBezierPath(
-                roundedRect: cell.bounds,
-                byRoundingCorners: [.topLeft, .topRight],
-                cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
-                ).cgPath
-            
-            cell.layer.mask = maskLayer
-            return cell
-        } else {
-            if indexPath.section < playlistStructArray.count {
-                if indexPath.row == 0 {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "headerCell", for: indexPath as IndexPath) as! PlaylistTitleCell
-                    
-                    cell.editDelegate = self
-                    if playlistStructArray[indexPath.section].episodes.count > 0 {
-                        if let podcastPlaylist = playlistStructArray[indexPath.section].episodes[0].podcast?.playlist {
-                            cell.playlist = podcastPlaylist
-                            
-                            let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
-                            
-                            cell.backgroundColor = playlistColour as? UIColor
-                            
-                            cell.titleTextField.text = podcastPlaylist.name!
-                            if podcastPlaylist.name! == "Unsorted" {
-                                cell.editPlaylistButton.isHidden = true
-                            } else {
-                                cell.editPlaylistButton.isHidden = false
-                            }
-                        }
-                        
-                        cell.isUserInteractionEnabled = true
-                        return cell
-                    } else {
-                        // Shouldnt ever hit this.
-                        return UITableViewCell()
-                    }
-                } else {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
-                    let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
-                    cell.titleLabel.text = thisEpisode.title
-                    cell.activityIndicator.isHidden = true
-                    if downloads != nil {
-                        for download in downloads {
-                            if download.episode == thisEpisode {
-                                cell.activityIndicator.startAnimating()
-                                cell.activityIndicator.isHidden = false
-                            }
-                        }
-                    }
-                    
-                    var hours = 0
-                    var minutes = 0
-                    if let optionalHours = Int(thisEpisode.duration!) {
-                        hours = (optionalHours/60)/60
-                    }  else {
-                        let durationArray = thisEpisode.duration?.split(separator: ":")
-                        if durationArray?.count ?? 0 > 0 {
-                            if let optionalHours = Int(durationArray![0]) {
-                                hours = optionalHours
-                            }
-                        }
-                    }
-                    if let optionalMinutes = Int(thisEpisode.duration!) {
-                        minutes = (optionalMinutes/60)%60
-                    }  else {
-                        let durationArray = thisEpisode.duration!.split(separator: ":")
-                        if durationArray.count > 0 {
-                            if let optionalMinutes = Int(durationArray[1]) {
-                                minutes = optionalMinutes
-                            }
-                        }
-                    }
-                    
-                    cell.titleLabel.text = thisEpisode.title
-                    cell.durationLabel.text = thisEpisode.subTitle
-                    cell.percentDowloadedLabel.isHidden = true
-                    if hours == 0 && minutes == 0 {
-                        cell.durationLabel.text = ""
-                    } else if hours == 0 {
-                        cell.durationLabel.text = "\(minutes)m"
-                    } else {
-                        cell.durationLabel.text = "\(hours)h \(minutes)m"
-                    }
-                    
-                    DispatchQueue.main.async {
-                        if let imageData = thisEpisode.podcast?.image {
-                            cell.artImageView.image = UIImage(data: imageData)
-                        }
-                        
-                        cell.artImageView.layer.cornerRadius = 10
-                        cell.artImageView.layer.masksToBounds = true
-                    }
-                    
-                    cell.isUserInteractionEnabled = true
-                    
-                    if indexPath.row == playlistStructArray[indexPath.section].episodes.count {
-                        // round top left and right corners
-                        let cornerRadius: CGFloat = 15
-                        let maskLayer = CAShapeLayer()
-                        
-                        maskLayer.path = UIBezierPath(
-                            roundedRect: cell.bounds,
-                            byRoundingCorners: [.bottomLeft, .bottomRight],
-                            cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
-                            ).cgPath
-                        
-                        cell.layer.mask = maskLayer
-                    }
-                    
-                    let filemanager = FileManager.default
-                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-                    let destinationPath = documentsPath.appendingPathComponent(thisEpisode.localURL!.lastPathComponent)
-                    if !filemanager.fileExists(atPath: destinationPath) {
-                        
-                    }
-                    
-                    return cell
-                }
-            } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
-                
-                cell.playlistButton.backgroundColor = UIColor.white
-                cell.playlistButton.layer.cornerRadius = 15
-                cell.playlistButton.layer.masksToBounds = true
                 cell.editDelegate = self
+                if let podcastPlaylist = playlistStructArray[indexPath.section].episodes[0].podcast?.playlist {
+                    cell.playlist = podcastPlaylist
+                    
+                    let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: podcastPlaylist.colour!)
+                    
+                    cell.backgroundColor = playlistColour as? UIColor
+                    
+                    cell.titleTextField.text = podcastPlaylist.name!
+                    if podcastPlaylist.name! == "Unsorted" {
+                        cell.editPlaylistButton.isHidden = true
+                    } else {
+                        cell.editPlaylistButton.isHidden = false
+                    }
+                }
+                
+                cell.isUserInteractionEnabled = true
+                return cell
+            } else {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
+                let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
+                cell.titleLabel.text = thisEpisode.title
+                cell.activityIndicator.isHidden = true
+                if downloads != nil {
+                    for download in downloads {
+                        if download.episode == thisEpisode {
+                            cell.activityIndicator.startAnimating()
+                            cell.activityIndicator.isHidden = false
+                        }
+                    }
+                }
+                
+                var hours = 0
+                var minutes = 0
+                if let optionalHours = Int(thisEpisode.duration!) {
+                    hours = (optionalHours/60)/60
+                }  else {
+                    let durationArray = thisEpisode.duration?.split(separator: ":")
+                    if durationArray?.count ?? 0 > 0 {
+                        if let optionalHours = Int(durationArray![0]) {
+                            hours = optionalHours
+                        }
+                    }
+                }
+                if let optionalMinutes = Int(thisEpisode.duration!) {
+                    minutes = (optionalMinutes/60)%60
+                }  else {
+                    let durationArray = thisEpisode.duration!.split(separator: ":")
+                    if durationArray.count > 0 {
+                        if let optionalMinutes = Int(durationArray[1]) {
+                            minutes = optionalMinutes
+                        }
+                    }
+                }
+                
+                cell.titleLabel.text = thisEpisode.title
+                cell.durationLabel.text = thisEpisode.subTitle
+                cell.percentDowloadedLabel.isHidden = true
+                if hours == 0 && minutes == 0 {
+                    cell.durationLabel.text = ""
+                } else if hours == 0 {
+                    cell.durationLabel.text = "\(minutes)m"
+                } else {
+                    cell.durationLabel.text = "\(hours)h \(minutes)m"
+                }
+                
+                DispatchQueue.main.async {
+                    if let imageData = thisEpisode.podcast?.image {
+                        cell.artImageView.image = UIImage(data: imageData)
+                    }
+                    
+                    cell.artImageView.layer.cornerRadius = 10
+                    cell.artImageView.layer.masksToBounds = true
+                }
+                
+                cell.isUserInteractionEnabled = true
+                
+//                if indexPath.row == playlistStructArray[indexPath.section].episodes.count {
+//                    // round top left and right corners
+//                    let cornerRadius: CGFloat = 15
+//                    let maskLayer = CAShapeLayer()
+//                    
+//                    maskLayer.path = UIBezierPath(
+//                        roundedRect: cell.bounds,
+//                        byRoundingCorners: [.bottomLeft, .bottomRight],
+//                        cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
+//                        ).cgPath
+//                    
+//                    cell.layer.mask = maskLayer
+//                }
+                
+//                let filemanager = FileManager.default
+//                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+//                let destinationPath = documentsPath.appendingPathComponent(thisEpisode.localURL!.lastPathComponent)
+//                if !filemanager.fileExists(atPath: destinationPath) {
+//
+//                }
                 
                 return cell
             }
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "addPlaylistCell", for: indexPath) as! AddPlaylistCell
+            
+            cell.playlistButton.backgroundColor = UIColor.white
+            cell.playlistButton.layer.cornerRadius = 15
+            cell.playlistButton.layer.masksToBounds = true
+            cell.editDelegate = self
+            
+            return cell
         }
     }
     
