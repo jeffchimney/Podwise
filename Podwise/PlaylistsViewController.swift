@@ -73,6 +73,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.separatorColor = tableView.backgroundColor
         
         tableView.register(UINib(nibName: "FooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: "footerView")
+        
+        tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 0.1))
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -191,6 +193,14 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             return false
         }
     }
+    
+//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+//        if section == 0 {
+//            return -30
+//        } else {
+//            return 10
+//        }
+//    }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 30
@@ -550,6 +560,9 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             if episodesInPlaylist == 0 {
                 playlistStructArray.remove(at: section)
                 tableView.deleteRows(at: [IndexPath(row: 0, section: section)], with: .automatic)
+                let indexSet = NSMutableIndexSet()
+                indexSet.add(section)
+                tableView.reloadSections(indexSet as IndexSet, with: .fade)
                 return
             }
             
