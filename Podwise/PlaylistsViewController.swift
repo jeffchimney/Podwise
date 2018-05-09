@@ -252,6 +252,65 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if let playlstCell = cell as? PlaylistCell {
+            let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
+            playlstCell.titleLabel.text = thisEpisode.title
+            playlstCell.activityIndicator.isHidden = true
+            if downloads != nil {
+                for download in downloads {
+                    if download.episode == thisEpisode {
+                        playlstCell.activityIndicator.startAnimating()
+                        playlstCell.activityIndicator.isHidden = false
+                    }
+                }
+            }
+            
+            var hours = 0
+            var minutes = 0
+            if let optionalHours = Int(thisEpisode.duration!) {
+                hours = (optionalHours/60)/60
+            }  else {
+                let durationArray = thisEpisode.duration?.split(separator: ":")
+                if durationArray?.count ?? 0 > 0 {
+                    if let optionalHours = Int(durationArray![0]) {
+                        hours = optionalHours
+                    }
+                }
+            }
+            if let optionalMinutes = Int(thisEpisode.duration!) {
+                minutes = (optionalMinutes/60)%60
+            }  else {
+                let durationArray = thisEpisode.duration!.split(separator: ":")
+                if durationArray.count > 0 {
+                    if let optionalMinutes = Int(durationArray[1]) {
+                        minutes = optionalMinutes
+                    }
+                }
+            }
+            
+            playlstCell.titleLabel.text = thisEpisode.title
+            playlstCell.durationLabel.text = thisEpisode.subTitle
+            playlstCell.percentDowloadedLabel.isHidden = true
+            if hours == 0 && minutes == 0 {
+                playlstCell.durationLabel.text = ""
+            } else if hours == 0 {
+                playlstCell.durationLabel.text = "\(minutes)m"
+            } else {
+                playlstCell.durationLabel.text = "\(hours)h \(minutes)m"
+            }
+            
+            DispatchQueue.main.async {
+                if let imageData = thisEpisode.podcast?.image {
+                    playlstCell.artImageView.image = UIImage(data: imageData)
+                }
+                
+//                playlstCell.artImageView.layer.cornerRadius = 10
+//                playlstCell.artImageView.layer.masksToBounds = true
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section < playlistStructArray.count {
             if indexPath.row == 0 {
@@ -277,82 +336,14 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 return cell
             } else {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "PlaylistCell", for: indexPath as IndexPath) as! PlaylistCell
-                let thisEpisode: CDEpisode = playlistStructArray[indexPath.section].episodes[indexPath.row-1]
-                cell.titleLabel.text = thisEpisode.title
-                cell.activityIndicator.isHidden = true
-                if downloads != nil {
-                    for download in downloads {
-                        if download.episode == thisEpisode {
-                            cell.activityIndicator.startAnimating()
-                            cell.activityIndicator.isHidden = false
-                        }
-                    }
-                }
-                
-                var hours = 0
-                var minutes = 0
-                if let optionalHours = Int(thisEpisode.duration!) {
-                    hours = (optionalHours/60)/60
-                }  else {
-                    let durationArray = thisEpisode.duration?.split(separator: ":")
-                    if durationArray?.count ?? 0 > 0 {
-                        if let optionalHours = Int(durationArray![0]) {
-                            hours = optionalHours
-                        }
-                    }
-                }
-                if let optionalMinutes = Int(thisEpisode.duration!) {
-                    minutes = (optionalMinutes/60)%60
-                }  else {
-                    let durationArray = thisEpisode.duration!.split(separator: ":")
-                    if durationArray.count > 0 {
-                        if let optionalMinutes = Int(durationArray[1]) {
-                            minutes = optionalMinutes
-                        }
-                    }
-                }
-                
-                cell.titleLabel.text = thisEpisode.title
-                cell.durationLabel.text = thisEpisode.subTitle
-                cell.percentDowloadedLabel.isHidden = true
-                if hours == 0 && minutes == 0 {
-                    cell.durationLabel.text = ""
-                } else if hours == 0 {
-                    cell.durationLabel.text = "\(minutes)m"
-                } else {
-                    cell.durationLabel.text = "\(hours)h \(minutes)m"
-                }
-                
-                DispatchQueue.main.async {
-                    if let imageData = thisEpisode.podcast?.image {
-                        cell.artImageView.image = UIImage(data: imageData)
-                    }
-                    
-                    cell.artImageView.layer.cornerRadius = 10
-                    cell.artImageView.layer.masksToBounds = true
-                }
                 
                 cell.isUserInteractionEnabled = true
-                
-//                if indexPath.row == playlistStructArray[indexPath.section].episodes.count {
-//                    // round top left and right corners
-//                    let cornerRadius: CGFloat = 15
-//                    let maskLayer = CAShapeLayer()
-//                    
-//                    maskLayer.path = UIBezierPath(
-//                        roundedRect: cell.bounds,
-//                        byRoundingCorners: [.bottomLeft, .bottomRight],
-//                        cornerRadii: CGSize(width: cornerRadius, height: cornerRadius)
-//                        ).cgPath
-//                    
-//                    cell.layer.mask = maskLayer
-//                }
                 
 //                let filemanager = FileManager.default
 //                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
 //                let destinationPath = documentsPath.appendingPathComponent(thisEpisode.localURL!.lastPathComponent)
 //                if !filemanager.fileExists(atPath: destinationPath) {
-//
+//                    // download file
 //                }
                 
                 return cell

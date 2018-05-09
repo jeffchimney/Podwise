@@ -39,6 +39,8 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        podcastResults = []
+        tableView.reloadData()
         iTunesSearch(term: searchBar.text!)
         searchBar.resignFirstResponder()
         searching = true
@@ -63,7 +65,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     }
 
     func ctnFinishedLoading(data: Data) {
-        // self.d should hold the resulting info, request is complete
+        // should hold the resulting info, request is complete
         // received data is converted into an object through JSON deserialization
         do {
             let jResult: NSDictionary = try JSONSerialization.jsonObject(with: data, options: .mutableContainers) as! NSDictionary

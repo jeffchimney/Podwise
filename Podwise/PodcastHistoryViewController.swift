@@ -56,10 +56,10 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         managedContext = appDelegate.persistentContainer.viewContext
         
         channelDescriptionTextView = UITextView(frame: CGRect(x: 0, y: 0, width: tableView.frame.width, height: 100))
+        channelDescriptionTextView.isEditable = false
         activityIndicator.startAnimating()
         
         channelLabel.text! = ""
-        channelDescriptionTextView.text! = ""
         channelDescriptionTextView.font = UIFont(name: "Helvetica", size: 15)
         
         searchBar.searchBarStyle = .minimal
@@ -105,10 +105,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "EpisodeCell", for: indexPath as IndexPath) as! EpisodeCell
-        
-        
-        
-        
+
         let episode = episodes[indexPath.row]
         
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
@@ -357,7 +354,31 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 }
             case "description":
                 if thisTitle == "" { //channelDescriptionTextView.text! == ""
-                    channelDescriptionTextView.text! += data
+                    var textSoFar = channelDescriptionTextView.attributedText.string
+                    textSoFar += data
+                    var fontChangedAttributedString = NSMutableAttributedString(attributedString: textSoFar.htmlToAttributedString!)
+                    fontChangedAttributedString.enumerateAttribute(NSAttributedStringKey.font, in: NSMakeRange(0, fontChangedAttributedString.length), options: [])
+                    {
+                        value, range, stop in
+                        guard let currentFont = value as? UIFont else {
+                            return
+                        }
+                        
+                        // An NSFontDescriptor describes the attributes of a font: family name, face name, point size, etc.
+                        // Here we describe the replacement font as coming from the "Hoefler Text" family
+                        let fontDescriptor = currentFont.fontDescriptor//.addingAttributes([UIFontDescriptor.AttributeName.family: "Hoefler Text"])
+                        
+                        // Ask the OS for an actual font that most closely matches the description above
+                        if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
+                            let newFont = UIFont(descriptor: newFontDescriptor, size: 15.0)
+                            fontChangedAttributedString.addAttributes([NSAttributedStringKey.font: newFont], range: range)
+                        }
+                    }
+
+                    channelDescriptionTextView.attributedText! = fontChangedAttributedString
+                    channelDescriptionTextView.translatesAutoresizingMaskIntoConstraints = true
+                    channelDescriptionTextView.sizeToFit()
+                    channelDescriptionTextView.isScrollEnabled = false
                 } else {
                     possibleShowNotes += data
                 }
