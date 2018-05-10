@@ -40,7 +40,6 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         podcastResults = []
-        tableView.reloadData()
         iTunesSearch(term: searchBar.text!)
         searchBar.resignFirstResponder()
         searching = true

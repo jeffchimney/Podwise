@@ -43,12 +43,14 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     var episodesToAddBack = [CDEpisode]()
     var isDragging = false
     var episodeToShowNotesFor: CDEpisode?
+    var nowPlayingCell: PlaylistCell!
     //var managedContext: NSManagedObjectContext?
     //var timer: Timer = Timer()
     var isTimerRunning: Bool = false
     private var interactionController: UIPercentDrivenInteractiveTransition?
     
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var centerHeightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -305,8 +307,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                     playlstCell.artImageView.image = UIImage(data: imageData)
                 }
                 
-//                playlstCell.artImageView.layer.cornerRadius = 10
-//                playlstCell.artImageView.layer.masksToBounds = true
+                playlstCell.artImageView.layer.cornerRadius = 10
+                playlstCell.artImageView.layer.masksToBounds = true
             }
         }
     }
@@ -373,11 +375,24 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             CoreDataHelper.save(context: managedContext)
             nowPlayingEpisode = thisEpisode
+            let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: (podcast.playlist?.colour!)!) as? UIColor
+            let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
+            nowPlayingCell = cell
+            
+            
+            cell.nowPlayingView.play()
             let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
             baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
             playDownload(for: thisEpisode)
             playlistQueue = playlistStructArray[indexPath.section].episodes
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        if indexPath.row != 0 {
+            let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
+            cell.nowPlayingView.stopPlaying()
         }
     }
     
@@ -423,12 +438,16 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 if self.playlistStructArray[indexPath.section].episodes.count == 0 {
                     tableView.deleteRows(at: [IndexPath(row: 0, section: indexPath.section),indexPath], with: .automatic)
+                    let indexSet = NSMutableIndexSet()
+                    indexSet.add(indexPath.section)
+                     self.playlistStructArray.remove(at: indexPath.section)
+                    tableView.deleteSections(indexSet as IndexSet, with: .automatic)
                 } else {
                     tableView.deleteRows(at: [indexPath], with: .automatic)
+                    self.relayoutSection(section: indexPath.section, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist:self.playlistStructArray[indexPath.section].episodes.count)
                 }
                 tableView.endUpdates()
                 
-                self.relayoutSection(section: indexPath.section, deleted: cdEpisode, playlist: cdPlaylist, episodesInPlaylist:self.playlistStructArray[indexPath.section].episodes.count)
                 success(true)
             })
             
@@ -442,6 +461,18 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         } else {
             return UISwipeActionsConfiguration(actions: [])
         }
+    }
+    
+    func startNowPlayingAnimations() {
+        nowPlayingCell.nowPlayingView.layoutIfNeeded()
+        let constant = arc4random_uniform(20 - 5 + 1) + 5
+        centerHeightConstraint.constant = CGFloat(constant)
+        
+        UIView.animate
+        
+        UIView.animate(withDuration: 1.0, animations: {
+            self.nowPlayingCell.nowPlayingView.layoutIfNeeded()
+        })
     }
     
     func add(episode: CDEpisode, to playlist: CDPlaylist) {

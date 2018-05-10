@@ -79,17 +79,10 @@
                         <constraint firstAttribute="width" constant="300" id="xwQ-oB-SOP"/>
                     </constraints>
                 </view>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zhO-wr-iq5">
-                    <rect key="frame" x="337" y="621" width="22" height="22"/>
-                    <connections>
-                        <action selector="showNotes:" destination="-1" eventType="touchUpInside" id="15U-CA-sM6"/>
-                    </connections>
-                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
                 <constraint firstItem="eTb-XH-AMW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="0HF-QN-YQM"/>
-                <constraint firstItem="zhO-wr-iq5" firstAttribute="centerY" secondItem="BGX-fv-1rH" secondAttribute="centerY" id="FsD-86-KiM"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="BGX-fv-1rH" secondAttribute="bottom" constant="15" id="IXP-uc-LvI"/>
                 <constraint firstItem="BGX-fv-1rH" firstAttribute="leading" secondItem="DB7-rB-zkn" secondAttribute="trailing" constant="35" id="JXx-Po-Wf0"/>
                 <constraint firstItem="eTb-XH-AMW" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="5" id="JvU-Ex-mZG"/>
@@ -99,7 +92,6 @@
                 <constraint firstItem="eTb-XH-AMW" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" constant="-5" id="jXN-Bv-NAp"/>
                 <constraint firstItem="DB7-rB-zkn" firstAttribute="centerY" secondItem="BGX-fv-1rH" secondAttribute="centerY" id="pVz-iI-Ase"/>
                 <constraint firstItem="uin-fi-3j8" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="vAZ-q9-ktn"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="zhO-wr-iq5" secondAttribute="trailing" constant="16" id="wML-BQ-G6H"/>
                 <constraint firstItem="uin-fi-3j8" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="yXf-o4-Qld"/>
                 <constraint firstItem="Nyq-TU-q6d" firstAttribute="centerY" secondItem="BGX-fv-1rH" secondAttribute="centerY" id="zgG-34-sm1"/>
             </constraints>
