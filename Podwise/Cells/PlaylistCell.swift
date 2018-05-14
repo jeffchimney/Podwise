@@ -18,6 +18,13 @@ class PlaylistCell: UITableViewCell {
     @IBOutlet weak var percentDowloadedLabel: UILabel!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var nowPlayingView: NowPlayingView!
+    @IBOutlet weak var centerEQHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var centerEQView: UIView!
+    @IBOutlet weak var leftEQHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var leftEQView: UIView!
+    @IBOutlet weak var rightEQHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var rightEQView: UIView!
+    
     
 //    override func layoutSubviews() {
 //        self.bounds = CGRect(x: self.bounds.origin.x,

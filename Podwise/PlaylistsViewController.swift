@@ -50,7 +50,19 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     private var interactionController: UIPercentDrivenInteractiveTransition?
     
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var centerHeightConstraint: NSLayoutConstraint!
+    var centerHeightConstraint: NSLayoutConstraint!
+    var leftHeightConstraint: NSLayoutConstraint!
+    var rightHeightConstraint: NSLayoutConstraint!
+    
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action:
+            #selector(handleRefresh(_:)),
+                                 for: UIControlEvents.valueChanged)
+        refreshControl.tintColor = UIColor.red
+        
+        return refreshControl
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -73,10 +85,9 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
         
         tableView.separatorColor = tableView.backgroundColor
-        
         tableView.register(UINib(nibName: "FooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: "footerView")
-        
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 0.1))
+        tableView.addSubview(self.refreshControl)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -348,6 +359,20 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
 //                    // download file
 //                }
                 
+                if playlistStructArray[indexPath.section].episodes[indexPath.row-1] == nowPlayingEpisode {
+                    nowPlayingCell = cell
+                    if nowPlayingCell.nowPlayingView.isHidden == true {
+                        leftHeightConstraint = nowPlayingCell.leftEQHeightConstraint
+                        centerHeightConstraint = nowPlayingCell.centerEQHeightConstraint
+                        rightHeightConstraint = nowPlayingCell.rightEQHeightConstraint
+                        nowPlayingCell.nowPlayingView.play()
+                        startNowPlayingAnimations()
+                    }
+                } else {
+                    cell.nowPlayingView.isHidden = true
+                    cell.nowPlayingView.alpha = 0
+                }
+                
                 return cell
             }
         } else {
@@ -379,8 +404,15 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
             nowPlayingCell = cell
             
-            
-            cell.nowPlayingView.play()
+            // check needed b/c weird stuff was happening with the animations if the cell was tapped twice.
+            if nowPlayingCell.nowPlayingView.isHidden == true {
+                leftHeightConstraint = nowPlayingCell.leftEQHeightConstraint
+                centerHeightConstraint = nowPlayingCell.centerEQHeightConstraint
+                rightHeightConstraint = nowPlayingCell.rightEQHeightConstraint
+                startNowPlayingAnimations()
+                
+                cell.nowPlayingView.play()
+            }
             let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
             baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
@@ -391,8 +423,9 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         if indexPath.row != 0 {
-            let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
-            cell.nowPlayingView.stopPlaying()
+            if let cell = tableView.cellForRow(at: indexPath) as? PlaylistCell {
+                cell.nowPlayingView.stopPlaying()
+            }
         }
     }
     
@@ -463,15 +496,52 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
+    func stopEQAnimations() {
+        nowPlayingCell.centerEQView.layer.removeAllAnimations()
+        nowPlayingCell.leftEQView.layer.removeAllAnimations()
+        nowPlayingCell.rightEQView.layer.removeAllAnimations()
+    }
+    
     func startNowPlayingAnimations() {
-        nowPlayingCell.nowPlayingView.layoutIfNeeded()
-        let constant = arc4random_uniform(20 - 5 + 1) + 5
-        centerHeightConstraint.constant = CGFloat(constant)
+        stopEQAnimations()
         
-        UIView.animate
+        // Center bar animation
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
+            let constant = 15
+            self.centerHeightConstraint.constant = CGFloat(constant)
+            self.view.layoutIfNeeded()
+        }, completion: { (complete) in
+            let constant = 3
+            self.centerHeightConstraint.constant = CGFloat(constant)
+            UIView.animate(withDuration: 1, animations: {
+                self.view.layoutIfNeeded()
+            })
+        })
         
-        UIView.animate(withDuration: 1.0, animations: {
-            self.nowPlayingCell.nowPlayingView.layoutIfNeeded()
+        // left bar animation
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
+            let constant = 11
+            self.leftHeightConstraint.constant = CGFloat(constant)
+            self.view.layoutIfNeeded()
+        }, completion: { (complete) in
+            let constant = 1
+            self.leftHeightConstraint.constant = CGFloat(constant)
+            UIView.animate(withDuration: 0.6, animations: {
+                self.view.layoutIfNeeded()
+            })
+        })
+        
+        // right bar animation
+        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
+            let constant = 13
+            self.rightHeightConstraint.constant = CGFloat(constant)
+            self.view.layoutIfNeeded()
+        }, completion: { (complete) in
+            let constant = 2
+            self.rightHeightConstraint.constant = CGFloat(constant)
+            UIView.animate(withDuration: 0.75, animations: {
+                self.view.layoutIfNeeded()
+            })
         })
     }
     
@@ -718,6 +788,11 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         default:
             return
         }
+    }
+    
+    @objc func handleRefresh(_ refreshControl: UIRefreshControl) {
+        self.tableView.reloadData()
+        refreshControl.endRefreshing()
     }
     
     @objc func handleTap(gesture: UIGestureRecognizer) {

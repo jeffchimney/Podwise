@@ -114,17 +114,37 @@
                                                     <rect key="frame" x="335" y="27" width="25" height="25"/>
                                                     <subviews>
                                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p05-f0-hDm">
-                                                            <rect key="frame" x="11" y="5" width="3" height="15"/>
+                                                            <rect key="frame" x="11" y="7.5" width="3" height="10"/>
                                                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="width" constant="3" id="OdI-ve-Uzf"/>
-                                                                <constraint firstAttribute="height" constant="15" id="swH-3E-yZg"/>
+                                                                <constraint firstAttribute="height" constant="10" id="swH-3E-yZg"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RqT-CA-EDN">
+                                                            <rect key="frame" x="7" y="10" width="3" height="5"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="width" constant="3" id="1lk-md-vfa"/>
+                                                                <constraint firstAttribute="height" constant="5" id="2IN-Ki-WZ5"/>
+                                                            </constraints>
+                                                        </view>
+                                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6Cd-y8-8f2">
+                                                            <rect key="frame" x="15" y="10" width="3" height="5"/>
+                                                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="5" id="TDO-y2-mf5"/>
+                                                                <constraint firstAttribute="width" constant="3" id="yQO-75-NZf"/>
                                                             </constraints>
                                                         </view>
                                                     </subviews>
                                                     <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                     <constraints>
+                                                        <constraint firstItem="p05-f0-hDm" firstAttribute="leading" secondItem="RqT-CA-EDN" secondAttribute="trailing" constant="1" id="70y-Yt-L94"/>
+                                                        <constraint firstItem="6Cd-y8-8f2" firstAttribute="leading" secondItem="p05-f0-hDm" secondAttribute="trailing" constant="1" id="Jfd-AY-8js"/>
+                                                        <constraint firstItem="RqT-CA-EDN" firstAttribute="centerY" secondItem="b2H-Iu-Cnj" secondAttribute="centerY" id="RXk-rw-VsB"/>
                                                         <constraint firstItem="p05-f0-hDm" firstAttribute="centerX" secondItem="b2H-Iu-Cnj" secondAttribute="centerX" id="WkY-OC-ndS"/>
+                                                        <constraint firstItem="6Cd-y8-8f2" firstAttribute="centerY" secondItem="b2H-Iu-Cnj" secondAttribute="centerY" id="kkc-ra-5PI"/>
                                                         <constraint firstAttribute="width" constant="25" id="nXg-cQ-Z2E"/>
                                                         <constraint firstItem="p05-f0-hDm" firstAttribute="centerY" secondItem="b2H-Iu-Cnj" secondAttribute="centerY" id="o9U-bh-Ncv"/>
                                                         <constraint firstAttribute="height" constant="25" id="pF6-25-jY6"/>
@@ -153,9 +173,15 @@
                                         <connections>
                                             <outlet property="activityIndicator" destination="nFK-XF-Gd9" id="kH1-hH-uAa"/>
                                             <outlet property="artImageView" destination="jgl-JY-qKq" id="LpB-ab-aTg"/>
+                                            <outlet property="centerEQHeightConstraint" destination="swH-3E-yZg" id="SlJ-t2-1Ow"/>
+                                            <outlet property="centerEQView" destination="p05-f0-hDm" id="XIj-Sd-hL0"/>
                                             <outlet property="durationLabel" destination="Pct-0J-kNJ" id="INz-Rk-PwN"/>
+                                            <outlet property="leftEQHeightConstraint" destination="2IN-Ki-WZ5" id="zNr-ya-Vjb"/>
+                                            <outlet property="leftEQView" destination="RqT-CA-EDN" id="bx6-Ce-fvi"/>
                                             <outlet property="nowPlayingView" destination="b2H-Iu-Cnj" id="DXq-8s-wi0"/>
                                             <outlet property="percentDowloadedLabel" destination="gQd-aO-5TU" id="RLg-VZ-kTi"/>
+                                            <outlet property="rightEQHeightConstraint" destination="TDO-y2-mf5" id="D0Q-an-vYS"/>
+                                            <outlet property="rightEQView" destination="6Cd-y8-8f2" id="eK8-D5-Qc4"/>
                                             <outlet property="titleLabel" destination="Gd0-xi-O9R" id="h4s-yd-w7j"/>
                                         </connections>
                                     </tableViewCell>
@@ -203,7 +229,6 @@
                     </view>
                     <navigationItem key="navigationItem" title="Playlists" id="yfl-Sd-TwF"/>
                     <connections>
-                        <outlet property="centerHeightConstraint" destination="swH-3E-yZg" id="StL-IZ-LFE"/>
                         <outlet property="tableView" destination="Pzh-qr-BuM" id="8kd-dX-XMD"/>
                         <segue destination="yHa-NW-db3" kind="show" identifier="toShowNotes" id="KI7-s9-dzu"/>
                     </connections>
