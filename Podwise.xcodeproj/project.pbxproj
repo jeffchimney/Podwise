@@ -17,6 +17,9 @@
 		BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */; };
 		BE36AD802076D2F10087AAB7 /* TabsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE36AD7F2076D2F10087AAB7 /* TabsViewController.swift */; };
 		BE4B40C71FEB325E00719676 /* PlaylistColourCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */; };
+		BE51D2D120AB435C00C2EFFF /* UserDefaultsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D020AB435B00C2EFFF /* UserDefaultsHelper.swift */; };
+		BE51D2D320AB529200C2EFFF /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D220AB529200C2EFFF /* SettingsTableViewController.swift */; };
+		BE51D2D520AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
 		BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */; };
 		BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */; };
@@ -102,6 +105,9 @@
 		BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHelper.swift; sourceTree = "<group>"; };
 		BE36AD7F2076D2F10087AAB7 /* TabsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabsViewController.swift; sourceTree = "<group>"; };
 		BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistColourCell.swift; sourceTree = "<group>"; };
+		BE51D2D020AB435B00C2EFFF /* UserDefaultsHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsHelper.swift; sourceTree = "<group>"; };
+		BE51D2D220AB529200C2EFFF /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
+		BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelAndSwitchTableViewCell.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoryViewController.swift; sourceTree = "<group>"; };
 		BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCreationTableViewController.swift; sourceTree = "<group>"; };
@@ -209,6 +215,7 @@
 		BE25226D1FC607D900E6B769 /* DataHelpers */ = {
 			isa = PBXGroup;
 			children = (
+				BE51D2D020AB435B00C2EFFF /* UserDefaultsHelper.swift */,
 				BE25226E1FC607EB00E6B769 /* CoreDataHelper.swift */,
 				BE81A25E1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift */,
 				BEE3E34D203A621C00ACAC51 /* CloudKitDataHelper.swift */,
@@ -319,6 +326,7 @@
 				BEA71A5E1FBF9DDC001B42FC /* PodcastHistoryViewController.swift */,
 				BEB5FA5A1FFFF8BD00223E20 /* PlayerViewController.swift */,
 				BE757D44209A78E10033722A /* ShowNotesViewController.swift */,
+				BE51D2D220AB529200C2EFFF /* SettingsTableViewController.swift */,
 				BEE0A13C1FBE57C200AA111F /* Main.storyboard */,
 				BEE0A13F1FBE57C200AA111F /* Assets.xcassets */,
 				BEE0A1411FBE57C200AA111F /* LaunchScreen.storyboard */,
@@ -365,6 +373,7 @@
 				BE4B40C61FEB325E00719676 /* PlaylistColourCell.swift */,
 				BE7A6F5B20056748005A38EB /* PlaylistHeaderView.swift */,
 				BE13066520A10695008961C0 /* PlaylistFooterView.swift */,
+				BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -524,6 +533,7 @@
 			files = (
 				BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */,
 				BE8646B3206B03050002205D /* UIImageColors.swift in Sources */,
+				BE51D2D520AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift in Sources */,
 				BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */,
 				BE757D45209A78E10033722A /* ShowNotesViewController.swift in Sources */,
 				BEA55D9C1FE9C05B007B3164 /* NewPlaylistHeaderView.swift in Sources */,
@@ -543,6 +553,7 @@
 				BEC76C0720A5065E0006A145 /* NowPlayingView.swift in Sources */,
 				BEA71A5F1FBF9DDC001B42FC /* PodcastHistoryViewController.swift in Sources */,
 				BEE0A1681FBE5C6600AA111F /* PodcastCell.swift in Sources */,
+				BE51D2D120AB435C00C2EFFF /* UserDefaultsHelper.swift in Sources */,
 				BEE3E34E203A621C00ACAC51 /* CloudKitDataHelper.swift in Sources */,
 				BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */,
 				BEB0B7351FE380B3006FA0E5 /* SubscriptionsViewController.swift in Sources */,
@@ -557,6 +568,7 @@
 				BE13066620A10695008961C0 /* PlaylistFooterView.swift in Sources */,
 				BE25226F1FC607EB00E6B769 /* CoreDataHelper.swift in Sources */,
 				BEE0A1391FBE57C200AA111F /* PlaylistsViewController.swift in Sources */,
+				BE51D2D320AB529200C2EFFF /* SettingsTableViewController.swift in Sources */,
 				BEB5FA551FFFF15D00223E20 /* MiniPlayerTransitionHelper.swift in Sources */,
 				BE8DE4681FC7678E00426F2A /* MiniPlayerViewController.swift in Sources */,
 				BECD5B0D1FF441050091DD4F /* Download.swift in Sources */,

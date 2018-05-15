@@ -88,6 +88,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         tableView.register(UINib(nibName: "FooterView", bundle: nil), forHeaderFooterViewReuseIdentifier: "footerView")
         tableView.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: tableView.bounds.width, height: 0.1))
         tableView.addSubview(self.refreshControl)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(episodeEnded(notification:)),
+                                               name: NSNotification.Name(rawValue: "EpisodeEnded"),
+                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -409,6 +413,11 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 leftHeightConstraint = nowPlayingCell.leftEQHeightConstraint
                 centerHeightConstraint = nowPlayingCell.centerEQHeightConstraint
                 rightHeightConstraint = nowPlayingCell.rightEQHeightConstraint
+                
+                self.centerHeightConstraint.constant = 2
+                self.leftHeightConstraint.constant = 1
+                self.rightHeightConstraint.constant = 1
+                
                 startNowPlayingAnimations()
                 
                 cell.nowPlayingView.play()
@@ -456,16 +465,20 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 print("Delete action ...")
                 let cdEpisode: CDEpisode = self.playlistStructArray[indexPath.section].episodes[indexPath.row-1]
                 let cdPlaylist: CDPlaylist = cdEpisode.playlist ?? (cdEpisode.podcast?.playlist)!
-                let filemanager = FileManager.default
-                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-                let destinationPath = documentsPath.appendingPathComponent(cdEpisode.localURL!.lastPathComponent)
-                print("Deleting From: \(destinationPath)")
-                if filemanager.fileExists(atPath: destinationPath) {
-                    try! filemanager.removeItem(atPath: destinationPath)
-                } else {
-                    print("not deleted, couldnt find file.")
-                }
+//                let filemanager = FileManager.default
+//                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+//                let destinationPath = documentsPath.appendingPathComponent(cdEpisode.localURL!.lastPathComponent)
+//                print("Deleting From: \(destinationPath)")
+//                if filemanager.fileExists(atPath: destinationPath) {
+//                    try! filemanager.removeItem(atPath: destinationPath)
+//                } else {
+//                    print("not deleted, couldnt find file.")
+//                }
                 tableView.beginUpdates()
+                if cdEpisode == nowPlayingEpisode {
+                    audioPlayer.pause()
+                    baseViewController.hideMiniPlayer(animated: true)
+                }
                 CoreDataHelper.delete(episode: cdEpisode, in: managedContext!)
                 self.playlistStructArray[indexPath.section].episodes.remove(at: indexPath.row-1)
                 
@@ -506,43 +519,25 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         stopEQAnimations()
         
         // Center bar animation
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
-            let constant = 15
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 2.0, options: [.autoreverse, .repeat], animations: {
+            let constant = 10
             self.centerHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
-        }, completion: { (complete) in
-            let constant = 3
-            self.centerHeightConstraint.constant = CGFloat(constant)
-            UIView.animate(withDuration: 1, animations: {
-                self.view.layoutIfNeeded()
-            })
-        })
+        }, completion: nil)
         
         // left bar animation
-        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
-            let constant = 11
+        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 1.0, options: [.autoreverse, .repeat], animations: {
+            let constant = 7
             self.leftHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
-        }, completion: { (complete) in
-            let constant = 1
-            self.leftHeightConstraint.constant = CGFloat(constant)
-            UIView.animate(withDuration: 0.6, animations: {
-                self.view.layoutIfNeeded()
-            })
-        })
+        }, completion: nil)
         
         // right bar animation
         UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
-            let constant = 13
+            let constant = 8
             self.rightHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
-        }, completion: { (complete) in
-            let constant = 2
-            self.rightHeightConstraint.constant = CGFloat(constant)
-            UIView.animate(withDuration: 0.75, animations: {
-                self.view.layoutIfNeeded()
-            })
-        })
+        }, completion: nil)
     }
     
     func add(episode: CDEpisode, to playlist: CDPlaylist) {
@@ -777,6 +772,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                         tableView.deleteSections(indexSet as IndexSet, with: .automatic)
                     }
                     tableView.endUpdates()
+                    refreshPlaylistQueue()
                 }
             }
             break
@@ -787,6 +783,17 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             
         default:
             return
+        }
+    }
+    
+    func refreshPlaylistQueue() {
+        if nowPlayingEpisode != nil {
+            for section in playlistStructArray {
+                if section.episodes.contains(nowPlayingEpisode) {
+                    playlistQueue = section.episodes
+                    break
+                }
+            }
         }
     }
     
@@ -891,6 +898,38 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 if downloadObject.percentDown == 1.0 {
                     cell.percentDowloadedLabel.isHidden = true
                 }
+            }
+        }
+    }
+    
+    @objc func episodeEnded(notification: NSNotification){
+        let episodeToRemove = notification.object as! CDEpisode
+        
+        var rowToDelete: Int?
+        var sectionToDelete = 0
+        for section in playlistStructArray {
+            if section.episodes.contains(episodeToRemove) {
+                rowToDelete = section.episodes.index(of: episodeToRemove)
+                break
+            }
+            sectionToDelete += 1
+        }
+        
+        if rowToDelete != nil {
+            playlistStructArray[sectionToDelete].episodes.remove(at: rowToDelete!)
+            
+            DispatchQueue.main.async {
+                self.tableView.beginUpdates()
+                if self.playlistStructArray[sectionToDelete].episodes.count == 0 {
+                    self.playlistStructArray.remove(at: sectionToDelete)
+                    let indexSet = NSMutableIndexSet()
+                    indexSet.add(sectionToDelete)
+                    self.tableView.deleteSections(indexSet as IndexSet, with: .fade)
+                } else {
+                    self.tableView.deleteRows(at: [IndexPath(row: rowToDelete! + 1, section: sectionToDelete)], with: .fade)
+                }
+                
+                self.tableView.endUpdates()
             }
         }
     }

@@ -334,9 +334,20 @@ class CoreDataHelper {
         
         for thisRecord in returnedRecords {
             if episode == thisRecord {
+                let episodeLocalUrl = episode.localURL!
                 context.delete(thisRecord)
                 do {
                     try context.save()
+                    // once recored is deleted, remove the saved audio file from the file system
+                    let filemanager = FileManager.default
+                    let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
+                    let destinationPath = documentsPath.appendingPathComponent(episodeLocalUrl.lastPathComponent)
+                    print("Deleting From: \(destinationPath)")
+                    if filemanager.fileExists(atPath: destinationPath) {
+                        try! filemanager.removeItem(atPath: destinationPath)
+                    } else {
+                        print("not deleted, couldnt find file.")
+                    }
                 } catch {
                     print("Error deleting record")
                 }

@@ -37,6 +37,9 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        UIApplication.shared.beginReceivingRemoteControlEvents()
+        
         baseViewController = self
         
         miniPlayerView.artImageView.layer.cornerRadius = 10
@@ -53,8 +56,6 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         }
 
         self.view.backgroundColor = .white
-        
-        UIApplication.shared.beginReceivingRemoteControlEvents()
         
         let commandCenter = MPRemoteCommandCenter.shared()
         commandCenter.playCommand.addTarget { (event) -> MPRemoteCommandHandlerStatus in
@@ -239,20 +240,26 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        if autoPlay {
-            if playlistQueue.contains(nowPlayingEpisode) {
-                let indexToRemove = playlistQueue.index(of: nowPlayingEpisode)
-                if indexToRemove != nil {
-                    playlistQueue.remove(at: indexToRemove!)
-                }
-                CoreDataHelper.delete(episode: nowPlayingEpisode, in: managedContext)
-                
-                if playlistQueue.count > 0 {
-                    playDownload(for: playlistQueue[0])
-                } else {
-                    hideMiniPlayer(animated: true)
-                }
+        if playlistQueue.contains(nowPlayingEpisode) {
+            let indexToRemove = playlistQueue.index(of: nowPlayingEpisode)
+            if indexToRemove != nil {
+                playlistQueue.remove(at: indexToRemove!)
             }
+        }
+        
+        if UserDefaultsHelper.getDeleteAfterEpisodeFinishes() {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "EpisodeEnded"), object: nowPlayingEpisode)
+            CoreDataHelper.delete(episode: nowPlayingEpisode, in: managedContext)
+        }
+        
+        if UserDefaultsHelper.getAutoPlayNextEpisode() {
+            if playlistQueue.count > 0 {
+                playDownload(for: playlistQueue[0])
+            } else {
+                hideMiniPlayer(animated: true)
+            }
+        } else {
+            hideMiniPlayer(animated: true)
         }
     }
     
