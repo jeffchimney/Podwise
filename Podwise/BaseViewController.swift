@@ -16,7 +16,6 @@ var downloads: [Download]!
 var nowPlayingEpisode: CDEpisode!
 var baseViewController: BaseViewController!
 let audioSession = AVAudioSession.sharedInstance()
-var autoPlay = false
 var playlistQueue: [CDEpisode] = []
 
 class BaseViewController: UIViewController, AVAudioPlayerDelegate {
@@ -255,6 +254,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         if UserDefaultsHelper.getAutoPlayNextEpisode() {
             if playlistQueue.count > 0 {
                 playDownload(for: playlistQueue[0])
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "PlayNextEpisodeAnimation"), object: nil)
             } else {
                 hideMiniPlayer(animated: true)
             }
@@ -268,7 +268,8 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
@@ -279,7 +280,6 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
             //startAudioSession()
             player.play()
             nowPlayingEpisode = episode
-            autoPlay = true
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in

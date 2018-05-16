@@ -111,7 +111,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.audioUrl.lastPathComponent)
+        let componentToAppend = "\(episode.title)\(episode.audioUrl!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         // to check if it exists
         if !FileManager.default.fileExists(atPath: destinationUrl.path) {
@@ -227,7 +228,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 do {
                     let filemanager = FileManager.default
                     let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    let componentToAppend = "\(cdEpisode[0].title ?? "")\(cdEpisode[0].audioURL!.lastPathComponent)"
+                    let destinationPath = documentsPath.appendingPathComponent(componentToAppend)
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
                     } else {
@@ -356,7 +358,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 if thisTitle == "" { //channelDescriptionTextView.text! == ""
                     var textSoFar = channelDescriptionTextView.attributedText.string
                     textSoFar += data
-                    var fontChangedAttributedString = NSMutableAttributedString(attributedString: textSoFar.htmlToAttributedString!)
+                    let fontChangedAttributedString = NSMutableAttributedString(attributedString: textSoFar.htmlToAttributedString!)
                     fontChangedAttributedString.enumerateAttribute(NSAttributedStringKey.font, in: NSMakeRange(0, fontChangedAttributedString.length), options: [])
                     {
                         value, range, stop in
@@ -447,7 +449,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
+        let componentToAppend = "\(relatedTo.title)\(at.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
@@ -583,7 +586,8 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        let componentToAppend = "\(episode.title)\(episode.audioURL!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
@@ -592,7 +596,6 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
             player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
             player.play()
-            autoPlay = false
             playlistQueue = []
             
             let artworkImage = UIImage(data: episode.podcast!.image!)

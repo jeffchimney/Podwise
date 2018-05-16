@@ -204,7 +204,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
+        let componentToAppend = "\(episodeTitle)\(at.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         print(destinationUrl)
         managedContext = persistentContainer.viewContext
         var podcast: CDPodcast!

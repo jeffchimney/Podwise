@@ -177,7 +177,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
             
             // lets create your destination file url
-            let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.audioUrl.lastPathComponent)
+            let componentToAppend = "\(episode.title)\(episode.audioUrl.lastPathComponent)"
+            let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
             
             // to check if it exists before downloading it
             if !FileManager.default.fileExists(atPath: destinationUrl.path) {
@@ -280,7 +281,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 do {
                     let filemanager = FileManager.default
                     let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    let componentToAppend = "\(cdEpisode[0].title ?? "")\(cdEpisode[0].audioURL!.lastPathComponent)"
+                    let destinationPath = documentsPath.appendingPathComponent(componentToAppend)
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
                         tableView.beginUpdates()
@@ -302,7 +304,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                 do {
                     let filemanager = FileManager.default
                     let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-                    let destinationPath = documentsPath.appendingPathComponent(cdEpisode[0].localURL!.lastPathComponent)
+                    let componentToAppend = "\(cdEpisode[0].title ?? "")\(cdEpisode[0].audioURL!.lastPathComponent)"
+                    let destinationPath = documentsPath.appendingPathComponent(componentToAppend)
                     if filemanager.fileExists(atPath: destinationPath) {
                         try! filemanager.removeItem(atPath: destinationPath)
                     } else {
@@ -434,7 +437,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(at.lastPathComponent)
+        let componentToAppend = "\(relatedTo.title)\(relatedTo.audioUrl!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         relatedTo.localURL = destinationUrl
         print(destinationUrl)
         
@@ -565,7 +569,8 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
@@ -574,7 +579,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             player.currentTime = TimeInterval(episode.progress)
             player.prepareToPlay()
             player.play()
-            autoPlay = false
             playlistQueue = []
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
@@ -656,8 +660,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     
     @IBAction func segmentChanged(_ sender: Any) {
         if segmentedViewController.selectedSegmentIndex == 0 {
-            
-            tableView.reloadData()
+            viewWillAppear(true)
         } else {
             if !hasParsedXML {
                 let rssURL = URL(string: podcast.feedURL!)

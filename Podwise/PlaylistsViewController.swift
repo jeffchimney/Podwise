@@ -92,6 +92,10 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         NotificationCenter.default.addObserver(self,selector: #selector(episodeEnded(notification:)),
                                                name: NSNotification.Name(rawValue: "EpisodeEnded"),
                                                object: nil)
+        
+        NotificationCenter.default.addObserver(self,selector: #selector(playNextEpisodeAnimation(notification:)),
+                                               name: NSNotification.Name(rawValue: "PlayNextEpisodeAnimation"),
+                                               object: nil)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -551,7 +555,8 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
@@ -561,7 +566,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             player.prepareToPlay()
             //startAudioSession()
             player.play()
-            autoPlay = true
             
             let artworkImage = UIImage(data: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
@@ -931,6 +935,27 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 self.tableView.endUpdates()
             }
+        }
+    }
+    
+    @objc func playNextEpisodeAnimation(notification: NSNotification) {
+        var thisSection = 0
+        for section in playlistStructArray {
+            var thisRow = 0
+            for episode in section.episodes {
+                if episode == nowPlayingEpisode {
+                    if let cell = tableView.cellForRow(at: IndexPath(row: thisRow + 2, section: thisSection)) as? PlaylistCell {
+                        nowPlayingCell = cell
+                        leftHeightConstraint = nowPlayingCell.leftEQHeightConstraint
+                        centerHeightConstraint = nowPlayingCell.centerEQHeightConstraint
+                        rightHeightConstraint = nowPlayingCell.rightEQHeightConstraint
+                        nowPlayingCell.nowPlayingView.play()
+                        startNowPlayingAnimations()
+                    }
+                }
+                thisRow += 1
+            }
+            thisSection += 1
         }
     }
     

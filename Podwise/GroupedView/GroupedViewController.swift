@@ -182,7 +182,8 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             let cdPlaylist: CDPlaylist = cdEpisode.playlist ?? (cdEpisode.podcast?.playlist)!
             let filemanager = FileManager.default
             let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-            let destinationPath = documentsPath.appendingPathComponent(cdEpisode.localURL!.lastPathComponent)
+            let componentToAppend = "\(cdEpisode.title ?? "")\(cdEpisode.audioURL!.lastPathComponent)"
+            let destinationPath = documentsPath.appendingPathComponent(componentToAppend)
             print("Deleting From: \(destinationPath)")
             if filemanager.fileExists(atPath: destinationPath) {
                 try! filemanager.removeItem(atPath: destinationPath)
@@ -215,7 +216,8 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         // lets create your destination file url
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(episode.localURL!.lastPathComponent)
+        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
+        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
         
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
