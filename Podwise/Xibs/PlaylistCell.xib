@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
-        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -29,7 +28,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Xh9-db-FqZ">
-                        <rect key="frame" x="8" y="9" width="60" height="60"/>
+                        <rect key="frame" x="8" y="10" width="60" height="60"/>
                         <constraints>
                             <constraint firstAttribute="width" constant="60" id="5ZB-SM-2lK"/>
                             <constraint firstAttribute="height" constant="60" id="fA7-Zm-J8f"/>
@@ -71,7 +70,7 @@
                 <outlet property="episodeCounterLabel" destination="KfR-oV-35L" id="b5E-c5-dEw"/>
                 <outlet property="titleLabel" destination="Rlr-ni-ulW" id="MOG-gm-27g"/>
             </connections>
-            <point key="canvasLocation" x="-846" y="21"/>
+            <point key="canvasLocation" x="-847.20000000000005" y="20.689655172413794"/>
         </tableViewCell>
     </objects>
 </document>

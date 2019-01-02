@@ -10,6 +10,8 @@
 		BE0FBA2E21DD0F21002BF340 /* AudioHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FBA2D21DD0F21002BF340 /* AudioHelper.swift */; };
 		BE0FBA3021DD1D6F002BF340 /* SubscribedPodcastsPlaylistViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FBA2F21DD1D6E002BF340 /* SubscribedPodcastsPlaylistViewController.swift */; };
 		BE0FBA3221DD1F18002BF340 /* PlaylistCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FBA3121DD1F18002BF340 /* PlaylistCell.swift */; };
+		BE0FBA3421DD7C65002BF340 /* UpNextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FBA3321DD7C65002BF340 /* UpNextCell.swift */; };
+		BE0FBA3621DD7CE2002BF340 /* UpNextCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE0FBA3521DD7CE2002BF340 /* UpNextCell.xib */; };
 		BE0FC0B41FCE3B9300AC2505 /* GroupedView.xib in Resources */ = {isa = PBXBuildFile; fileRef = BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */; };
 		BE0FC0B61FCE3BA000AC2505 /* GroupedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */; };
 		BE13066620A10695008961C0 /* PlaylistFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE13066520A10695008961C0 /* PlaylistFooterView.swift */; };
@@ -92,6 +94,8 @@
 		BE0FBA2D21DD0F21002BF340 /* AudioHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioHelper.swift; sourceTree = "<group>"; };
 		BE0FBA2F21DD1D6E002BF340 /* SubscribedPodcastsPlaylistViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SubscribedPodcastsPlaylistViewController.swift; sourceTree = "<group>"; };
 		BE0FBA3121DD1F18002BF340 /* PlaylistCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaylistCell.swift; sourceTree = "<group>"; };
+		BE0FBA3321DD7C65002BF340 /* UpNextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpNextCell.swift; sourceTree = "<group>"; };
+		BE0FBA3521DD7CE2002BF340 /* UpNextCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UpNextCell.xib; sourceTree = "<group>"; };
 		BE0FC0B31FCE3B9300AC2505 /* GroupedView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GroupedView.xib; sourceTree = "<group>"; };
 		BE0FC0B51FCE3BA000AC2505 /* GroupedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedViewController.swift; sourceTree = "<group>"; };
 		BE0FC1D71FE238F800457EDD /* WindowsAzureMessaging.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = WindowsAzureMessaging.framework; sourceTree = "<group>"; };
@@ -232,6 +236,7 @@
 				BEA55D991FE9C04A007B3164 /* NewPlaylistHeaderView.xib */,
 				BE230CE71FCE759F0065192C /* PlaylistCell.xib */,
 				BE13066720A10719008961C0 /* FooterView.xib */,
+				BE0FBA3521DD7CE2002BF340 /* UpNextCell.xib */,
 			);
 			path = Xibs;
 			sourceTree = "<group>";
@@ -359,6 +364,7 @@
 				BE7A6F5B20056748005A38EB /* PlaylistHeaderView.swift */,
 				BE13066520A10695008961C0 /* PlaylistFooterView.swift */,
 				BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */,
+				BE0FBA3321DD7C65002BF340 /* UpNextCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -484,6 +490,7 @@
 				BEE0A1431FBE57C200AA111F /* LaunchScreen.storyboard in Resources */,
 				BEB0B7331FE380A0006FA0E5 /* SubscriptionsView.xib in Resources */,
 				BE13066820A10719008961C0 /* FooterView.xib in Resources */,
+				BE0FBA3621DD7CE2002BF340 /* UpNextCell.xib in Resources */,
 				BE8DE4661FC7674D00426F2A /* MiniPlayer.xib in Resources */,
 				BEFBDB251FE884B1007C4CA4 /* SubscribedPodcastsPlaylistView.xib in Resources */,
 				BEE0A1401FBE57C200AA111F /* Assets.xcassets in Resources */,
@@ -545,6 +552,7 @@
 				BEFBDB271FE88767007C4CA4 /* PodcastsForPlaylistCell.swift in Sources */,
 				BEB04D171FCF898D0052BCBF /* AddPlaylistCell.swift in Sources */,
 				BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */,
+				BE0FBA3421DD7C65002BF340 /* UpNextCell.swift in Sources */,
 				BEB5FA591FFFF42D00223E20 /* DismissMiniPlayerAnimator.swift in Sources */,
 				BE789B541FE1D4C0005ED126 /* HeaderView.swift in Sources */,
 				BE13066620A10695008961C0 /* PlaylistFooterView.swift in Sources */,

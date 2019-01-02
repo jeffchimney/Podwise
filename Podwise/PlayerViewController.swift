@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
+class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
     
     var image: UIImage!
     var episodeTitleText: String!
@@ -17,12 +17,11 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
-    @IBOutlet weak var podcastTitle: UILabel!
     @IBOutlet weak var episodeTitle: UILabel!
-    @IBOutlet weak var chevronButton: UIButton!
     @IBOutlet weak var progressSlider: UISlider!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     @IBOutlet weak var remainingTImeLabel: UILabel!
+    @IBOutlet weak var upNextCollectionQueue: UICollectionView!
     //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
@@ -52,18 +51,35 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         progressSlider.minimumTrackTintColor = minimumTrackTintColor
         artImageView.image = image
         episodeTitle.text = episodeTitleText
-        podcastTitle.text = podcastTitleText
         
         progressSlider.setThumbImage(thumbImage, for: .normal)
         
         startUpdatingSlider()
         
         artImageView.isUserInteractionEnabled = true
+        artImageView.layer.cornerRadius = 10
+        artImageView.layer.masksToBounds = true
+        
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: view.frame.width / 2, height: upNextCollectionQueue.frame.height)
+        layout.scrollDirection = .horizontal
+        
+        upNextCollectionQueue.collectionViewLayout = layout
+        
+        let upNextCellNib = UINib(nibName: "UpNextCell", bundle: nil)
+        upNextCollectionQueue.register(upNextCellNib, forCellWithReuseIdentifier: "UpNextCell")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
+        
+        print(playlistQueue.count)
+        if playlistQueue.count < 1 {
+            upNextCollectionQueue.isHidden = true
+        } else {
+            upNextCollectionQueue.isHidden = false
+        }
     }
         
     @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
@@ -171,6 +187,31 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             
             AudioHelper.updateMediaPlayer(player: player)
         }
+    }
+    
+    // collection view stubs
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return playlistQueue.count
+    }
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = upNextCollectionQueue.dequeueReusableCell(withReuseIdentifier:"UpNextCell", for: indexPath as IndexPath) as! UpNextCell
+        
+        if let imageData = playlistQueue[indexPath.row].podcast?.image {
+            cell.artImageView.image = UIImage(data: imageData)
+        }
+        
+        cell.artImageView.layer.cornerRadius = 10
+        cell.artImageView.layer.masksToBounds = true
+        cell.titleLabel.text = playlistQueue[indexPath.row].podcast?.title
+        cell.descriptionLabel.text = playlistQueue[indexPath.row].podcast?.title
+        
+        
+        return cell
     }
 }
 
