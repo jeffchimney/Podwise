@@ -40,6 +40,9 @@ extension PresentMiniPlayerAnimator : UIViewControllerAnimatedTransitioning {
                 snapshot!.center.y -= UIScreen.main.bounds.height * MiniPlayerTransitionHelper.miniPlayerHeight
         },
             completion: { _ in
+                let impact = UIImpactFeedbackGenerator()
+                impact.prepare()
+                impact.impactOccurred()
                 fromVC.view.isHidden = false
                 transitionContext.completeTransition(!transitionContext.transitionWasCancelled)
         }

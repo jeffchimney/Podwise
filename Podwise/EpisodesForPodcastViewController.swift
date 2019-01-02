@@ -9,8 +9,6 @@
 import Foundation
 import UIKit
 import CoreData
-import AVFoundation
-import MediaPlayer
 
 class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, XMLParserDelegate {
     
@@ -212,7 +210,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let episode = downloadedEpisodes[indexPath.row]
-        startAudioSession()
         
         if nowPlayingEpisode != nil {
             nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
@@ -222,7 +219,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         nowPlayingEpisode = episode
         baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
-        playDownload(for: episode)
+        AudioHelper.playDownload(for: episode)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -464,8 +461,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         if FileManager.default.fileExists(atPath: destinationUrl.path) {
             print("The file already exists at path")
             if playNow {
-                startAudioSession()
-                
                 let episodesToPlay = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
                 if episodesToPlay.count > 0 {
                     
@@ -483,7 +478,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     
                     let backgroundColor = baseViewController.getAverageColorOf(image: podcastImage!.cgImage!)
                     baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                    self.playDownload(for: episodeToPlay)
+                    AudioHelper.playDownload(for: episodeToPlay)
                 }
             }
             // if the file doesn't exist
@@ -528,7 +523,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
                     if playNow {
-                        self.startAudioSession()
                         let nowPlayingArt = UIImage(data: (self.podcast.image)!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
                         
@@ -542,7 +536,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                         
                         nowPlayingEpisode = thisDownload.episode
                         
-                        self.playDownload(for: thisDownload.episode)
+                        AudioHelper.playDownload(for: thisDownload.episode)
                     }
                     
                     if let indexPath = cellIndexPath {
@@ -564,38 +558,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         }
     }
     
-    func playDownload(for episode: CDEpisode) {
-        // then lets create your document folder url
-        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        
-        // lets create your destination file url
-        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
-        
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
-            guard let player = audioPlayer else { return }
-            player.delegate = baseViewController
-            player.currentTime = TimeInterval(episode.progress)
-            player.prepareToPlay()
-            player.play()
-            playlistQueue = []
-            
-            let artworkImage = UIImage(data: episode.podcast!.image!)
-            let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
-                return artworkImage!
-            })
-            
-            let mpic = MPNowPlayingInfoCenter.default()
-            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!, MPMediaItemPropertyArtist:episode.podcast!.title!, MPMediaItemPropertyArtwork: artwork]
-            
-            baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
-            baseViewController.showMiniPlayer(animated: true)
-        } catch let error {
-            print(error.localizedDescription)
-        }
-    }
-    
     @IBAction func subscribeButtonPressed(_ sender: Any) {
         if podcast.subscribed {
             podcast.subscribed = false
@@ -609,22 +571,6 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
             subscribeButton.backgroundColor = .red
             CoreDataHelper.save(context: managedContext!)
             CloudKitDataHelper.subscribeToPodcastWith(title: podcast.title!, rssFeed: podcast.feedURL!)
-        }
-    }
-    
-    func startAudioSession() {
-        // set up background audio capabilities
-        do {
-            try audioSession.setCategory(AVAudioSessionCategoryPlayback)//, with: .interruptSpokenAudioAndMixWithOthers
-            print("AVAudioSession Category Playback OK")
-            do {
-                try audioSession.setActive(true)
-                print("AVAudioSession is Active")
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
         }
     }
     

@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import MediaPlayer
+//import MediaPlayer
 
 class MiniPlayerView: UIView {
     
@@ -61,7 +61,7 @@ class MiniPlayerView: UIView {
                 managedContext = appDelegate.persistentContainer.viewContext
                 
                 nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
-                updateMediaPlayer(player: player)
+                AudioHelper.updateMediaPlayer(player: player)
                 
                 CoreDataHelper.save(context: managedContext!)
                 player.pause()
@@ -76,7 +76,7 @@ class MiniPlayerView: UIView {
         if let player = audioPlayer {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: -10)
-            updateMediaPlayer(player: player)
+            AudioHelper.updateMediaPlayer(player: player)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
         }
     }
@@ -85,24 +85,9 @@ class MiniPlayerView: UIView {
         if let player = audioPlayer {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: 30)
-            updateMediaPlayer(player: player)
+            AudioHelper.updateMediaPlayer(player: player)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
         }
-    }
-    
-    func updateMediaPlayer(player: AVAudioPlayer) {
-        let artworkImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
-        let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
-            return artworkImage!
-        })
-        
-        let mpic = MPNowPlayingInfoCenter.default()
-        mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:nowPlayingEpisode.title!,
-                               MPMediaItemPropertyArtist:nowPlayingEpisode.podcast!.title!,
-                               MPMediaItemPropertyArtwork: artwork,
-                               MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
-                               MPMediaItemPropertyPlaybackDuration: player.duration,
-        ]
     }
     
     @IBAction func showNotes(_ sender: Any) {

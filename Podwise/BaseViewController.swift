@@ -253,50 +253,13 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         
         if UserDefaultsHelper.getAutoPlayNextEpisode() {
             if playlistQueue.count > 0 {
-                playDownload(for: playlistQueue[0])
+                AudioHelper.playDownload(for: playlistQueue[0])
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "PlayNextEpisodeAnimation"), object: nil)
             } else {
                 hideMiniPlayer(animated: true)
             }
         } else {
             hideMiniPlayer(animated: true)
-        }
-    }
-    
-    func playDownload(for episode: CDEpisode) {
-        // then lets create your document folder url
-        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-        
-        // lets create your destination file url
-        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
-        
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
-            guard let player = audioPlayer else { return }
-            player.delegate = self
-            player.currentTime = TimeInterval(episode.progress)
-            player.prepareToPlay()
-            //startAudioSession()
-            player.play()
-            nowPlayingEpisode = episode
-            
-            let artworkImage = UIImage(data: episode.podcast!.image!)
-            let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
-                return artworkImage!
-            })
-            
-            let mpic = MPNowPlayingInfoCenter.default()
-            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!,
-                                   MPMediaItemPropertyArtist:episode.podcast!.title!,
-                                   MPMediaItemPropertyArtwork: artwork,
-                                   MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
-                                   MPMediaItemPropertyPlaybackDuration: player.duration
-            ]
-            
-            showMiniPlayer(animated: true)
-        } catch let error {
-            print(error.localizedDescription)
         }
     }
 }

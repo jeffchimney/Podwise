@@ -70,6 +70,7 @@ class PresentationController: UIPresentationController {
         // If the dismissal completed, remove the dimming view
         if completed {
             self.dimmingView.removeFromSuperview()
+            
         }
     }
     

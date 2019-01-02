@@ -8,8 +8,8 @@
 
 import UIKit
 import CoreData
-import AVFoundation
-import MediaPlayer
+//import AVFoundation
+//import MediaPlayer
 
 public protocol relayoutSectionDelegate: class {
     func relayoutSection(section: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int)
@@ -408,7 +408,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             CoreDataHelper.save(context: managedContext)
             nowPlayingEpisode = thisEpisode
-            let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: (podcast.playlist?.colour!)!) as? UIColor
+            //let playlistColour = NSKeyedUnarchiver.unarchiveObject(with: (podcast.playlist?.colour!)!) as? UIColor
             let cell = tableView.cellForRow(at: indexPath) as! PlaylistCell
             nowPlayingCell = cell
             
@@ -429,7 +429,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
             baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
-            playDownload(for: thisEpisode)
+            AudioHelper.playDownload(for: thisEpisode)
             playlistQueue = playlistStructArray[indexPath.section].episodes
         }
     }
@@ -548,61 +548,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         episode.playlist = playlist
         CoreDataHelper.save(context: managedContext!)
     }
-    
-    func playDownload(for episode: CDEpisode) {
-        startAudioSession()
-        // then lets create your document folder url
-        let documentsDirectoryURL =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
-        // lets create your destination file url
-        let componentToAppend = "\(episode.title ?? "")\(episode.audioURL!.lastPathComponent)"
-        let destinationUrl = documentsDirectoryURL.appendingPathComponent(componentToAppend)
-        
-        do {
-            audioPlayer = try AVAudioPlayer(contentsOf: destinationUrl)
-            guard let player = audioPlayer else { return }
-            audioPlayer.delegate = baseViewController
-            player.currentTime = TimeInterval(episode.progress)
-            player.prepareToPlay()
-            //startAudioSession()
-            player.play()
-            
-            let artworkImage = UIImage(data: episode.podcast!.image!)
-            let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
-                return artworkImage!
-            })
-            
-            let mpic = MPNowPlayingInfoCenter.default()
-            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!,
-                                   MPMediaItemPropertyArtist:episode.podcast!.title!,
-                                   MPMediaItemPropertyArtwork: artwork,
-                                   MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
-                                   MPMediaItemPropertyPlaybackDuration: player.duration
-            ]
-            
-            baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
-            baseViewController.showMiniPlayer(animated: true)
-        } catch let error {
-            print(error.localizedDescription)
-        }
-    }
-    
-    func startAudioSession() {
-        // set up background audio capabilities
-        do {
-            try audioSession.setCategory(AVAudioSessionCategoryPlayback, mode: AVAudioSessionModeDefault, options: .interruptSpokenAudioAndMixWithOthers)
-            print("AVAudioSession Category Playback OK")
-            do {
-                try audioSession.setActive(true)
-                print("AVAudioSession is Active")
-            } catch {
-                print(error)
-            }
-        } catch {
-            print(error)
-        }
-    }
-    
     func relayoutSection(section: Int, deleted: CDEpisode, playlist: CDPlaylist, episodesInPlaylist: Int) {
         if playlistStructArray[section].episodes.contains(deleted) {
             let indexToDelete = playlistStructArray[section].episodes.index(of: deleted)

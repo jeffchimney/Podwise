@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MediaPlayer
 
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
     
@@ -101,7 +100,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
                 managedContext = appDelegate.persistentContainer.viewContext
                 
                 nowPlayingEpisode.progress = Int64(audioPlayer.currentTime)
-                updateMediaPlayer(player: player)
+                AudioHelper.updateMediaPlayer(player: player)
                 
                 CoreDataHelper.save(context: managedContext!)
                 player.pause()
@@ -139,7 +138,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         if let player = audioPlayer {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: -10)
-            updateMediaPlayer(player: player)
+            AudioHelper.updateMediaPlayer(player: player)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
         }
     }
@@ -148,7 +147,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
         if let player = audioPlayer {
             // Update progress
             player.currentTime = player.currentTime.advanced(by: 30)
-            updateMediaPlayer(player: player)
+            AudioHelper.updateMediaPlayer(player: player)
             baseViewController.sliderView.setValue(Float(player.currentTime/player.duration), animated: true)
         }
     }
@@ -170,23 +169,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate {
             elapsedTimeLabel.text = elapsedTime
             remainingTImeLabel.text = remainingTime
             
-            updateMediaPlayer(player: player)
+            AudioHelper.updateMediaPlayer(player: player)
         }
-    }
-    
-    func updateMediaPlayer(player: AVAudioPlayer) {
-        let artworkImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
-        let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
-            return artworkImage!
-        })
-        
-        let mpic = MPNowPlayingInfoCenter.default()
-        mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:nowPlayingEpisode.title!,
-                               MPMediaItemPropertyArtist:nowPlayingEpisode.podcast!.title!,
-                               MPMediaItemPropertyArtwork: artwork,
-                               MPNowPlayingInfoPropertyElapsedPlaybackTime: player.currentTime,
-                               MPMediaItemPropertyPlaybackDuration: player.duration,
-        ]
     }
 }
 

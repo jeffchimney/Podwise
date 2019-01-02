@@ -33,6 +33,10 @@ extension DismissMiniPlayerAnimator : UIViewControllerAnimatedTransitioning {
                 // 2
                 snapshot?.frame = CGRect(origin: CGPoint.zero, size: UIScreen.main.bounds.size)
         }, completion: { _ in
+                let impact = UIImpactFeedbackGenerator()
+                impact.prepare()
+                impact.impactOccurred()
+            
                 let didTransitionComplete = !transitionContext.transitionWasCancelled
                 if didTransitionComplete {
                 // 3
