@@ -206,21 +206,27 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translation = scrollView.contentOffset
-        if translation.y < 0 {
-
-            let progress = MiniPlayerTransitionHelper.calculateProgress(
-                translationInView: translation,
-                viewBounds: view.bounds,
-                direction: .Down
-            )
-            
-            MiniPlayerTransitionHelper.mapGestureStateToInteractor(
-                gestureState: scrollView.gestureRecognizers?.first!.state ?? .ended,
-                progress: progress,
-                interactor: interactor){
-                    // 6
-                    self.dismiss(animated: true, completion: nil)
+        if translation.y < -50 {
+            let impact = UIImpactFeedbackGenerator()
+            impact.prepare()
+            impact.impactOccurred()
+            animateBackingImageOut()
+            animateImageLayerOut() { _ in
+                self.dismiss(animated: false)
             }
+//            let progress = MiniPlayerTransitionHelper.calculateProgress(
+//                translationInView: translation,
+//                viewBounds: view.bounds,
+//                direction: .Down
+//            )
+//
+//            MiniPlayerTransitionHelper.mapGestureStateToInteractor(
+//                gestureState: scrollView.gestureRecognizers?.first!.state ?? .ended,
+//                progress: progress,
+//                interactor: interactor){
+//                    // 6
+//                    self.dismiss(animated: true, completion: nil)
+//            }
         }
     }
     
@@ -402,7 +408,7 @@ extension PlayerViewController {
     }
     
     func animateImageLayerIn() {
-        UIView.animate(withDuration: primaryDuration / 4.0) {
+        UIView.animate(withDuration: primaryDuration) {
             self.artImageBackgroundView.backgroundColor = self.endColor
         }
         
@@ -417,8 +423,8 @@ extension PlayerViewController {
     func animateImageLayerOut(completion: @escaping ((Bool) -> Void)) {
         let endInset = imageLayerInsetForOutPosition
         
-        UIView.animate(withDuration: primaryDuration / 4.0,
-                       delay: primaryDuration,
+        UIView.animate(withDuration: primaryDuration,
+                       delay: 0,
                        options: [.curveEaseOut], animations: {
                         self.artImageBackgroundView.backgroundColor = self.startColor
         }, completion: { finished in
