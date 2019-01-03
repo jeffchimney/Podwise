@@ -1473,6 +1473,7 @@
                         <outlet property="showNotesView" destination="Inq-iO-OeL" id="AMK-bK-ZyM"/>
                         <outlet property="stackView" destination="prE-82-CXY" id="g3X-to-oOG"/>
                         <outlet property="upNextCollectionQueue" destination="PfV-6S-qLf" id="zat-gm-drs"/>
+                        <outlet property="upNextView" destination="QHV-wC-bGM" id="NvN-b8-pN1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TQq-q4-u6C" userLabel="First Responder" sceneMemberID="firstResponder"/>

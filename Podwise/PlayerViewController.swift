@@ -37,6 +37,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var upNextCollectionQueue: UICollectionView!
     @IBOutlet weak var collectionViewHC: NSLayoutConstraint!
     @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var upNextView: UIView!
     
     //backing image
     var backingImage: UIImage?
@@ -163,18 +164,17 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         artImageBackgroundView.layer.cornerRadius = cardCornerRadius
         artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        
+        if playlistQueue.count <= 1 {
+            upNextCollectionQueue.removeFromSuperview()
+            upNextView.removeFromSuperview()
+        }
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
-        
-        print(playlistQueue.count)
-        if playlistQueue.count < 1 {
-            upNextCollectionQueue.isHidden = true
-        } else {
-            upNextCollectionQueue.isHidden = false
-        }
         
         configureImageLayerInStartPosition()
     }
