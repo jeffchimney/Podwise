@@ -8,7 +8,7 @@
 
 import UIKit
 
-class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
+class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
     
     var image: UIImage!
     var episodeTitleText: String!
@@ -16,6 +16,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     var minimumTrackTintColor: UIColor!
     
     @IBOutlet weak var scrollView: UIScrollView!
+    @IBOutlet weak var showNotesView: UITextView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var episodeTitle: UILabel!
@@ -23,6 +24,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     @IBOutlet weak var remainingTImeLabel: UILabel!
     @IBOutlet weak var upNextCollectionQueue: UICollectionView!
+    @IBOutlet weak var collectionViewHC: NSLayoutConstraint!
     //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     
@@ -62,14 +64,56 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         artImageView.layer.masksToBounds = true
         
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width / 2, height: upNextCollectionQueue.frame.height)
-        layout.scrollDirection = .horizontal
+        layout.itemSize = CGSize(width: view.frame.width, height: upNextCollectionQueue.frame.height)
+        layout.scrollDirection = .vertical
+        layout.minimumInteritemSpacing = 1
+        layout.minimumLineSpacing = 1
         
         upNextCollectionQueue.dataSource = self
         upNextCollectionQueue.delegate = self
         upNextCollectionQueue.collectionViewLayout = layout
         let upNextCellNib = UINib(nibName: "UpNextCell", bundle: nil)
         upNextCollectionQueue.register(upNextCellNib, forCellWithReuseIdentifier: "UpNextCell")
+        
+        
+        var unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
+        
+        if unformattedShowNotes.range(of:"<a href") != nil {
+            unformattedShowNotes = unformattedShowNotes.replacingOccurrences(of: "<a href", with: "<br><a href")
+        }
+        
+        print(unformattedShowNotes)
+
+        let showNotesString = NSMutableAttributedString(attributedString: unformattedShowNotes.htmlToAttributedString!)
+        
+        // Enumerate through all the font ranges
+        showNotesString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, showNotesString.length), options: [])
+        {
+            value, range, stop in
+            guard let currentFont = value as? UIFont else {
+                return
+            }
+            
+            // An NSFontDescriptor describes the attributes of a font: family name, face name, point size, etc.
+            // Here we describe the replacement font as coming from the "Hoefler Text" family
+            let fontDescriptor = currentFont.fontDescriptor//.addingAttributes([UIFontDescriptor.AttributeName.family: "Hoefler Text"])
+            
+            // Ask the OS for an actual font that most closely matches the description above
+            if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
+                let newFont = UIFont(descriptor: newFontDescriptor, size: 16.0)
+                showNotesString.addAttributes([NSAttributedString.Key.font: newFont], range: range)
+            }
+        }
+        
+        showNotesView.attributedText = showNotesString
+        showNotesView.delegate = self
+        showNotesView.isSelectable = true
+        showNotesView.isUserInteractionEnabled = true
+        
+        if playlistQueue.count > 0 {
+            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
+            view.layoutIfNeeded()
+        }
         
         scrollView.delegate = self
     }
@@ -215,7 +259,11 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     
     // collection view stubs
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return playlistQueue.count
+        if playlistQueue.count > 0 {
+            return playlistQueue.count - 1
+        } else {
+            return 0
+        }
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -225,15 +273,15 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = upNextCollectionQueue.dequeueReusableCell(withReuseIdentifier:"UpNextCell", for: indexPath as IndexPath) as! UpNextCell
         
-        if let imageData = playlistQueue[indexPath.row].podcast?.image {
+        let indexPathRow = indexPath.row+1
+        if let imageData = playlistQueue[indexPathRow].podcast?.image {
             cell.artImageView.image = UIImage(data: imageData)
         }
         
         cell.artImageView.layer.cornerRadius = 10
         cell.artImageView.layer.masksToBounds = true
-        cell.titleLabel.text = playlistQueue[indexPath.row].podcast?.title
-        cell.descriptionLabel.text = playlistQueue[indexPath.row].podcast?.title
-        
+        cell.titleLabel.text = playlistQueue[indexPathRow].podcast?.title
+        cell.descriptionLabel.text = playlistQueue[indexPathRow].title
         
         return cell
     }

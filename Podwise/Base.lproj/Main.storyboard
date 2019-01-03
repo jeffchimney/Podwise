@@ -1220,7 +1220,7 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="734"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="prE-82-CXY">
-                                        <rect key="frame" x="8" y="0.0" width="359" height="901.33333333333337"/>
+                                        <rect key="frame" x="8" y="0.0" width="359" height="996.66666666666663"/>
                                         <subviews>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yvE-SS-Ab0">
                                                 <rect key="frame" x="0.0" y="0.0" width="359" height="359"/>
@@ -1328,8 +1328,8 @@
                                                 <rect key="frame" x="0.0" y="531.33333333333337" width="359" height="50"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Show Notes" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0n2-gd-aVv">
-                                                        <rect key="frame" x="8" y="21.666666666666629" width="96" height="20.333333333333329"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                        <rect key="frame" x="8" y="15.666666666666627" width="128.66666666666666" height="26.333333333333329"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="22"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
@@ -1341,19 +1341,19 @@
                                                     <constraint firstItem="0n2-gd-aVv" firstAttribute="leading" secondItem="txs-pV-h2y" secondAttribute="leading" constant="8" id="nQG-4v-mtH"/>
                                                 </constraints>
                                             </view>
-                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Inq-iO-OeL">
-                                                <rect key="frame" x="0.0" y="581.33333333333337" width="359" height="200"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="Inq-iO-OeL">
+                                                <rect key="frame" x="0.0" y="581.33333333333337" width="359" height="295.33333333333337"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QHV-wC-bGM">
-                                                <rect key="frame" x="0.0" y="781.33333333333337" width="359" height="50"/>
+                                                <rect key="frame" x="0.0" y="876.66666666666663" width="359" height="50"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Up Next" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fqZ-qf-5Pc">
-                                                        <rect key="frame" x="8" y="21.666666666666629" width="64.333333333333329" height="20.333333333333329"/>
-                                                        <fontDescription key="fontDescription" style="UICTFontTextStyleHeadline"/>
+                                                        <rect key="frame" x="8" y="15.666666666666741" width="85.333333333333329" height="26.333333333333329"/>
+                                                        <fontDescription key="fontDescription" type="system" weight="heavy" pointSize="22"/>
                                                         <nil key="textColor"/>
                                                         <nil key="highlightedColor"/>
                                                     </label>
@@ -1365,8 +1365,8 @@
                                                     <constraint firstItem="fqZ-qf-5Pc" firstAttribute="leading" secondItem="QHV-wC-bGM" secondAttribute="leading" constant="8" id="ovF-dI-jfI"/>
                                                 </constraints>
                                             </view>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PfV-6S-qLf">
-                                                <rect key="frame" x="0.0" y="831.33333333333337" width="359" height="70"/>
+                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PfV-6S-qLf">
+                                                <rect key="frame" x="0.0" y="926.66666666666663" width="359" height="70"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="70" id="S6s-pA-M0g"/>
@@ -1415,12 +1415,14 @@
                     </view>
                     <connections>
                         <outlet property="artImageView" destination="yvE-SS-Ab0" id="Ojw-2i-CUk"/>
+                        <outlet property="collectionViewHC" destination="S6s-pA-M0g" id="08d-kd-gLD"/>
                         <outlet property="elapsedTimeLabel" destination="taZ-DU-9FT" id="gvs-9E-woA"/>
                         <outlet property="episodeTitle" destination="6m5-Gp-nX0" id="TxN-Jy-HeD"/>
                         <outlet property="playPauseButton" destination="5sS-ge-T9F" id="qkl-Dz-4PV"/>
                         <outlet property="progressSlider" destination="rz2-MD-w4V" id="eYF-s0-nzf"/>
                         <outlet property="remainingTImeLabel" destination="1ns-pT-Wip" id="6Dj-2t-Uoa"/>
                         <outlet property="scrollView" destination="WVV-No-yCa" id="ic3-Rc-sPx"/>
+                        <outlet property="showNotesView" destination="Inq-iO-OeL" id="AMK-bK-ZyM"/>
                         <outlet property="upNextCollectionQueue" destination="PfV-6S-qLf" id="zat-gm-drs"/>
                     </connections>
                 </viewController>
