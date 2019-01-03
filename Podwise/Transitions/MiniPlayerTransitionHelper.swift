@@ -17,7 +17,7 @@ enum Direction {
 struct MiniPlayerTransitionHelper {
     
     static let miniPlayerHeight:CGFloat = 1.0
-    static let percentThreshold:CGFloat = 0.25
+    static let percentThreshold:CGFloat = 0.10
     static let snapshotNumber = 12345
     
     static func calculateProgress(translationInView:CGPoint, viewBounds:CGRect, direction:Direction) -> CGFloat {
@@ -36,7 +36,7 @@ struct MiniPlayerTransitionHelper {
         let positiveMovementOnAxisPercent:Float
         switch direction {
         case .Down: // positive // right
-            positiveMovementOnAxis = fmaxf(Float(movementOnAxis), 0.0)
+            positiveMovementOnAxis = fmaxf(Float(-movementOnAxis), 0.0)
             positiveMovementOnAxisPercent = fminf(positiveMovementOnAxis, 1.0)
             return CGFloat(positiveMovementOnAxisPercent)
         case .Up: // negative // left
@@ -46,7 +46,7 @@ struct MiniPlayerTransitionHelper {
         }
     }
     
-    static func mapGestureStateToInteractor(gestureState:UIGestureRecognizerState, progress:CGFloat, interactor: Interactor?, triggerSegue: () -> Void){
+    static func mapGestureStateToInteractor(gestureState:UIGestureRecognizer.State, progress:CGFloat, interactor: Interactor?, triggerSegue: () -> Void){
         guard let interactor = interactor else { return }
         switch gestureState {
         case .began:
@@ -54,6 +54,7 @@ struct MiniPlayerTransitionHelper {
             triggerSegue()
         case .changed:
             interactor.shouldFinish = progress > percentThreshold
+            print(interactor.shouldFinish)
             interactor.update(progress)
         case .cancelled:
             interactor.hasStarted = false
@@ -63,6 +64,17 @@ struct MiniPlayerTransitionHelper {
             interactor.shouldFinish
                 ? interactor.finish()
                 : interactor.cancel()
+            print("ended and \(interactor.shouldFinish)")
+        case .failed:
+            interactor.shouldFinish = progress > percentThreshold
+            if interactor.shouldFinish {
+                interactor.hasStarted = true
+                triggerSegue()
+                if interactor.shouldFinish {
+                    interactor.finish()
+                    interactor.hasStarted = false
+                }
+            }
         default:
             break
         }

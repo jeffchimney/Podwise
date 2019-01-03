@@ -28,8 +28,8 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
         searchBar.searchBarStyle = .prominent
         searchBar.showsCancelButton = true
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(notification:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         navigationController?.setNavigationBarHidden(false, animated: false)
         //let searchBarButtonItem = UIBarButtonItem(customView: searchBar)

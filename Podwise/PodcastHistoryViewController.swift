@@ -357,7 +357,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                     var textSoFar = channelDescriptionTextView.attributedText.string
                     textSoFar += data
                     let fontChangedAttributedString = NSMutableAttributedString(attributedString: textSoFar.htmlToAttributedString!)
-                    fontChangedAttributedString.enumerateAttribute(NSAttributedStringKey.font, in: NSMakeRange(0, fontChangedAttributedString.length), options: [])
+                    fontChangedAttributedString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, fontChangedAttributedString.length), options: [])
                     {
                         value, range, stop in
                         guard let currentFont = value as? UIFont else {
@@ -371,7 +371,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                         // Ask the OS for an actual font that most closely matches the description above
                         if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
                             let newFont = UIFont(descriptor: newFontDescriptor, size: 15.0)
-                            fontChangedAttributedString.addAttributes([NSAttributedStringKey.font: newFont], range: range)
+                            fontChangedAttributedString.addAttributes([NSAttributedString.Key.font: newFont], range: range)
                         }
                     }
 
@@ -520,7 +520,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = UIImagePNGRepresentation(imageView.image!)
+                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
                 podcast.author = authorName!
                 podcast.feedURL = url
@@ -625,7 +625,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = UIImagePNGRepresentation(imageView.image!)
+                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = true
                 podcast.author = authorName
                 podcast.feedURL = url
@@ -656,7 +656,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = UIImagePNGRepresentation(imageView.image!)
+                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
                 podcast.author = authorName
                 podcast.feedURL = url

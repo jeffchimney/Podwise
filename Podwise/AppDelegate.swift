@@ -37,7 +37,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, XMLParserDelegate, URLSes
     var downloadTask: URLSessionDownloadTask!
     var backgroundSession: URLSession!
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         registerForPushNotifications()
         UIApplication.shared.applicationIconBadgeNumber = 0

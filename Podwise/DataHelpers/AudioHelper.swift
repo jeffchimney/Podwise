@@ -16,7 +16,7 @@ class AudioHelper {
     static func startAudioSession() {
         // set up background audio capabilities
         do {
-            try audioSession.setCategory(AVAudioSessionCategoryPlayback, mode: AVAudioSessionModeDefault)
+            try audioSession.setCategory(AVAudioSession.Category(rawValue: convertFromAVAudioSessionCategory(AVAudioSession.Category.playback)), mode: AVAudioSession.Mode(rawValue: convertFromAVAudioSessionMode(AVAudioSession.Mode.default)))
             print("AVAudioSession Category Playback OK")
             do {
                 try audioSession.setActive(true)
@@ -82,4 +82,14 @@ class AudioHelper {
             print(error.localizedDescription)
         }
     }
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionCategory(_ input: AVAudioSession.Category) -> String {
+	return input.rawValue
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionMode(_ input: AVAudioSession.Mode) -> String {
+	return input.rawValue
 }

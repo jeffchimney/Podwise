@@ -24,7 +24,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     //weak var managedContext: NSManagedObjectContext!
     //weak var editPlaylistParentDelegate: editPlaylistParentDelegate!
     
-    override init(frame: CGRect, style: UITableViewStyle) {
+    override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         commonInit()
     }
@@ -251,7 +251,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
     func startAudioSession() {
         // set up background audio capabilities
         do {
-            try audioSession.setCategory(AVAudioSessionCategoryPlayback, mode: AVAudioSessionModeDefault, options: .interruptSpokenAudioAndMixWithOthers)
+            try audioSession.setCategory(AVAudioSession.Category.playback, mode: AVAudioSession.Mode(rawValue: convertFromAVAudioSessionMode(AVAudioSession.Mode.default)), options: .interruptSpokenAudioAndMixWithOthers)
             print("AVAudioSession Category Playback OK")
             do {
                 try audioSession.setActive(true)
@@ -278,3 +278,8 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
 }
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromAVAudioSessionMode(_ input: AVAudioSession.Mode) -> String {
+	return input.rawValue
+}

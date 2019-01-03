@@ -22,7 +22,7 @@ class ShowNotesViewController: UIViewController {
         let newAttributedString = NSMutableAttributedString(attributedString: episode.showNotes!.htmlToAttributedString!)
         
         // Enumerate through all the font ranges
-        newAttributedString.enumerateAttribute(NSAttributedStringKey.font, in: NSMakeRange(0, newAttributedString.length), options: [])
+        newAttributedString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, newAttributedString.length), options: [])
         {
             value, range, stop in
             guard let currentFont = value as? UIFont else {
@@ -36,7 +36,7 @@ class ShowNotesViewController: UIViewController {
             // Ask the OS for an actual font that most closely matches the description above
             if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
                 let newFont = UIFont(descriptor: newFontDescriptor, size: 15.0)
-                newAttributedString.addAttributes([NSAttributedStringKey.font: newFont], range: range)
+                newAttributedString.addAttributes([NSAttributedString.Key.font: newFont], range: range)
             }
         }
         

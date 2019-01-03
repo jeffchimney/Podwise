@@ -39,7 +39,7 @@ class CloudKitDataHelper {
         let container: CKContainer = CKContainer.default()
         let publicDB: CKDatabase = container.publicCloudDatabase
         
-        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+        let podcastReference = CKRecord.Reference(recordID: record.recordID, action: CKRecord.Reference.Action.deleteSelf)
         let predicate1 = NSPredicate(format: "deviceToken == %@", deviceToken)
         let predicate2 = NSPredicate(format: "podcast == %@", podcastReference)
         let predicateList = NSCompoundPredicate(type: NSCompoundPredicate.LogicalType.and, subpredicates: [predicate1, predicate2])
@@ -66,7 +66,7 @@ class CloudKitDataHelper {
         let container: CKContainer = CKContainer.default()
         let publicDB: CKDatabase = container.publicCloudDatabase
         
-        let ckRecord = CKRecord(recordType: "Podcasts", recordID: CKRecordID(recordName: UUID().uuidString))
+        let ckRecord = CKRecord(recordType: "Podcasts", recordID: CKRecord.ID(recordName: UUID().uuidString))
         
         ckRecord.setObject(title as CKRecordValue?, forKey: "title")
         ckRecord.setObject(rssFeed as CKRecordValue?, forKey: "rssFeed")
@@ -95,8 +95,8 @@ class CloudKitDataHelper {
                     let deviceID = deviceTokens[0]
                     subscriptionExistsInCloud(deviceToken: deviceID.token!, record: record, completionHandler: { (foundSubRecord: Bool, subRecord: CKRecord) in
                         if !foundSubRecord {
-                            let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
-                            let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+                            let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecord.ID(recordName: UUID().uuidString))
+                            let podcastReference = CKRecord.Reference(recordID: record.recordID, action: CKRecord.Reference.Action.deleteSelf)
                             ckRecord.setObject(podcastReference, forKey: "podcast")
                             ckRecord.setObject(deviceID.token as CKRecordValue?, forKey: "deviceToken")
                             
@@ -115,8 +115,8 @@ class CloudKitDataHelper {
                 // create new Podcast record and subscribe
                 createPodcastRecordWith(title: title, rssFeed: rssFeed, completionHandler: { (success: Bool, record: CKRecord) in
                     if success {
-                        let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecordID(recordName: UUID().uuidString))
-                        let podcastReference = CKReference(recordID: record.recordID, action: CKReferenceAction.deleteSelf)
+                        let ckRecord = CKRecord(recordType: "Subscriptions", recordID: CKRecord.ID(recordName: UUID().uuidString))
+                        let podcastReference = CKRecord.Reference(recordID: record.recordID, action: CKRecord.Reference.Action.deleteSelf)
                         ckRecord.setObject(podcastReference, forKey: "podcast")
                         let deviceTokens = CoreDataHelper.getAPNSToken(context: managedContext!)
                         if deviceTokens.count > 0 {
@@ -169,7 +169,7 @@ class CloudKitDataHelper {
         let predicate = NSPredicate(format: "rssFeed == %@", record.object(forKey: "rssFeed") as! String)
         let subscription = CKQuerySubscription(recordType: "Podcasts", predicate: predicate, options: .firesOnRecordUpdate)
         
-        let notificationInfo = CKNotificationInfo()
+        let notificationInfo = CKSubscription.NotificationInfo()
         notificationInfo.titleLocalizationKey = "%1$@"
         notificationInfo.titleLocalizationArgs = ["title"]
         notificationInfo.alertLocalizationKey = "%1$@"
@@ -192,7 +192,7 @@ class CloudKitDataHelper {
         }
     }
     
-    static func fetchRecordWith(id: CKRecordID, completionHandler:@escaping (_ success: Bool, _ record: CKRecord?) -> Void) {
+    static func fetchRecordWith(id: CKRecord.ID, completionHandler:@escaping (_ success: Bool, _ record: CKRecord?) -> Void) {
         let container: CKContainer = CKContainer.default()
         let publicDB: CKDatabase = container.publicCloudDatabase
         

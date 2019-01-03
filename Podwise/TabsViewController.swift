@@ -24,7 +24,7 @@ class TabsViewController: UITabBarController {
             self.selectedIndex = 0
             print(self.selectedIndex)
             
-            if let playlistViewController = self.selectedViewController?.childViewControllers[0] as? PlaylistsViewController {
+            if let playlistViewController = self.selectedViewController?.children[0] as? PlaylistsViewController {
                 playlistViewController.viewWillAppear(true)
             }
         }

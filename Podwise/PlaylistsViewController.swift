@@ -58,7 +58,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action:
             #selector(handleRefresh(_:)),
-                                 for: UIControlEvents.valueChanged)
+                                 for: UIControl.Event.valueChanged)
         refreshControl.tintColor = UIColor.red
         
         return refreshControl

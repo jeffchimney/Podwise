@@ -15,6 +15,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     var podcastTitleText: String!
     var minimumTrackTintColor: UIColor!
     
+    @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var episodeTitle: UILabel!
@@ -64,10 +65,13 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         layout.itemSize = CGSize(width: view.frame.width / 2, height: upNextCollectionQueue.frame.height)
         layout.scrollDirection = .horizontal
         
+        upNextCollectionQueue.dataSource = self
+        upNextCollectionQueue.delegate = self
         upNextCollectionQueue.collectionViewLayout = layout
-        
         let upNextCellNib = UINib(nibName: "UpNextCell", bundle: nil)
         upNextCollectionQueue.register(upNextCellNib, forCellWithReuseIdentifier: "UpNextCell")
+        
+        scrollView.delegate = self
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -98,6 +102,26 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
             interactor: interactor){
                 // 6
                 self.dismiss(animated: true, completion: nil)
+        }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let translation = scrollView.contentOffset
+        if translation.y < 0 {
+
+            let progress = MiniPlayerTransitionHelper.calculateProgress(
+                translationInView: translation,
+                viewBounds: view.bounds,
+                direction: .Down
+            )
+            
+            MiniPlayerTransitionHelper.mapGestureStateToInteractor(
+                gestureState: scrollView.gestureRecognizers?.first!.state ?? .ended,
+                progress: progress,
+                interactor: interactor){
+                    // 6
+                    self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     
