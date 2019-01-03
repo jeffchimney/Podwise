@@ -213,29 +213,12 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
             gestureState: sender.state,
             progress: progress,
             interactor: interactor){
-                self.performSegue(withIdentifier: "openPlayer", sender: nil)
-        }
-    }
-    
-    @IBAction func openMenu(sender: AnyObject) {
-        performSegue(withIdentifier: "openMenu", sender: nil)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let destinationViewController = segue.destination as? PlayerViewController {
-            destinationViewController.transitioningDelegate = self
-            destinationViewController.interactor = interactor
-            
-            let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
-            destinationViewController.image = imageArt
-            destinationViewController.episodeTitleText = nowPlayingEpisode.title!
-            destinationViewController.podcastTitleText = nowPlayingEpisode.podcast!.title!
-            destinationViewController.minimumTrackTintColor = sliderView.minimumTrackTintColor
+                expandNowPlaying()
         }
     }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
-        performSegue(withIdentifier: "openPlayer", sender: nil)
+        expandNowPlaying()
     }
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
@@ -279,5 +262,28 @@ extension BaseViewController: UIViewControllerTransitioningDelegate {
     
     func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return interactor.hasStarted ? interactor : nil
+    }
+}
+
+extension BaseViewController {
+    func expandNowPlaying() {
+        
+        guard let nowPlayingCard = storyboard?.instantiateViewController(
+            withIdentifier: "playerViewController")
+            as? PlayerViewController else {
+                assertionFailure("No view controller ID MaxiSongCardViewController in storyboard")
+                return
+        }
+        nowPlayingCard.transitioningDelegate = self
+        nowPlayingCard.interactor = interactor
+        
+        let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        nowPlayingCard.image = imageArt
+        nowPlayingCard.episodeTitleText = nowPlayingEpisode.title!
+        nowPlayingCard.podcastTitleText = nowPlayingEpisode.podcast!.title!
+        nowPlayingCard.minimumTrackTintColor = sliderView.minimumTrackTintColor
+        nowPlayingCard.backingImage = view.makeSnapshot()
+        nowPlayingCard.sourceView = miniPlayerView
+        present(nowPlayingCard, animated: false)
     }
 }

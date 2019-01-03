@@ -95,3 +95,13 @@ class MiniPlayerView: UIView {
     }
 }
 
+extension MiniPlayerView: PlayerViewSourceProtocol {
+    var originatingFrameInWindow: CGRect {
+        let windowRect = self.convert(self.frame, to: nil)
+        return windowRect
+    }
+    
+    var originatingCoverImageView: UIImageView {
+        return artImageView
+    }
+}

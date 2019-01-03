@@ -25,6 +25,7 @@
 		BE51D2D320AB529200C2EFFF /* SettingsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D220AB529200C2EFFF /* SettingsTableViewController.swift */; };
 		BE51D2D520AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
+		BE5BE55121DE8DFE00C282AF /* UIViewExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */; };
 		BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */; };
 		BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */; };
 		BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */; };
@@ -110,6 +111,7 @@
 		BE51D2D220AB529200C2EFFF /* SettingsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsTableViewController.swift; sourceTree = "<group>"; };
 		BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelAndSwitchTableViewCell.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtentions.swift; sourceTree = "<group>"; };
 		BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoryViewController.swift; sourceTree = "<group>"; };
 		BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCreationTableViewController.swift; sourceTree = "<group>"; };
 		BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTitleCell.swift; sourceTree = "<group>"; };
@@ -329,6 +331,7 @@
 				BEA71A601FBFAE5B001B42FC /* RSSParser.swift */,
 				BE25226A1FC600B300E6B769 /* Podwise.xcdatamodeld */,
 				BE8646B2206B03050002205D /* UIImageColors.swift */,
+				BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */,
 			);
 			path = Podwise;
 			sourceTree = "<group>";
@@ -553,6 +556,7 @@
 				BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */,
 				BE9CBDF21FC5053600AB9C44 /* EpisodeCell.swift in Sources */,
 				BEFBDB271FE88767007C4CA4 /* PodcastsForPlaylistCell.swift in Sources */,
+				BE5BE55121DE8DFE00C282AF /* UIViewExtentions.swift in Sources */,
 				BEB04D171FCF898D0052BCBF /* AddPlaylistCell.swift in Sources */,
 				BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */,
 				BE0FBA3421DD7C65002BF340 /* UpNextCell.swift in Sources */,

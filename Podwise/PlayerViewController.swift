@@ -8,28 +8,68 @@
 
 import UIKit
 
+protocol PlayerViewSourceProtocol: class {
+    var originatingFrameInWindow: CGRect { get }
+    var originatingCoverImageView: UIImageView { get }
+}
+
 class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
     
+    // MARK: - Properties
+    let cardCornerRadius: CGFloat = 10
+    let primaryDuration = 0.5
+    let backingImageEdgeInset: CGFloat = 15.0
     var image: UIImage!
     var episodeTitleText: String!
     var podcastTitleText: String!
     var minimumTrackTintColor: UIColor!
+    weak var sourceView: PlayerViewSourceProtocol!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var showNotesView: UITextView!
     @IBOutlet weak var playPauseButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
+    @IBOutlet weak var artImageBackgroundView: UIView!
     @IBOutlet weak var episodeTitle: UILabel!
     @IBOutlet weak var progressSlider: UISlider!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     @IBOutlet weak var remainingTImeLabel: UILabel!
     @IBOutlet weak var upNextCollectionQueue: UICollectionView!
     @IBOutlet weak var collectionViewHC: NSLayoutConstraint!
-    //weak var managedContext: NSManagedObjectContext?
+    @IBOutlet weak var stackView: UIStackView!
+    
+    //backing image
+    var backingImage: UIImage?
+    @IBOutlet weak var backingImageView: UIImageView!
+    @IBOutlet weak var dimmerLayer: UIView!
+    @IBOutlet weak var backingImageTopInset: NSLayoutConstraint!
+    @IBOutlet weak var backingImageLeadingInset: NSLayoutConstraint!
+    @IBOutlet weak var backingImageTrailingInset: NSLayoutConstraint!
+    @IBOutlet weak var backingImageBottomInset: NSLayoutConstraint!
+    @IBOutlet weak var artImageViewTopInset: NSLayoutConstraint!
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
+    }
+
     var interactor:Interactor? = nil
+    
+    // MARK: - View Life Cycle
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        modalPresentationCapturesStatusBarAppearance = true //allow this VC to control the status bar appearance
+        modalPresentationStyle = .overFullScreen //dont dismiss the presenting view controller when presented
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        backingImageView.image = backingImage
+        
+        upNextCollectionQueue.contentInsetAdjustmentBehavior = .never
+        scrollView.contentInsetAdjustmentBehavior = .never //dont let Safe Area insets affect the scroll view
+        
         if let player = audioPlayer {
             if !player.isPlaying {
                 playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
@@ -116,6 +156,13 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         }
         
         scrollView.delegate = self
+        
+        scrollView.layer.cornerRadius = cardCornerRadius
+        scrollView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        stackView.layer.cornerRadius = cardCornerRadius
+        stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        artImageBackgroundView.layer.cornerRadius = cardCornerRadius
+        artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -128,24 +175,32 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         } else {
             upNextCollectionQueue.isHidden = false
         }
+        
+        configureImageLayerInStartPosition()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        animateBackingImageIn()
+        animateImageLayerIn()
     }
         
     @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
-        // 3
         let translation = sender.translation(in: view)
-        // 4
         let progress = MiniPlayerTransitionHelper.calculateProgress(
             translationInView: translation,
             viewBounds: view.bounds,
             direction: .Down
         )
-        // 5
         MiniPlayerTransitionHelper.mapGestureStateToInteractor(
             gestureState: sender.state,
             progress: progress,
-            interactor: interactor){
-                // 6
-                self.dismiss(animated: true, completion: nil)
+            interactor: interactor
+        ){
+            animateBackingImageOut()
+            animateImageLayerOut() { _ in
+                self.dismiss(animated: false)
+            }
         }
     }
     
@@ -284,7 +339,97 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         cell.descriptionLabel.text = playlistQueue[indexPathRow].title
         
         return cell
+    };
+}
+
+//background image animation
+extension PlayerViewController {
+    
+    private func configureBackingImageInPosition(presenting: Bool) {
+        let edgeInset: CGFloat = presenting ? backingImageEdgeInset : 0
+        let dimmerAlpha: CGFloat = presenting ? 0.3 : 0
+        let cornerRadius: CGFloat = presenting ? cardCornerRadius : 0
+        
+        backingImageLeadingInset.constant = edgeInset
+        backingImageTrailingInset.constant = -edgeInset
+        let aspectRatio = backingImageView.frame.height / backingImageView.frame.width
+        backingImageTopInset.constant = edgeInset * aspectRatio
+        backingImageBottomInset.constant = edgeInset * aspectRatio
+        dimmerLayer.alpha = dimmerAlpha
+        backingImageView.layer.cornerRadius = cornerRadius
+    }
+    
+    private func animateBackingImage(presenting: Bool) {
+        UIView.animate(withDuration: primaryDuration) {
+            self.configureBackingImageInPosition(presenting: presenting)
+            self.view.layoutIfNeeded()
+        }
+    }
+    
+    func animateBackingImageIn() {
+        animateBackingImage(presenting: true)
+    }
+    
+    func animateBackingImageOut() {
+        animateBackingImage(presenting: false)
     }
 }
 
-
+//Image Container animation.
+extension PlayerViewController {
+    
+    private var startColor: UIColor {
+        return UIColor.white.withAlphaComponent(0.3)
+    }
+    
+    private var endColor: UIColor {
+        return .white
+    }
+    
+    private var imageLayerInsetForOutPosition: CGFloat {
+        let imageFrame = view.convert(sourceView.originatingFrameInWindow, to: view)
+        let inset = imageFrame.minY - backingImageEdgeInset
+        return inset
+    }
+    
+    func configureImageLayerInStartPosition() {
+        artImageBackgroundView.backgroundColor = startColor
+        let startInset = imageLayerInsetForOutPosition
+        //dismissChevron.alpha = 0
+        artImageBackgroundView.layer.cornerRadius = 0
+        artImageViewTopInset.constant = startInset
+        view.layoutIfNeeded()
+    }
+    
+    func animateImageLayerIn() {
+        UIView.animate(withDuration: primaryDuration / 4.0) {
+            self.artImageBackgroundView.backgroundColor = self.endColor
+        }
+        
+        UIView.animate(withDuration: primaryDuration, delay: 0, options: [.curveEaseIn], animations: {
+            self.artImageViewTopInset.constant = 0
+            //self.dismissChevron.alpha = 1
+            self.artImageBackgroundView.layer.cornerRadius = self.cardCornerRadius
+            self.view.layoutIfNeeded()
+        })
+    }
+    
+    func animateImageLayerOut(completion: @escaping ((Bool) -> Void)) {
+        let endInset = imageLayerInsetForOutPosition
+        
+        UIView.animate(withDuration: primaryDuration / 4.0,
+                       delay: primaryDuration,
+                       options: [.curveEaseOut], animations: {
+                        self.artImageBackgroundView.backgroundColor = self.startColor
+        }, completion: { finished in
+            completion(finished) //fire complete here , because this is the end of the animation
+        })
+        
+        UIView.animate(withDuration: primaryDuration, delay: 0, options: [.curveEaseOut], animations: {
+            self.artImageViewTopInset.constant = endInset
+            //self.dismissChevron.alpha = 0
+            self.artImageBackgroundView.layer.cornerRadius = 0
+            self.view.layoutIfNeeded()
+        })
+    }
+}
