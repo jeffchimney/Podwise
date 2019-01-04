@@ -15,7 +15,7 @@
             <objects>
                 <viewController id="9pv-A4-QxB" customClass="PlaylistsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tsR-hK-woN">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="595"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="Pzh-qr-BuM">
@@ -241,11 +241,11 @@
             <objects>
                 <viewController id="8rJ-Kc-sve" customClass="PodcastsViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="QS5-Rx-YEW">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="595"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="BWa-6d-G9C">
-                                <rect key="frame" x="2" y="44" width="371" height="551"/>
+                                <rect key="frame" x="2" y="44" width="371" height="685"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -324,11 +324,11 @@
             <objects>
                 <viewController id="6lQ-eH-KPR" customClass="BrowseViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="iiU-cV-4RG">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="678"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GAl-91-dbA">
-                                <rect key="frame" x="0.0" y="88" width="375" height="507"/>
+                                <rect key="frame" x="0.0" y="88" width="375" height="641"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ResultCell" rowHeight="80" id="yIN-E6-8WY" customClass="PodcastCell" customModule="Podwise" customModuleProvider="target">
@@ -425,7 +425,7 @@
             <objects>
                 <tableViewController id="KUz-ZV-wrM" customClass="SettingsTableViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="VK5-aQ-s45">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="595"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -475,7 +475,7 @@
             <objects>
                 <tableViewController storyboardIdentifier="subCategoryViewController" id="I98-Un-iwa" customClass="SubCategoryViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" id="WFl-6Z-aA3">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="678"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <prototypes>
@@ -560,7 +560,7 @@
             <objects>
                 <viewController restorationIdentifier="resultViewController" storyboardIdentifier="resultViewController" id="zby-4D-EdC" customClass="PodcastHistoryViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LxN-qX-cCx">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="678"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SPG-ij-3af">
@@ -571,7 +571,7 @@
                                 </constraints>
                             </imageView>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="fgc-aX-3gM">
-                                <rect key="frame" x="0.0" y="220" width="375" height="375"/>
+                                <rect key="frame" x="0.0" y="220" width="375" height="509"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="EpisodeCell" rowHeight="100" id="YvI-iT-Q5V" customClass="EpisodeCell" customModule="Podwise" customModuleProvider="target">
@@ -684,7 +684,7 @@
             <objects>
                 <viewController storyboardIdentifier="episodesViewController" id="65y-0i-8sg" customClass="EpisodesForPodcastViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="Teo-VX-RFe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="595"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rd5-o7-xUo">
@@ -721,7 +721,7 @@
                                 </connections>
                             </segmentedControl>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="seM-z3-KUl">
-                                <rect key="frame" x="0.0" y="204" width="375" height="391"/>
+                                <rect key="frame" x="0.0" y="204" width="375" height="525"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="none" indentationWidth="10" reuseIdentifier="EpisodeCell" rowHeight="100" id="xz2-SI-btZ" customClass="EpisodeCell" customModule="Podwise" customModuleProvider="target">
@@ -827,9 +827,14 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                                <connections>
+                                    <segue destination="49e-Tb-3d3" kind="embed" id="14n-4q-BFl"/>
+                                </connections>
+                            </containerView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FG3-di-WrS" customClass="MiniPlayerView" customModule="Podwise" customModuleProvider="target">
-                                <rect key="frame" x="0.0" y="708" width="375" height="70"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <rect key="frame" x="-1" y="629" width="377" height="70"/>
                                 <gestureRecognizers/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="70" id="fy0-df-lyC"/>
@@ -838,14 +843,8 @@
                                     <outletCollection property="gestureRecognizers" destination="e0u-L8-OaI" appends="YES" id="DWs-5Z-ESt"/>
                                 </connections>
                             </view>
-                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ngy-NA-oNA">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="678"/>
-                                <connections>
-                                    <segue destination="49e-Tb-3d3" kind="embed" id="14n-4q-BFl"/>
-                                </connections>
-                            </containerView>
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="i6q-z0-SyV">
-                                <rect key="frame" x="-2" y="678" width="379" height="31"/>
+                                <rect key="frame" x="-2" y="699" width="379" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="kbi-i1-9Rn"/>
                                 </constraints>
@@ -858,13 +857,13 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="Ngy-NA-oNA" firstAttribute="top" secondItem="6XK-M5-xq2" secondAttribute="top" id="0DO-h1-AHF"/>
-                            <constraint firstItem="FG3-di-WrS" firstAttribute="top" secondItem="i6q-z0-SyV" secondAttribute="bottom" id="65H-et-CIE"/>
                             <constraint firstItem="Ngy-NA-oNA" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" id="ATe-dZ-11a"/>
-                            <constraint firstItem="i6q-z0-SyV" firstAttribute="top" secondItem="Ngy-NA-oNA" secondAttribute="bottom" id="Bpf-Jh-Foy"/>
-                            <constraint firstItem="FG3-di-WrS" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" id="FTl-Re-I0s"/>
+                            <constraint firstItem="sbl-c6-6bU" firstAttribute="bottom" secondItem="i6q-z0-SyV" secondAttribute="bottom" constant="49" id="C3k-rp-TW2"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" constant="1" id="FTl-Re-I0s"/>
+                            <constraint firstAttribute="bottom" secondItem="Ngy-NA-oNA" secondAttribute="bottom" id="FU4-NL-VqI"/>
                             <constraint firstItem="i6q-z0-SyV" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" id="QIW-QK-51w"/>
-                            <constraint firstItem="FG3-di-WrS" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" id="Tto-Nl-Vet"/>
-                            <constraint firstItem="FG3-di-WrS" firstAttribute="bottom" secondItem="sbl-c6-6bU" secondAttribute="bottom" id="b0v-4o-vXU"/>
+                            <constraint firstItem="FG3-di-WrS" firstAttribute="leading" secondItem="sbl-c6-6bU" secondAttribute="leading" constant="-1" id="Tto-Nl-Vet"/>
+                            <constraint firstItem="i6q-z0-SyV" firstAttribute="top" secondItem="FG3-di-WrS" secondAttribute="bottom" id="hbL-4R-qkn"/>
                             <constraint firstItem="Ngy-NA-oNA" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" id="iqD-PI-i8c"/>
                             <constraint firstItem="i6q-z0-SyV" firstAttribute="trailing" secondItem="sbl-c6-6bU" secondAttribute="trailing" id="l4p-Od-Jo2"/>
                         </constraints>
@@ -886,18 +885,18 @@
                     </connections>
                 </panGestureRecognizer>
             </objects>
-            <point key="canvasLocation" x="-810.39999999999998" y="-27.436281859070466"/>
+            <point key="canvasLocation" x="-810.39999999999998" y="-28.078817733990149"/>
         </scene>
         <!--Title-->
         <scene sceneID="hRb-CD-amz">
             <objects>
                 <viewController storyboardIdentifier="showNotesViewController" id="yHa-NW-db3" customClass="ShowNotesViewController" customModule="Podwise" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="SiA-zn-bWR">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="595"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="729"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="natural" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="spA-Mr-CkB">
-                                <rect key="frame" x="2" y="88" width="371" height="507"/>
+                                <rect key="frame" x="2" y="88" width="371" height="641"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
@@ -1252,7 +1251,7 @@
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="prE-82-CXY">
-                                        <rect key="frame" x="8" y="359" width="359" height="638"/>
+                                        <rect key="frame" x="8" y="359" width="359" height="568"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Icc-zs-SHx" userLabel="SpacerView">
                                                 <rect key="frame" x="0.0" y="0.0" width="359" height="8"/>
@@ -1403,34 +1402,46 @@
                                                     <constraint firstItem="fqZ-qf-5Pc" firstAttribute="leading" secondItem="QHV-wC-bGM" secondAttribute="leading" constant="8" id="ovF-dI-jfI"/>
                                                 </constraints>
                                             </view>
-                                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PfV-6S-qLf">
-                                                <rect key="frame" x="0.0" y="568" width="359" height="70"/>
-                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="70" id="S6s-pA-M0g"/>
-                                                </constraints>
-                                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="wbR-ZS-uOQ">
-                                                    <size key="itemSize" width="50" height="50"/>
-                                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                                </collectionViewFlowLayout>
-                                                <cells>
-                                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" misplaced="YES" id="Fmh-gx-YvR">
-                                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
-                                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
-                                                            <autoresizingMask key="autoresizingMask"/>
-                                                        </view>
-                                                    </collectionViewCell>
-                                                </cells>
-                                            </collectionView>
                                         </subviews>
                                     </stackView>
+                                    <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="PfV-6S-qLf">
+                                        <rect key="frame" x="8" y="927" width="359" height="70"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="70" id="S6s-pA-M0g"/>
+                                        </constraints>
+                                        <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="wbR-ZS-uOQ">
+                                            <size key="itemSize" width="50" height="50"/>
+                                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                                            <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                                            <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                                        </collectionViewFlowLayout>
+                                        <cells>
+                                            <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="Fmh-gx-YvR">
+                                                <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO">
+                                                    <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </view>
+                                            </collectionViewCell>
+                                        </cells>
+                                    </collectionView>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jkS-Uh-NSx" userLabel="SpacerView">
+                                        <rect key="frame" x="8" y="997" width="359" height="49"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="49" id="H6U-eY-ISP"/>
+                                        </constraints>
+                                    </view>
                                 </subviews>
                                 <constraints>
+                                    <constraint firstItem="PfV-6S-qLf" firstAttribute="top" secondItem="prE-82-CXY" secondAttribute="bottom" id="CdP-1e-GDz"/>
+                                    <constraint firstItem="jkS-Uh-NSx" firstAttribute="top" secondItem="PfV-6S-qLf" secondAttribute="bottom" id="G2y-cj-GqK"/>
                                     <constraint firstAttribute="trailing" secondItem="3QL-Cn-5WQ" secondAttribute="trailing" constant="-8" id="H9I-Ka-qVC"/>
+                                    <constraint firstAttribute="trailing" secondItem="PfV-6S-qLf" secondAttribute="trailing" constant="-8" id="IAA-7s-VtP"/>
+                                    <constraint firstAttribute="trailing" secondItem="jkS-Uh-NSx" secondAttribute="trailing" constant="-8" id="Srd-20-rIs"/>
+                                    <constraint firstItem="PfV-6S-qLf" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="VOd-Am-NfK"/>
                                     <constraint firstAttribute="bottom" secondItem="prE-82-CXY" secondAttribute="bottom" constant="123.66666666666663" id="VZE-CB-7S9"/>
                                     <constraint firstItem="3QL-Cn-5WQ" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="cAE-7d-zaF"/>
                                     <constraint firstItem="prE-82-CXY" firstAttribute="width" secondItem="WVV-No-yCa" secondAttribute="width" constant="-16" id="cj7-yD-WPe"/>
@@ -1438,6 +1449,7 @@
                                     <constraint firstItem="3QL-Cn-5WQ" firstAttribute="top" secondItem="WVV-No-yCa" secondAttribute="top" id="rfp-ed-RY5"/>
                                     <constraint firstAttribute="trailing" secondItem="prE-82-CXY" secondAttribute="trailing" constant="-8" id="tzn-An-2Aj"/>
                                     <constraint firstItem="prE-82-CXY" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="wIc-dO-4KF"/>
+                                    <constraint firstItem="jkS-Uh-NSx" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="yIq-Bp-bh1"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
@@ -1458,9 +1470,6 @@
                             <constraint firstItem="6C8-cb-rUI" firstAttribute="top" secondItem="fyI-76-o8u" secondAttribute="top" id="zcw-Dl-d2f"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Xuh-0X-H2U"/>
-                        <connections>
-                            <outletCollection property="gestureRecognizers" destination="6Fn-0Z-rcI" appends="YES" id="oNE-68-KS0"/>
-                        </connections>
                     </view>
                     <connections>
                         <outlet property="artImageBackgroundView" destination="3QL-Cn-5WQ" id="NiV-95-OVP"/>
@@ -1487,11 +1496,6 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TQq-q4-u6C" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="6Fn-0Z-rcI">
-                    <connections>
-                        <action selector="handleGestureWithSender:" destination="fFV-2T-Tw5" id="mf3-UC-6w7"/>
-                    </connections>
-                </panGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="-810.39999999999998" y="726.35467980295573"/>
         </scene>

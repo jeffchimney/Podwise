@@ -94,6 +94,9 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         }
         
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
+        
+        miniPlayerView.layer.borderWidth = 1
+        miniPlayerView.layer.borderColor = UIColor(red:169/255, green:169/255, blue:169/255, alpha: 0.5).cgColor
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -105,25 +108,40 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         
         baseView.layer.shadowOpacity = 0.0
         
+        self.sliderHeightConstraint.constant = 0
+        self.miniPlayerHeightConstraint.constant = 0
         if animated {
-            self.miniPlayerHeightConstraint.constant = 0
-            self.sliderHeightConstraint.constant = 0
             sliderView.isHidden = true
-            UIView.animate(withDuration: 1, animations: {
+            UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.miniPlayerView.artImageView.alpha = 0
+                    self.miniPlayerView.playPauseButton.alpha = 0
+                    self.miniPlayerView.skipBackButton.alpha = 0
+                    self.miniPlayerView.skipForwardButton.alpha = 0
+                    self.view.layoutIfNeeded()
+                }, completion: { _ in
+                    self.miniPlayerView.artImageView.isHidden = true
+                    self.miniPlayerView.playPauseButton.isHidden = true
+                    self.miniPlayerView.skipBackButton.isHidden = true
+                    self.miniPlayerView.skipForwardButton.isHidden = true
+                })
             })
         } else {
             sliderView.isHidden = true
-            self.sliderHeightConstraint.constant = 0
-            self.miniPlayerHeightConstraint.constant = 0
+            miniPlayerView.artImageView.isHidden = true
+            miniPlayerView.playPauseButton.isHidden = true
+            miniPlayerView.skipBackButton.isHidden = true
+            miniPlayerView.skipForwardButton.isHidden = true
+            miniPlayerView.artImageView.alpha = 0
+            miniPlayerView.playPauseButton.alpha = 0
+            miniPlayerView.skipBackButton.alpha = 0
+            miniPlayerView.skipForwardButton.alpha = 0
         }
     }
     
     public func showMiniPlayer(animated: Bool) {
-//        baseView.layer.shadowColor = UIColor.black.cgColor
-//        baseView.layer.shadowOpacity = 0.75
-//        baseView.layer.shadowOffset = CGSize.zero
-//        baseView.layer.shadowRadius = 5
         
         if audioPlayer != nil {
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
@@ -134,37 +152,33 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
                 miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
             }
         }
+        
+        self.sliderHeightConstraint.constant = 0
+        self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+        miniPlayerView.artImageView.isHidden = false
+        miniPlayerView.playPauseButton.isHidden = false
+        miniPlayerView.skipBackButton.isHidden = false
+        miniPlayerView.skipForwardButton.isHidden = false
         if animated {
             sliderView.isHidden = false
-            self.sliderHeightConstraint.constant = 0
-            self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
             UIView.animate(withDuration: 0.5, animations: {
                 self.view.layoutIfNeeded()
+            }, completion: { _ in
+                UIView.animate(withDuration: 0.5, animations: {
+                    self.miniPlayerView.artImageView.alpha = 1
+                    self.miniPlayerView.playPauseButton.alpha = 1
+                    self.miniPlayerView.skipBackButton.alpha = 1
+                    self.miniPlayerView.skipForwardButton.alpha = 1
+                })
             })
         } else {
             sliderView.isHidden = false
-            self.sliderHeightConstraint.constant = 0
-            self.miniPlayerHeightConstraint.constant = originalMiniPlayerHeightConstant
+            self.miniPlayerView.artImageView.alpha = 1
+            self.miniPlayerView.playPauseButton.alpha = 1
+            self.miniPlayerView.skipBackButton.alpha = 1
+            self.miniPlayerView.skipForwardButton.alpha = 1
         }
     }
-    
-//    func setupNowPlaying(episode: CDEpisode) {
-//        // Define Now Playing Info
-//        var nowPlayingInfo = [String : Any]()
-//        nowPlayingInfo[MPMediaItemPropertyTitle] = "My Movie"
-//        if let image = UIImage(named: "lockscreen") {
-//            nowPlayingInfo[MPMediaItemPropertyArtwork] =
-//                MPMediaItemArtwork(boundsSize: image.size) { size in
-//                    return image
-//            }
-//        }
-//        nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = audioPlayer.currentTime
-//        nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = audioPlayer.duration
-//        //nowPlayingInfo[MPNowPlayingInfoPropertyPlaybackRate] = player.rate
-//        
-//        // Set the metadata
-//        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-//    }
     
     @objc public func startUpdatingSlider() {
         if !sliderView.isTracking {
@@ -205,16 +219,17 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     }
     
     @IBAction func openPlayerGesture(sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: view)
-        
-        let progress = MiniPlayerTransitionHelper.calculateProgress(translationInView: translation, viewBounds: view.bounds, direction: .Up)
-        
-        MiniPlayerTransitionHelper.mapGestureStateToInteractor(
-            gestureState: sender.state,
-            progress: progress,
-            interactor: interactor){
-                expandNowPlaying()
-        }
+//        let translation = sender.translation(in: view)
+//
+//        let progress = MiniPlayerTransitionHelper.calculateProgress(translationInView: translation, viewBounds: view.bounds, direction: .Up)
+//
+//        MiniPlayerTransitionHelper.mapGestureStateToInteractor(
+//            gestureState: sender.state,
+//            progress: progress,
+//            interactor: interactor){
+//                expandNowPlaying()
+//        }
+        expandNowPlaying()
     }
     
     @objc func handleTap(_ sender: UITapGestureRecognizer) {
@@ -248,13 +263,13 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
 }
 
 extension BaseViewController: UIViewControllerTransitioningDelegate {
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return PresentMiniPlayerAnimator()
-    }
-    
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        return DismissMiniPlayerAnimator()
-    }
+//    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return PresentMiniPlayerAnimator()
+//    }
+//    
+//    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+//        return DismissMiniPlayerAnimator()
+//    }
     
     func interactionControllerForPresentation(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         return interactor.hasStarted ? interactor : nil

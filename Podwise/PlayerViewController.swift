@@ -120,9 +120,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         
         var unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
         
-        if unformattedShowNotes.range(of:"<a href") != nil {
-            unformattedShowNotes = unformattedShowNotes.replacingOccurrences(of: "<a href", with: "<br><a href")
-        }
+//        if unformattedShowNotes.range(of:"<a href") != nil {
+//            unformattedShowNotes = unformattedShowNotes.replacingOccurrences(of: "<a href", with: "<br><a href")
+//        }
         
         print(unformattedShowNotes)
 
@@ -160,6 +160,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         artImageBackgroundView.layer.cornerRadius = cardCornerRadius
         artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        
+        if playlistQueue.count > 0 {
+            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
+            upNextCollectionQueue.layoutIfNeeded()
+            stackView.layoutIfNeeded()
+            scrollView.layoutIfNeeded()
+            view.layoutIfNeeded()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -167,36 +175,12 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
         
         configureImageLayerInStartPosition()
-        
-        if playlistQueue.count > 0 {
-            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
-            view.layoutIfNeeded()
-        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animateBackingImageIn()
         animateImageLayerIn()
-    }
-        
-    @IBAction func handleGesture(sender: UIPanGestureRecognizer) {
-        let translation = sender.translation(in: view)
-        let progress = MiniPlayerTransitionHelper.calculateProgress(
-            translationInView: translation,
-            viewBounds: view.bounds,
-            direction: .Down
-        )
-        MiniPlayerTransitionHelper.mapGestureStateToInteractor(
-            gestureState: sender.state,
-            progress: progress,
-            interactor: interactor
-        ){
-            animateBackingImageOut()
-            animateImageLayerOut() { _ in
-                self.dismiss(animated: false)
-            }
-        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {

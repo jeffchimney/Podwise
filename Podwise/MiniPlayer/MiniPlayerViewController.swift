@@ -13,6 +13,8 @@ class MiniPlayerView: UIView {
     
     @IBOutlet var miniPlayerView: UIView!
     @IBOutlet weak var playPauseButton: UIButton!
+    @IBOutlet weak var skipBackButton: UIButton!
+    @IBOutlet weak var skipForwardButton: UIButton!
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet var artImageViewHeightConstraint: NSLayoutConstraint!
     @IBOutlet var artImageViewWidthConstraint: NSLayoutConstraint!
@@ -23,6 +25,7 @@ class MiniPlayerView: UIView {
     @IBOutlet weak var forward30DistanceFromPlayConstraint: NSLayoutConstraint!
     @IBOutlet weak var playPauseHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var playPauseWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var blurView: UIVisualEffectView!
     //weak var managedContext: NSManagedObjectContext?
     var interactor:Interactor? = nil
     

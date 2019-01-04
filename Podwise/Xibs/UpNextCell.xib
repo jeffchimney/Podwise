@@ -46,11 +46,10 @@
                     <constraints>
                         <constraint firstItem="L3b-lh-Cgd" firstAttribute="top" secondItem="TwL-QA-HOE" secondAttribute="top" constant="8" id="6bW-M5-Gfy"/>
                         <constraint firstItem="YaI-y7-Qhi" firstAttribute="top" secondItem="L3b-lh-Cgd" secondAttribute="bottom" constant="5" id="7ZH-wz-A7B"/>
+                        <constraint firstItem="kTX-Lg-oSV" firstAttribute="centerY" secondItem="TwL-QA-HOE" secondAttribute="centerY" id="K4L-hH-P8W"/>
                         <constraint firstItem="kTX-Lg-oSV" firstAttribute="leading" secondItem="TwL-QA-HOE" secondAttribute="leading" constant="13" id="KWz-em-q9w"/>
                         <constraint firstItem="L3b-lh-Cgd" firstAttribute="leading" secondItem="kTX-Lg-oSV" secondAttribute="trailing" constant="8" id="M7J-Y6-5wx"/>
                         <constraint firstItem="YaI-y7-Qhi" firstAttribute="leading" secondItem="kTX-Lg-oSV" secondAttribute="trailing" constant="11" id="VZB-av-uPM"/>
-                        <constraint firstItem="kTX-Lg-oSV" firstAttribute="top" secondItem="TwL-QA-HOE" secondAttribute="top" constant="5" id="f3q-z3-92J"/>
-                        <constraint firstAttribute="bottom" secondItem="kTX-Lg-oSV" secondAttribute="bottom" constant="5" id="rHZ-Dk-4q9"/>
                     </constraints>
                 </view>
             </subviews>
