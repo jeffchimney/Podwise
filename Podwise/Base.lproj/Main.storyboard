@@ -1223,23 +1223,32 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WVV-No-yCa">
-                                <rect key="frame" x="0.0" y="60" width="375" height="718"/>
+                                <rect key="frame" x="0.0" y="60" width="375" height="752"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3QL-Cn-5WQ">
                                         <rect key="frame" x="8" y="0.0" width="359" height="359"/>
                                         <subviews>
+                                            <progressView opaque="NO" alpha="0.75" contentMode="scaleToFill" verticalHuggingPriority="750" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="aA6-hT-F5W">
+                                                <rect key="frame" x="154.66666666666666" y="8" width="50" height="2"/>
+                                                <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="width" constant="50" id="2se-7i-WgM"/>
+                                                </constraints>
+                                            </progressView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yvE-SS-Ab0">
-                                                <rect key="frame" x="0.0" y="0.0" width="359" height="359"/>
+                                                <rect key="frame" x="4" y="16" width="351" height="343"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="3QL-Cn-5WQ" secondAttribute="height" multiplier="1:1" id="5Y6-Km-74k"/>
-                                            <constraint firstAttribute="trailing" secondItem="yvE-SS-Ab0" secondAttribute="trailing" id="6NI-UC-j3y"/>
+                                            <constraint firstAttribute="trailing" secondItem="yvE-SS-Ab0" secondAttribute="trailing" constant="4" id="6NI-UC-j3y"/>
                                             <constraint firstAttribute="bottom" secondItem="yvE-SS-Ab0" secondAttribute="bottom" id="D6i-aM-jnf"/>
-                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="leading" secondItem="3QL-Cn-5WQ" secondAttribute="leading" id="QiY-yQ-lf4"/>
-                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" id="c07-fJ-3fz"/>
+                                            <constraint firstItem="aA6-hT-F5W" firstAttribute="centerX" secondItem="3QL-Cn-5WQ" secondAttribute="centerX" id="PbD-oI-auA"/>
+                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="leading" secondItem="3QL-Cn-5WQ" secondAttribute="leading" constant="4" id="QiY-yQ-lf4"/>
+                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="16" id="c07-fJ-3fz"/>
+                                            <constraint firstItem="aA6-hT-F5W" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="8" id="eLa-i5-GaU"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="prE-82-CXY">
@@ -1436,11 +1445,11 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="WVV-No-yCa" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="0mu-JN-Zg7"/>
+                            <constraint firstAttribute="bottom" secondItem="WVV-No-yCa" secondAttribute="bottom" id="4cH-Zg-anj"/>
                             <constraint firstItem="6C8-cb-rUI" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="9XN-Vh-RBd"/>
                             <constraint firstItem="JYX-5y-eKR" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="Czf-sB-ddi"/>
                             <constraint firstItem="WVV-No-yCa" firstAttribute="top" secondItem="Xuh-0X-H2U" secondAttribute="top" constant="16" id="Daq-Oe-lt6"/>
                             <constraint firstItem="6C8-cb-rUI" firstAttribute="leading" secondItem="Xuh-0X-H2U" secondAttribute="leading" id="IWr-vd-0Zz"/>
-                            <constraint firstItem="WVV-No-yCa" firstAttribute="bottom" secondItem="Xuh-0X-H2U" secondAttribute="bottom" id="Yb5-mJ-DqA"/>
                             <constraint firstItem="JYX-5y-eKR" firstAttribute="leading" secondItem="Xuh-0X-H2U" secondAttribute="leading" id="hMW-EQ-Lmf"/>
                             <constraint firstItem="WVV-No-yCa" firstAttribute="leading" secondItem="Xuh-0X-H2U" secondAttribute="leading" id="okD-FJ-GMF"/>
                             <constraint firstAttribute="bottom" secondItem="JYX-5y-eKR" secondAttribute="bottom" id="ula-Xq-8kQ"/>
@@ -1472,6 +1481,7 @@
                         <outlet property="scrollView" destination="WVV-No-yCa" id="ic3-Rc-sPx"/>
                         <outlet property="showNotesView" destination="Inq-iO-OeL" id="AMK-bK-ZyM"/>
                         <outlet property="stackView" destination="prE-82-CXY" id="g3X-to-oOG"/>
+                        <outlet property="swipeIndicator" destination="aA6-hT-F5W" id="8YB-N2-q9g"/>
                         <outlet property="upNextCollectionQueue" destination="PfV-6S-qLf" id="zat-gm-drs"/>
                         <outlet property="upNextView" destination="QHV-wC-bGM" id="NvN-b8-pN1"/>
                     </connections>

@@ -38,6 +38,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var collectionViewHC: NSLayoutConstraint!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var upNextView: UIView!
+    @IBOutlet weak var swipeIndicator: UIProgressView!
     
     //backing image
     var backingImage: UIImage?
@@ -151,11 +152,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         showNotesView.isSelectable = true
         showNotesView.isUserInteractionEnabled = true
         
-        if playlistQueue.count > 0 {
-            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
-            view.layoutIfNeeded()
-        }
-        
         scrollView.delegate = self
         
         scrollView.layer.cornerRadius = cardCornerRadius
@@ -164,12 +160,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         artImageBackgroundView.layer.cornerRadius = cardCornerRadius
         artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        
-        if playlistQueue.count <= 1 {
-            upNextCollectionQueue.removeFromSuperview()
-            upNextView.removeFromSuperview()
-        }
-
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -177,6 +167,11 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
         
         configureImageLayerInStartPosition()
+        
+        if playlistQueue.count > 0 {
+            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
+            view.layoutIfNeeded()
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -206,7 +201,12 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translation = scrollView.contentOffset
-        if translation.y < -50 {
+        
+        if translation.y < 0 {
+            swipeIndicator.alpha = 0.8 + (translation.y/100)
+        }
+        
+        if translation.y < -80 {
             let impact = UIImpactFeedbackGenerator()
             impact.prepare()
             impact.impactOccurred()
