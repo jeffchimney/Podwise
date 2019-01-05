@@ -155,9 +155,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         scrollView.delegate = self
         
         scrollView.layer.cornerRadius = cardCornerRadius
-        scrollView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        stackView.layer.cornerRadius = cardCornerRadius
-        stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        //scrollView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        //stackView.layer.cornerRadius = cardCornerRadius
+        //stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         artImageBackgroundView.layer.cornerRadius = cardCornerRadius
         artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         
@@ -396,7 +396,7 @@ extension PlayerViewController {
             self.artImageBackgroundView.backgroundColor = self.endColor
         }
         
-        UIView.animate(withDuration: primaryDuration, delay: 0, options: [.curveEaseIn], animations: {
+        UIView.animate(withDuration: primaryDuration, delay: 0.0, options: [.curveEaseIn], animations: {
             self.artImageViewTopInset.constant = 0
             //self.dismissChevron.alpha = 1
             self.artImageBackgroundView.layer.cornerRadius = self.cardCornerRadius
@@ -408,14 +408,14 @@ extension PlayerViewController {
         let endInset = imageLayerInsetForOutPosition
         
         UIView.animate(withDuration: primaryDuration,
-                       delay: 0,
+                       delay: 0.0,
                        options: [.curveEaseOut], animations: {
                         self.artImageBackgroundView.backgroundColor = self.startColor
         }, completion: { finished in
             completion(finished) //fire complete here , because this is the end of the animation
         })
         
-        UIView.animate(withDuration: primaryDuration, delay: 0, options: [.curveEaseOut], animations: {
+        UIView.animate(withDuration: primaryDuration, delay: 0.0, options: [.curveEaseOut], animations: {
             self.artImageViewTopInset.constant = endInset
             //self.dismissChevron.alpha = 0
             self.artImageBackgroundView.layer.cornerRadius = 0

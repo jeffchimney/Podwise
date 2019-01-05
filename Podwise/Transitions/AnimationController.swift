@@ -48,7 +48,7 @@ class CardAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
         topPresentedView?.frame = topInitialFrame
         
         UIView.animate(withDuration: self.transitionDuration(using: transitionContext),
-                       delay: 0,
+                       delay: 0.0,
                        usingSpringWithDamping: 300.0,
                        initialSpringVelocity: 5.0,
                        options: [.allowUserInteraction, .beginFromCurrentState], //[.Alert, .Badge]

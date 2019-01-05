@@ -1222,7 +1222,7 @@
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="WVV-No-yCa">
-                                <rect key="frame" x="0.0" y="60" width="375" height="752"/>
+                                <rect key="frame" x="0.0" y="60" width="375" height="718"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3QL-Cn-5WQ">
                                         <rect key="frame" x="8" y="0.0" width="359" height="359"/>
@@ -1427,20 +1427,11 @@
                                             </collectionViewCell>
                                         </cells>
                                     </collectionView>
-                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jkS-Uh-NSx" userLabel="SpacerView">
-                                        <rect key="frame" x="8" y="997" width="359" height="49"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="49" id="H6U-eY-ISP"/>
-                                        </constraints>
-                                    </view>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="PfV-6S-qLf" firstAttribute="top" secondItem="prE-82-CXY" secondAttribute="bottom" id="CdP-1e-GDz"/>
-                                    <constraint firstItem="jkS-Uh-NSx" firstAttribute="top" secondItem="PfV-6S-qLf" secondAttribute="bottom" id="G2y-cj-GqK"/>
                                     <constraint firstAttribute="trailing" secondItem="3QL-Cn-5WQ" secondAttribute="trailing" constant="-8" id="H9I-Ka-qVC"/>
                                     <constraint firstAttribute="trailing" secondItem="PfV-6S-qLf" secondAttribute="trailing" constant="-8" id="IAA-7s-VtP"/>
-                                    <constraint firstAttribute="trailing" secondItem="jkS-Uh-NSx" secondAttribute="trailing" constant="-8" id="Srd-20-rIs"/>
                                     <constraint firstItem="PfV-6S-qLf" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="VOd-Am-NfK"/>
                                     <constraint firstAttribute="bottom" secondItem="prE-82-CXY" secondAttribute="bottom" constant="123.66666666666663" id="VZE-CB-7S9"/>
                                     <constraint firstItem="3QL-Cn-5WQ" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="cAE-7d-zaF"/>
@@ -1449,7 +1440,6 @@
                                     <constraint firstItem="3QL-Cn-5WQ" firstAttribute="top" secondItem="WVV-No-yCa" secondAttribute="top" id="rfp-ed-RY5"/>
                                     <constraint firstAttribute="trailing" secondItem="prE-82-CXY" secondAttribute="trailing" constant="-8" id="tzn-An-2Aj"/>
                                     <constraint firstItem="prE-82-CXY" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="wIc-dO-4KF"/>
-                                    <constraint firstItem="jkS-Uh-NSx" firstAttribute="leading" secondItem="WVV-No-yCa" secondAttribute="leading" constant="8" id="yIq-Bp-bh1"/>
                                 </constraints>
                             </scrollView>
                         </subviews>
@@ -1457,7 +1447,7 @@
                         <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="WVV-No-yCa" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="0mu-JN-Zg7"/>
-                            <constraint firstAttribute="bottom" secondItem="WVV-No-yCa" secondAttribute="bottom" id="4cH-Zg-anj"/>
+                            <constraint firstItem="Xuh-0X-H2U" firstAttribute="bottom" secondItem="WVV-No-yCa" secondAttribute="bottom" id="4cH-Zg-anj"/>
                             <constraint firstItem="6C8-cb-rUI" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="9XN-Vh-RBd"/>
                             <constraint firstItem="JYX-5y-eKR" firstAttribute="trailing" secondItem="Xuh-0X-H2U" secondAttribute="trailing" id="Czf-sB-ddi"/>
                             <constraint firstItem="WVV-No-yCa" firstAttribute="top" secondItem="Xuh-0X-H2U" secondAttribute="top" constant="16" id="Daq-Oe-lt6"/>

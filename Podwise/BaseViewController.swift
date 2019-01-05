@@ -112,10 +112,10 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         self.miniPlayerHeightConstraint.constant = 0
         if animated {
             sliderView.isHidden = true
-            UIView.animate(withDuration: 0.5, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { _ in
-                UIView.animate(withDuration: 0.5, animations: {
+                UIView.animate(withDuration: 0.25, animations: {
                     self.miniPlayerView.artImageView.alpha = 0
                     self.miniPlayerView.playPauseButton.alpha = 0
                     self.miniPlayerView.skipBackButton.alpha = 0
@@ -161,10 +161,10 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         miniPlayerView.skipForwardButton.isHidden = false
         if animated {
             sliderView.isHidden = false
-            UIView.animate(withDuration: 0.5, animations: {
+            UIView.animate(withDuration: 0.25, animations: {
                 self.view.layoutIfNeeded()
             }, completion: { _ in
-                UIView.animate(withDuration: 0.5, animations: {
+                UIView.animate(withDuration: 0.25, animations: {
                     self.miniPlayerView.artImageView.alpha = 1
                     self.miniPlayerView.playPauseButton.alpha = 1
                     self.miniPlayerView.skipBackButton.alpha = 1
@@ -286,11 +286,11 @@ extension BaseViewController {
         guard let nowPlayingCard = storyboard?.instantiateViewController(
             withIdentifier: "playerViewController")
             as? PlayerViewController else {
-                assertionFailure("No view controller ID MaxiSongCardViewController in storyboard")
+                assertionFailure("No view controller ID playerViewController in storyboard")
                 return
         }
-        nowPlayingCard.transitioningDelegate = self
-        nowPlayingCard.interactor = interactor
+        //nowPlayingCard.transitioningDelegate = self
+        //nowPlayingCard.interactor = interactor
         
         let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
         nowPlayingCard.image = imageArt

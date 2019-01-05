@@ -523,21 +523,21 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         stopEQAnimations()
         
         // Center bar animation
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 2.0, options: [.autoreverse, .repeat], animations: {
+        UIView.animate(withDuration: 1, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 2.0, options: [.autoreverse, .repeat], animations: {
             let constant = 10
             self.centerHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
         }, completion: nil)
         
         // left bar animation
-        UIView.animate(withDuration: 0.6, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 1.0, options: [.autoreverse, .repeat], animations: {
+        UIView.animate(withDuration: 0.6, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 1.0, options: [.autoreverse, .repeat], animations: {
             let constant = 7
             self.leftHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
         }, completion: nil)
         
         // right bar animation
-        UIView.animate(withDuration: 0.75, delay: 0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
+        UIView.animate(withDuration: 0.75, delay: 0.0, usingSpringWithDamping: 0.9, initialSpringVelocity: 0.5, options: [.autoreverse, .repeat], animations: {
             let constant = 8
             self.rightHeightConstraint.constant = CGFloat(constant)
             self.view.layoutIfNeeded()
@@ -564,7 +564,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
             tableView.reloadRows(at: [IndexPath(row: 0, section: section)], with: .automatic)
-            UIView.animate(withDuration: 0.3, delay: 0, options: .curveEaseOut, animations: tableView.layoutSubviews, completion: nil)
+            UIView.animate(withDuration: 0.3, delay: 0.0, options: .curveEaseOut, animations: tableView.layoutSubviews, completion: nil)
         }
     }
     
@@ -768,7 +768,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                     collapse(section: section)
                 }
                 
-                UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
+                UIView.animate(withDuration: 0.5, delay: 0.0, usingSpringWithDamping: 0.5, initialSpringVelocity: 5, options: [], animations: {
                     if unwrappedFooterView.collapseExpandButton.transform.isIdentity {
                         unwrappedFooterView.collapseExpandButton.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi))
                     } else {
