@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class UpNextCell: UICollectionViewCell {
+class UpNextCell: UITableViewCell {
     
     @IBOutlet weak var artImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!

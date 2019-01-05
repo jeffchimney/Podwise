@@ -13,7 +13,7 @@ protocol PlayerViewSourceProtocol: class {
     var originatingCoverImageView: UIImageView { get }
 }
 
-class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UICollectionViewDelegate, UICollectionViewDataSource, UITextViewDelegate {
+class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScrollViewDelegate, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
     // MARK: - Properties
     let cardCornerRadius: CGFloat = 10
@@ -23,6 +23,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     var episodeTitleText: String!
     var podcastTitleText: String!
     var minimumTrackTintColor: UIColor!
+    var showNotesHCValue: CGFloat!
     weak var sourceView: PlayerViewSourceProtocol!
     
     @IBOutlet weak var scrollView: UIScrollView!
@@ -34,8 +35,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var progressSlider: UISlider!
     @IBOutlet weak var elapsedTimeLabel: UILabel!
     @IBOutlet weak var remainingTImeLabel: UILabel!
-    @IBOutlet weak var upNextCollectionQueue: UICollectionView!
-    @IBOutlet weak var collectionViewHC: NSLayoutConstraint!
+    @IBOutlet weak var upNextTableView: UITableView!
+    @IBOutlet weak var tableViewHC: NSLayoutConstraint!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var upNextView: UIView!
     @IBOutlet weak var swipeIndicator: UIProgressView!
@@ -49,6 +50,8 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var backingImageTrailingInset: NSLayoutConstraint!
     @IBOutlet weak var backingImageBottomInset: NSLayoutConstraint!
     @IBOutlet weak var artImageViewTopInset: NSLayoutConstraint!
+    @IBOutlet weak var scrollViewTopInset: NSLayoutConstraint!
+    @IBOutlet weak var showNotesHC: NSLayoutConstraint!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -69,7 +72,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         
         backingImageView.image = backingImage
         
-        upNextCollectionQueue.contentInsetAdjustmentBehavior = .never
+        upNextTableView.contentInsetAdjustmentBehavior = .never
         scrollView.contentInsetAdjustmentBehavior = .never //dont let Safe Area insets affect the scroll view
         
         if let player = audioPlayer {
@@ -106,19 +109,17 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         artImageView.layer.masksToBounds = true
         
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width, height: upNextCollectionQueue.frame.height)
+        layout.itemSize = CGSize(width: view.frame.width, height: upNextTableView.frame.height)
         layout.scrollDirection = .vertical
         layout.minimumInteritemSpacing = 1
         layout.minimumLineSpacing = 1
         
-        upNextCollectionQueue.dataSource = self
-        upNextCollectionQueue.delegate = self
-        upNextCollectionQueue.collectionViewLayout = layout
+        upNextTableView.dataSource = self
+        upNextTableView.delegate = self
         let upNextCellNib = UINib(nibName: "UpNextCell", bundle: nil)
-        upNextCollectionQueue.register(upNextCellNib, forCellWithReuseIdentifier: "UpNextCell")
+        upNextTableView.register(upNextCellNib, forCellReuseIdentifier: "UpNextCell")
         
-        
-        var unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
+        let unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
         
 //        if unformattedShowNotes.range(of:"<a href") != nil {
 //            unformattedShowNotes = unformattedShowNotes.replacingOccurrences(of: "<a href", with: "<br><a href")
@@ -152,19 +153,21 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         showNotesView.isSelectable = true
         showNotesView.isUserInteractionEnabled = true
         
+        showNotesHCValue = showNotesView.contentSize.height
+        
         scrollView.delegate = self
         
         scrollView.layer.cornerRadius = cardCornerRadius
-        //scrollView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
-        //stackView.layer.cornerRadius = cardCornerRadius
-        //stackView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
+        scrollView.layer.masksToBounds = true
+        scrollView.clipsToBounds = true
+        upNextTableView.layer.cornerRadius = 10
+        upNextTableView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         artImageBackgroundView.layer.cornerRadius = cardCornerRadius
         artImageBackgroundView.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         
         if playlistQueue.count > 0 {
-            collectionViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
-            upNextCollectionQueue.layoutIfNeeded()
-            stackView.layoutIfNeeded()
+            tableViewHC.constant = CGFloat((playlistQueue.count - 1) * 70)
+            upNextTableView.layoutIfNeeded()
             scrollView.layoutIfNeeded()
             view.layoutIfNeeded()
         }
@@ -186,8 +189,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let translation = scrollView.contentOffset
         
-        if translation.y < 0 {
+        if translation.y <= 0 {
             swipeIndicator.alpha = 0.8 + (translation.y/100)
+            
+            // minus because I want to add the magnitude of the negative number
+//            scrollViewTopInset.constant = 16 - translation.y
+//            UIView.animate(withDuration: 0) {
+//                self.view.layoutIfNeeded()
+//            }
         }
         
         if translation.y < -80 {
@@ -302,8 +311,21 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         }
     }
     
-    // collection view stubs
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    @IBAction func toggleShowNotes(_ sender: Any) {
+        if showNotesHC.constant > 0 {
+            showNotesHC.constant = 0
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        } else {
+            showNotesHC.constant = showNotesHCValue
+            UIView.animate(withDuration: 0.25) {
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if playlistQueue.count > 0 {
             return playlistQueue.count - 1
         } else {
@@ -311,12 +333,16 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         }
     }
     
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 70
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = upNextCollectionQueue.dequeueReusableCell(withReuseIdentifier:"UpNextCell", for: indexPath as IndexPath) as! UpNextCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = upNextTableView.dequeueReusableCell(withIdentifier: "UpNextCell") as! UpNextCell
         
         let indexPathRow = indexPath.row+1
         if let imageData = playlistQueue[indexPathRow].podcast?.image {
@@ -329,7 +355,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         cell.descriptionLabel.text = playlistQueue[indexPathRow].title
         
         return cell
-    };
+    }
 }
 
 //background image animation
@@ -387,7 +413,7 @@ extension PlayerViewController {
         let startInset = imageLayerInsetForOutPosition
         //dismissChevron.alpha = 0
         artImageBackgroundView.layer.cornerRadius = 0
-        artImageViewTopInset.constant = startInset
+        scrollViewTopInset.constant = startInset
         view.layoutIfNeeded()
     }
     
@@ -397,7 +423,7 @@ extension PlayerViewController {
         }
         
         UIView.animate(withDuration: primaryDuration, delay: 0.0, options: [.curveEaseIn], animations: {
-            self.artImageViewTopInset.constant = 0
+            self.scrollViewTopInset.constant = 0
             //self.dismissChevron.alpha = 1
             self.artImageBackgroundView.layer.cornerRadius = self.cardCornerRadius
             self.view.layoutIfNeeded()
@@ -416,9 +442,9 @@ extension PlayerViewController {
         })
         
         UIView.animate(withDuration: primaryDuration, delay: 0.0, options: [.curveEaseOut], animations: {
-            self.artImageViewTopInset.constant = endInset
+            self.scrollViewTopInset.constant = endInset
             //self.dismissChevron.alpha = 0
-            self.artImageBackgroundView.layer.cornerRadius = 0
+            //self.artImageBackgroundView.layer.cornerRadius = 0
             self.view.layoutIfNeeded()
         })
     }
