@@ -153,8 +153,6 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         showNotesView.isSelectable = true
         showNotesView.isUserInteractionEnabled = true
         
-        showNotesHCValue = showNotesView.contentSize.height
-        
         scrollView.delegate = self
         
         scrollView.layer.cornerRadius = cardCornerRadius
@@ -178,6 +176,10 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
         
         configureImageLayerInStartPosition()
+        
+        showNotesHCValue = showNotesView.contentSize.height
+        showNotesHC.constant = showNotesHCValue
+        view.layoutIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
