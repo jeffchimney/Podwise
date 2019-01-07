@@ -373,9 +373,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         let cell = upNextTableView.dequeueReusableCell(withIdentifier: "UpNextCell") as! UpNextCell
         
         let indexPathRow = indexPath.row+1
-        if let imageData = playlistQueue[indexPathRow].podcast?.image {
-            cell.artImageView.image = UIImage(data: imageData)
-        }
+        cell.artImageView.image = UIImage.image(with: playlistQueue[indexPathRow].podcast!.image!)
         
         cell.artImageView.layer.cornerRadius = 3
         cell.artImageView.layer.masksToBounds = true

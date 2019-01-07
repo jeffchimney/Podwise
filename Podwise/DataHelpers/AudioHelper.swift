@@ -30,7 +30,7 @@ class AudioHelper {
     }
     
     static func updateMediaPlayer(player: AVAudioPlayer) {
-        let artworkImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        let artworkImage = UIImage.image(with: nowPlayingEpisode.podcast!.image!)
         let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
             return artworkImage!
         })
@@ -63,7 +63,7 @@ class AudioHelper {
             player.play()
             nowPlayingEpisode = episode
             
-            let artworkImage = UIImage(data: episode.podcast!.image!)
+            let artworkImage = UIImage.image(with: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
                 return artworkImage!
             })

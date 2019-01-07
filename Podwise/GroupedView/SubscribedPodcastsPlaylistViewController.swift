@@ -107,9 +107,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
         cell.titleLabel.text = podcasts[indexPath.row].title
         cell.durationLabel.text = podcasts[indexPath.row].author
 
-        if let imageData = podcasts[indexPath.row].image {
-            cell.artImageView.image = UIImage(data: imageData)
-        }
+        cell.artImageView.image = UIImage.image(with: podcasts[indexPath.row].image!)
         
         cell.artImageView.layer.cornerRadius = 3
         cell.artImageView.layer.masksToBounds = true

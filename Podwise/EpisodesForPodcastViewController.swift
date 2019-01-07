@@ -65,7 +65,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         tableView.dataSource = self
         
         tableView.tableHeaderView = channelDescriptionTextView
-        imageView.image = UIImage(data: podcast.image!)
+        imageView.image = UIImage.image(with: podcast.image!)
         imageView.layer.cornerRadius = 3
         imageView.layer.masksToBounds = true
         
@@ -217,7 +217,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         CoreDataHelper.save(context: managedContext!)
         
         nowPlayingEpisode = episode
-        baseViewController.miniPlayerView.artImageView.image = UIImage(data: (self.podcast.image)!)
+        baseViewController.miniPlayerView.artImageView.image = UIImage.image(with: podcast.image!)
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         AudioHelper.playDownload(for: episode)
     }
@@ -473,7 +473,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     let episodeToPlay = episodesToPlay[0]
                     nowPlayingEpisode = episodeToPlay
                     
-                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
+                    let podcastImage = UIImage.image(with: episodeToPlay.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = podcastImage
                     
                     let backgroundColor = baseViewController.getAverageColorOf(image: podcastImage!.cgImage!)
@@ -523,7 +523,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
                     try FileManager.default.moveItem(at: location, to: destinationUrl)
                     print("File moved to documents folder")
                     if playNow {
-                        let nowPlayingArt = UIImage(data: (self.podcast.image)!)
+                        let nowPlayingArt = UIImage.image(with: self.podcast.image!)
                         baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
                         
                         baseViewController.setProgressBarColor(red: CGFloat(self.podcast.backgroundR), green: CGFloat(self.podcast.backgroundG), blue: CGFloat(self.podcast.backgroundB))

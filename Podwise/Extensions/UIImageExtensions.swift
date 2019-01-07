@@ -1,8 +1,8 @@
 import UIKit
 
 extension UIImage {
-    func load(image imageName: String) -> UIImage {
-        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
+    static func image(with name: String) -> UIImage? {
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(name).png"
         let imageUrl: URL = URL(fileURLWithPath: imagePath)
         
         if FileManager.default.fileExists(atPath: imagePath),
@@ -11,10 +11,10 @@ extension UIImage {
             return image
         }
         
-        return UIImage()
+        return nil
     }
     
-    func store(image: UIImage, with name: String) {
+    static func store(image: UIImage, with name: String) {
         let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(name).png"
         let imageUrl: URL = URL(fileURLWithPath: imagePath)
         

@@ -483,13 +483,13 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 if episodesToPlay.count > 0 {
                     let episodeToPlay = episodesToPlay[0]
                     
-                    let podcastImage = UIImage(data: episodeToPlay.podcast!.image!)
-                    baseViewController.miniPlayerView.artImageView.image = podcastImage
-                    
-                    let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage?.cgImage!)!)
-                    baseViewController.sliderView.minimumTrackTintColor = backgroundColor
-                    AudioHelper.playDownload(for: episodeToPlay)
-                    nowPlayingEpisode = episodeToPlay
+                    if let podcastImage = UIImage.image(with: episodeToPlay.podcast!.image!) {
+                        baseViewController.miniPlayerView.artImageView.image = podcastImage
+                        let backgroundColor = baseViewController.getAverageColorOf(image: (podcastImage.cgImage!))
+                        baseViewController.sliderView.minimumTrackTintColor = backgroundColor
+                        AudioHelper.playDownload(for: episodeToPlay)
+                        nowPlayingEpisode = episodeToPlay
+                    }
                 }
             } else { // add to playlist
                 let episodeWithID = CoreDataHelper.getEpisodeWith(id: relatedTo.id, in: managedContext!)
@@ -517,14 +517,15 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 episode.progress = 0
             } else { // episode doesn't belong to a previously downloaded or subscribed podcast, create new one
                 let podcastEntity = NSEntityDescription.entity(forEntityName: "CDPodcast", in: managedContext!)!
-                podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
+                podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as? CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
                 podcast.author = authorName!
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                podcast.image = "\(podcast.title ?? "")\(podcast.id)"
+                UIImage.store(image: imageView.image!, with: podcast.image!)
                 
                 let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
@@ -625,11 +626,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = true
                 podcast.author = authorName
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                podcast.image = "\(podcast.title ?? "")\(podcast.id)"
+                UIImage.store(image: imageView.image!, with: podcast.image!)
                 
                 let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
@@ -656,11 +658,12 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 let podcast = NSManagedObject(entity: podcastEntity, insertInto: managedContext) as! CDPodcast
                 podcast.title = channelLabel.text!
                 podcast.subTitle = channelDescriptionTextView.text!
-                podcast.image = imageView.image!.pngData()
                 podcast.subscribed = false // not subscribed or it would have found the podcast in coredata
                 podcast.author = authorName
                 podcast.feedURL = url
                 podcast.id = Int64(collectionID)
+                podcast.image = "\(podcast.title ?? "")\(podcast.id)"
+                UIImage.store(image: imageView.image!, with: podcast.image!)
                 
                 let backgroundColor = baseViewController.getAverageColorOf(image: (imageView.image?.cgImage)!)
                 let backgroundCIColor = backgroundColor.coreImageColor
@@ -747,7 +750,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                 
                 if downloads[0].playNow {
                     nowPlayingEpisode = downloads[0].episode
-                    let nowPlayingArt = UIImage(data: downloads[0].episode.podcast!.image!)
+                    let nowPlayingArt = UIImage.image(with: downloads[0].episode.podcast!.image!)
                     baseViewController.miniPlayerView.artImageView.image = nowPlayingArt
 
                     let backgroundColor = baseViewController.getAverageColorOf(image: nowPlayingArt!.cgImage!)

@@ -144,7 +144,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     public func showMiniPlayer(animated: Bool) {
         
         if audioPlayer != nil {
-            let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
+            let imageArt = UIImage.image(with: nowPlayingEpisode.podcast!.image!)
             miniPlayerView.artImageView.image = imageArt
             if audioPlayer.isPlaying {
                 miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
@@ -292,7 +292,7 @@ extension BaseViewController {
         //nowPlayingCard.transitioningDelegate = self
         //nowPlayingCard.interactor = interactor
         
-        let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        let imageArt = UIImage.image(with: nowPlayingEpisode.podcast!.image!)
         nowPlayingCard.image = imageArt
         nowPlayingCard.episodeTitleText = nowPlayingEpisode.title!
         nowPlayingCard.podcastTitleText = nowPlayingEpisode.podcast!.title!

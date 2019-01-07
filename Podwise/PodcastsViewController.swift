@@ -176,9 +176,7 @@ class PodcastsViewController: UIViewController, UITableViewDelegate, UITableView
             cell.titleLabel.text = thisPodcast.title
             cell.durationLabel.text = thisPodcast.author
             
-            if let imageData = thisPodcast.image {
-                cell.artImageView.image = UIImage(data: imageData)
-            }
+            cell.artImageView.image = UIImage.image(with: thisPodcast.image!)
             
             cell.artImageView.layer.cornerRadius = 3
             cell.artImageView.layer.masksToBounds = true

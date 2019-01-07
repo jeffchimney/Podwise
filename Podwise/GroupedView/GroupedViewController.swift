@@ -131,10 +131,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         }
         
         DispatchQueue.main.async {
-            if let imageData = thisEpisode.podcast?.image {
-                cell.artImageView.image = UIImage(data: imageData)
-            }
-            
+            cell.artImageView.image = UIImage.image(with: thisEpisode.podcast!.image!)
             cell.artImageView.layer.cornerRadius = 3
             cell.artImageView.layer.masksToBounds = true
         }
@@ -161,7 +158,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
         }
         CoreDataHelper.save(context: managedContext)
         nowPlayingEpisode = episode
-        let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
+        let nowPlayingImage = UIImage.image(with: nowPlayingEpisode.podcast!.image!)
         baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
         baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
         playDownload(for: episodesInPlaylist[indexPath.row])
@@ -228,7 +225,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
             startAudioSession()
             player.play()
             
-            let artworkImage = UIImage(data: episode.podcast!.image!)
+            let artworkImage = UIImage.image(with: episode.podcast!.image!)
             let artwork = MPMediaItemArtwork.init(boundsSize: artworkImage!.size, requestHandler: { (size) -> UIImage in
                 return artworkImage!
             })

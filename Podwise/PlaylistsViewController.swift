@@ -309,9 +309,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
             }
             
             DispatchQueue.main.async {
-                if let imageData = thisEpisode.podcast?.image {
-                    playlstCell.artImageView.image = UIImage(data: imageData)
-                }
+                playlstCell.artImageView.image = UIImage.image(with: thisEpisode.podcast!.image!)
                 
                 playlstCell.artImageView.layer.cornerRadius = 3
                 playlstCell.artImageView.layer.masksToBounds = true
@@ -413,7 +411,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 cell.nowPlayingView.play()
             }
-            let nowPlayingImage = UIImage(data: nowPlayingEpisode.podcast!.image!)
+            let nowPlayingImage = UIImage.image(with: nowPlayingEpisode.podcast!.image!)
             baseViewController.miniPlayerView.artImageView.image = nowPlayingImage
             baseViewController.setProgressBarColor(red: CGFloat(podcast.backgroundR), green: CGFloat(podcast.backgroundG), blue: CGFloat(podcast.backgroundB))
             AudioHelper.playDownload(for: thisEpisode)
