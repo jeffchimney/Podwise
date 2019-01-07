@@ -1,11 +1,26 @@
-//
-//  UIImageColors.swift
-//  https://github.com/jathu/UIImageColors
-//
-//  Created by Jathu Satkunarajah (@jathu) on 2015-06-11 - Toronto
-//
-
 import UIKit
+
+extension UIImage {
+    func load(image imageName: String) -> UIImage {
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(imageName).png"
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        if FileManager.default.fileExists(atPath: imagePath),
+            let imageData: Data = try? Data(contentsOf: imageUrl),
+            let image: UIImage = UIImage(data: imageData, scale: UIScreen.main.scale) {
+            return image
+        }
+        
+        return UIImage()
+    }
+    
+    func store(image: UIImage, with name: String) {
+        let imagePath: String = "\(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])/\(name).png"
+        let imageUrl: URL = URL(fileURLWithPath: imagePath)
+        
+        try? image.pngData()?.write(to: imageUrl)
+    }
+}
 
 public struct UIImageColors {
     public var background: UIColor!

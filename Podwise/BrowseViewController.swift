@@ -119,7 +119,7 @@ class BrowseViewController: UIViewController, UISearchBarDelegate, UITableViewDe
             print("URL for searching iTunes API \(url)")
             task.resume()
             
-            cell.artImageView.layer.cornerRadius = 10
+            cell.artImageView.layer.cornerRadius = 3
             cell.artImageView.layer.masksToBounds = true
 
             return cell

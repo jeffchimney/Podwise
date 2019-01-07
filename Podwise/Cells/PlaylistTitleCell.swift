@@ -30,7 +30,7 @@ class PlaylistTitleCell: UITableViewCell {
         super.layoutSubviews()
         
         // round top left and right corners
-        let cornerRadius: CGFloat = 15
+        let cornerRadius: CGFloat = 5
         let maskLayer = CAShapeLayer()
         
         maskLayer.path = UIBezierPath(

@@ -66,7 +66,7 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         
         tableView.tableHeaderView = channelDescriptionTextView
         imageView.image = UIImage(data: podcast.image!)
-        imageView.layer.cornerRadius = 10
+        imageView.layer.cornerRadius = 3
         imageView.layer.masksToBounds = true
         
         if podcast.subscribed {

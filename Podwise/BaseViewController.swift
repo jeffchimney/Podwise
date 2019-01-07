@@ -29,7 +29,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderView: UISlider!
-    let originalMiniPlayerHeightConstant: CGFloat = 60
+    let originalMiniPlayerHeightConstant: CGFloat = 62
     @IBOutlet var panGesture: UIPanGestureRecognizer!
     
     var interactor = Interactor()
@@ -41,7 +41,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         
         baseViewController = self
         
-        miniPlayerView.artImageView.layer.cornerRadius = 10
+        miniPlayerView.artImageView.layer.cornerRadius = 3
         miniPlayerView.artImageView.layer.masksToBounds = true
         let tap = UITapGestureRecognizer(target: self, action: #selector(self.handleTap(_:)))
         miniPlayerView.addGestureRecognizer(tap)

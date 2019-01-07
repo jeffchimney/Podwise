@@ -278,7 +278,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
                         let imageData: Data = try Data.init(contentsOf: url, options: .mappedIfSafe)
                         DispatchQueue.main.async {
                             self.imageView.image = UIImage(data: imageData)
-                            self.imageView.layer.cornerRadius = 10
+                            self.imageView.layer.cornerRadius = 3
                             self.imageView.layer.masksToBounds = true
                             
                             self.activityIndicator.isHidden = true

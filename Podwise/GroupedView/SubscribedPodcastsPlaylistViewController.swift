@@ -111,7 +111,7 @@ class SubscribedPodcastsPlaylistViewController: UITableView, UITableViewDataSour
             cell.artImageView.image = UIImage(data: imageData)
         }
         
-        cell.artImageView.layer.cornerRadius = 10
+        cell.artImageView.layer.cornerRadius = 3
         cell.artImageView.layer.masksToBounds = true
 
         return cell

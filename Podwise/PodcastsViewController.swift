@@ -106,7 +106,7 @@ class PodcastsViewController: UIViewController, UITableViewDelegate, UITableView
             footerView.center = CGPoint(x: tableView.center.x, y: footerView.center.y)
             
             // round top left and right corners
-            let cornerRadius: CGFloat = 15
+            let cornerRadius: CGFloat = 5
             let maskLayer = CAShapeLayer()
             
             maskLayer.path = UIBezierPath(
@@ -180,7 +180,7 @@ class PodcastsViewController: UIViewController, UITableViewDelegate, UITableView
                 cell.artImageView.image = UIImage(data: imageData)
             }
             
-            cell.artImageView.layer.cornerRadius = 10
+            cell.artImageView.layer.cornerRadius = 3
             cell.artImageView.layer.masksToBounds = true
             
             cell.episodeCounterLabel.backgroundColor = .black

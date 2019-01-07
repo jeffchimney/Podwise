@@ -108,7 +108,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         startUpdatingSlider()
         
         artImageView.isUserInteractionEnabled = true
-        artImageView.layer.cornerRadius = 10
+        artImageView.layer.cornerRadius = 3
         artImageView.layer.masksToBounds = true
         
         let layout = UICollectionViewFlowLayout()
@@ -377,7 +377,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
             cell.artImageView.image = UIImage(data: imageData)
         }
         
-        cell.artImageView.layer.cornerRadius = 10
+        cell.artImageView.layer.cornerRadius = 3
         cell.artImageView.layer.masksToBounds = true
         cell.titleLabel.text = playlistQueue[indexPathRow].podcast?.title
         cell.descriptionLabel.text = playlistQueue[indexPathRow].title

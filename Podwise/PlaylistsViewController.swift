@@ -16,11 +16,6 @@ public protocol relayoutSectionDelegate: class {
     func reloadCollectionView()
 }
 
-//public protocol editPlaylistParentDelegate: class {
-//    func edit(playlist: CDPlaylist)
-//    func edit()
-//}
-
 public protocol editPlaylistDelegate: class {
     func edit(playlist: CDPlaylist)
     func edit()
@@ -215,14 +210,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
         }
     }
     
-//    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-//        if section == 0 {
-//            return -30
-//        } else {
-//            return 10
-//        }
-//    }
-    
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return 30
     }
@@ -237,7 +224,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 footerView.center = CGPoint(x: tableView.center.x, y: footerView.center.y)
                 
                 // round top left and right corners
-                let cornerRadius: CGFloat = 15
+                let cornerRadius: CGFloat = 5
                 let maskLayer = CAShapeLayer()
                 
                 maskLayer.path = UIBezierPath(
@@ -326,7 +313,7 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                     playlstCell.artImageView.image = UIImage(data: imageData)
                 }
                 
-                playlstCell.artImageView.layer.cornerRadius = 10
+                playlstCell.artImageView.layer.cornerRadius = 3
                 playlstCell.artImageView.layer.masksToBounds = true
             }
         }
