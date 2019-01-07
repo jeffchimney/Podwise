@@ -29,7 +29,7 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
     @IBOutlet weak var miniPlayerHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var sliderView: UISlider!
-    let originalMiniPlayerHeightConstant: CGFloat = 70
+    let originalMiniPlayerHeightConstant: CGFloat = 60
     @IBOutlet var panGesture: UIPanGestureRecognizer!
     
     var interactor = Interactor()
@@ -87,9 +87,9 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
         
         if let player = audioPlayer {
             if !player.isPlaying {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
             } else {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
             }
         }
         
@@ -147,9 +147,9 @@ class BaseViewController: UIViewController, AVAudioPlayerDelegate {
             let imageArt = UIImage(data: nowPlayingEpisode.podcast!.image!)
             miniPlayerView.artImageView.image = imageArt
             if audioPlayer.isPlaying {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
             } else {
-                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                miniPlayerView.playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
             }
         }
         

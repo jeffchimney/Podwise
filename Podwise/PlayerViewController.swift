@@ -24,6 +24,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     var podcastTitleText: String!
     var minimumTrackTintColor: UIColor!
     var showNotesHCValue: CGFloat!
+    var unformattedShowNotes: String = ""
     weak var sourceView: PlayerViewSourceProtocol!
     
     @IBOutlet weak var scrollView: UIScrollView!
@@ -38,8 +39,10 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var upNextTableView: UITableView!
     @IBOutlet weak var tableViewHC: NSLayoutConstraint!
     @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var showNotesTitleView: UIView!
     @IBOutlet weak var upNextView: UIView!
     @IBOutlet weak var swipeIndicator: UIProgressView!
+    @IBOutlet weak var toggleShowNotesButton: UIButton!
     
     //backing image
     var backingImage: UIImage?
@@ -51,7 +54,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBOutlet weak var backingImageBottomInset: NSLayoutConstraint!
     @IBOutlet weak var artImageViewTopInset: NSLayoutConstraint!
     @IBOutlet weak var scrollViewTopInset: NSLayoutConstraint!
-    @IBOutlet weak var showNotesHC: NSLayoutConstraint!
+    //@IBOutlet weak var showNotesHC: NSLayoutConstraint!
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .lightContent
@@ -77,9 +80,9 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         
         if let player = audioPlayer {
             if !player.isPlaying {
-                playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
             } else {
-                playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
             }
         }
         
@@ -119,36 +122,15 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         let upNextCellNib = UINib(nibName: "UpNextCell", bundle: nil)
         upNextTableView.register(upNextCellNib, forCellReuseIdentifier: "UpNextCell")
         
-        let unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
+        unformattedShowNotes = nowPlayingEpisode.showNotes ?? "There was a problem loading show notes."
         
 //        if unformattedShowNotes.range(of:"<a href") != nil {
 //            unformattedShowNotes = unformattedShowNotes.replacingOccurrences(of: "<a href", with: "<br><a href")
 //        }
         
         print(unformattedShowNotes)
-
-        let showNotesString = NSMutableAttributedString(attributedString: unformattedShowNotes.htmlToAttributedString!)
+        setShowNotesText(unformattedText: unformattedShowNotes)
         
-        // Enumerate through all the font ranges
-        showNotesString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, showNotesString.length), options: [])
-        {
-            value, range, stop in
-            guard let currentFont = value as? UIFont else {
-                return
-            }
-            
-            // An NSFontDescriptor describes the attributes of a font: family name, face name, point size, etc.
-            // Here we describe the replacement font as coming from the "Hoefler Text" family
-            let fontDescriptor = currentFont.fontDescriptor//.addingAttributes([UIFontDescriptor.AttributeName.family: "Hoefler Text"])
-            
-            // Ask the OS for an actual font that most closely matches the description above
-            if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
-                let newFont = UIFont(descriptor: newFontDescriptor, size: 16.0)
-                showNotesString.addAttributes([NSAttributedString.Key.font: newFont], range: range)
-            }
-        }
-        
-        showNotesView.attributedText = showNotesString
         showNotesView.delegate = self
         showNotesView.isSelectable = true
         showNotesView.isUserInteractionEnabled = true
@@ -176,16 +158,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         timer = Timer.scheduledTimer(timeInterval: 1.0, target: self, selector: #selector(startUpdatingSlider), userInfo: nil, repeats: true)
         
         configureImageLayerInStartPosition()
-        
-        showNotesHCValue = showNotesView.contentSize.height
-        showNotesHC.constant = showNotesHCValue
-        view.layoutIfNeeded()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         animateBackingImageIn()
         animateImageLayerIn()
+        showNotesHCValue = showNotesView.frame.height
+        calculateScrollViewHeight()
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -232,7 +212,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     @IBAction func playPauseButtonPressed(_ sender: Any) {
         if let player = audioPlayer {
             if player.isPlaying {
-                playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
                 
                 guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                     return
@@ -245,7 +225,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
                 CoreDataHelper.save(context: managedContext!)
                 player.pause()
             } else {
-                playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
                 player.play()
             }
         }
@@ -314,17 +294,63 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     }
     
     @IBAction func toggleShowNotes(_ sender: Any) {
-        if showNotesHC.constant > 0 {
-            showNotesHC.constant = 0
-            UIView.animate(withDuration: 0.25) {
+        if showNotesView.text == "" {
+            setShowNotesText(unformattedText: unformattedShowNotes)
+            
+            UIView.animate(withDuration: 0.25, animations: {
                 self.view.layoutIfNeeded()
-            }
+            }, completion: { _ in
+                self.calculateScrollViewHeight()
+            })
+            toggleShowNotesButton.setTitle("Hide", for: .normal)
+
         } else {
-            showNotesHC.constant = showNotesHCValue
-            UIView.animate(withDuration: 0.25) {
+            scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+            showNotesView.text = ""
+            calculateScrollViewHeight()
+            UIView.animate(withDuration: 0.25, animations: {
                 self.view.layoutIfNeeded()
+            }, completion: { _ in
+                self.calculateScrollViewHeight()
+            })
+            toggleShowNotesButton.setTitle("Show", for: .normal)
+        }
+    }
+    
+    func calculateScrollViewHeight() {
+        var scrollViewHeight: CGFloat = 0
+        scrollViewHeight = artImageBackgroundView.frame.height
+        scrollViewHeight += stackView.frame.height
+        scrollViewHeight += showNotesTitleView.frame.height
+        scrollViewHeight += showNotesView.frame.height
+        scrollViewHeight += upNextView.frame.height
+        scrollViewHeight += upNextTableView.frame.height
+        scrollView.contentSize = CGSize(width: scrollView.frame.width, height: scrollViewHeight)
+    }
+    
+    func setShowNotesText(unformattedText: String) {
+        let showNotesString = NSMutableAttributedString(attributedString: unformattedText.htmlToAttributedString!)
+        
+        // Enumerate through all the font ranges
+        showNotesString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, showNotesString.length), options: [])
+        {
+            value, range, stop in
+            guard let currentFont = value as? UIFont else {
+                return
+            }
+            
+            // An NSFontDescriptor describes the attributes of a font: family name, face name, point size, etc.
+            // Here we describe the replacement font as coming from the "Hoefler Text" family
+            let fontDescriptor = currentFont.fontDescriptor//.addingAttributes([UIFontDescriptor.AttributeName.family: "Hoefler Text"])
+            
+            // Ask the OS for an actual font that most closely matches the description above
+            if let newFontDescriptor = fontDescriptor.matchingFontDescriptors(withMandatoryKeys: [UIFontDescriptor.AttributeName.family]).first {
+                let newFont = UIFont(descriptor: newFontDescriptor, size: 16.0)
+                showNotesString.addAttributes([NSAttributedString.Key.font: newFont], range: range)
             }
         }
+        
+        showNotesView.attributedText = showNotesString
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

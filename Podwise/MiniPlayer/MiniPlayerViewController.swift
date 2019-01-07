@@ -46,9 +46,9 @@ class MiniPlayerView: UIView {
         miniPlayerView.autoresizingMask = [.flexibleHeight, .flexibleWidth]
         if let player = audioPlayer {
             if player.isPlaying {
-                playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
             } else {
-                playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
             }
         }
     }
@@ -56,7 +56,7 @@ class MiniPlayerView: UIView {
     @IBAction func playPauseButtonPressed(_ sender: Any) {
         if let player = audioPlayer {
             if player.isPlaying {
-                playPauseButton.setImage(UIImage(named: "play-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "play-90"), for: .normal)
                 
                 guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                     return
@@ -69,7 +69,7 @@ class MiniPlayerView: UIView {
                 CoreDataHelper.save(context: managedContext!)
                 player.pause()
             } else {
-                playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+                playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
                 player.play()
             }
         }

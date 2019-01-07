@@ -241,7 +241,7 @@ class GroupedViewController: UITableView, UITableViewDataSource, UITableViewDele
                                    MPMediaItemPropertyPlaybackDuration: player.duration
                                   ]
             
-            baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+            baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
             baseViewController.showMiniPlayer(animated: true)
         } catch let error {
             print(error.localizedDescription)

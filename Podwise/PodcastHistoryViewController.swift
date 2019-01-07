@@ -604,7 +604,7 @@ class PodcastHistoryViewController: UIViewController, UITableViewDelegate, UITab
 //            mpic.nowPlayingInfo = [MPMediaItemPropertyTitle:episode.title!, MPMediaItemPropertyArtist:episode.podcast!.title!, MPMediaItemPropertyArtwork: artwork]
 //
 //            DispatchQueue.main.async {
-//                baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-50"), for: .normal)
+//                baseViewController.miniPlayerView.playPauseButton.setImage(UIImage(named: "pause-90"), for: .normal)
 //                baseViewController.showMiniPlayer(animated: true)
 //            }
 //        } catch let error {
