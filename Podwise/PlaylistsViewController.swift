@@ -345,13 +345,6 @@ class PlaylistsViewController: UIViewController, UITableViewDelegate, UITableVie
                 
                 cell.isUserInteractionEnabled = true
                 
-//                let filemanager = FileManager.default
-//                let documentsPath = NSSearchPathForDirectoriesInDomains(.documentDirectory,.userDomainMask,true)[0] as NSString
-//                let destinationPath = documentsPath.appendingPathComponent(thisEpisode.localURL!.lastPathComponent)
-//                if !filemanager.fileExists(atPath: destinationPath) {
-//                    // download file
-//                }
-                
                 if playlistStructArray[indexPath.section].episodes[indexPath.row-1] == nowPlayingEpisode {
                     nowPlayingCell = cell
                     if nowPlayingCell.nowPlayingView.isHidden == true {

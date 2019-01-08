@@ -94,7 +94,17 @@ class EpisodesForPodcastViewController: UIViewController, UITableViewDelegate, U
         
         tableView.reloadData()
         
+        if downloadedEpisodes.count == 0 {
+            segmentedViewController.selectedSegmentIndex = 1
+        }
+        
         navigationController?.setNavigationBarHidden(false, animated: true)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        if downloadedEpisodes.count == 0 {
+            segmentChanged(self)
+        }
     }
     
     // Table View Delegate Methods

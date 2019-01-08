@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-class PlaylistColourCell: UICollectionViewCell {
+class PlaylistColourCell: UITableViewCell {
     
     @IBOutlet weak var purpleButton: UIButton!
     @IBOutlet weak var blueButton: UIButton!
