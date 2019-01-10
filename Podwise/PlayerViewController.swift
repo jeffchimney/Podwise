@@ -332,7 +332,14 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     }
     
     func setShowNotesText(unformattedText: String) {
-        let showNotesString = NSMutableAttributedString(attributedString: unformattedText.htmlToAttributedString!)
+        //let showNotesAttributedString = NSMutableAttributedString(attributedString: unformattedText.htmlToAttributedString!)
+        let showNotesData = unformattedText.data(using: .utf8, allowLossyConversion: true)
+        var showNotesString: NSMutableAttributedString = NSMutableAttributedString(attributedString: ("").htmlToAttributedString!)
+        do {
+            showNotesString = try NSMutableAttributedString(data: showNotesData!, options: [.documentType: NSAttributedString.DocumentType.html, .characterEncoding:String.Encoding.utf8.rawValue], documentAttributes: nil)
+        } catch let error {
+            print(error)
+        }
         
         // Enumerate through all the font ranges
         showNotesString.enumerateAttribute(NSAttributedString.Key.font, in: NSMakeRange(0, showNotesString.length), options: [])

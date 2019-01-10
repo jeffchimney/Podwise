@@ -25,13 +25,5 @@ class PlaylistCell: UITableViewCell {
     @IBOutlet weak var rightEQHeightConstraint: NSLayoutConstraint!
     @IBOutlet weak var rightEQView: UIView!
     
-    
-//    override func layoutSubviews() {
-//        self.bounds = CGRect(x: self.bounds.origin.x,
-//                             y: self.bounds.origin.y,
-//                             width: self.bounds.size.width - 4, // - 16
-//                             height: self.bounds.size.height)
-//        super.layoutSubviews()
-//    }
 }
 
