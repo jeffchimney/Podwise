@@ -24,6 +24,7 @@
 		BE51D2D520AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */; };
 		BE567CFD1FC79E5E001AE46F /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */; };
 		BE5BE55121DE8DFE00C282AF /* UIViewExtentions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */; };
+		BE626D8121E66CEA00E3537F /* CALayerExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE626D8021E66CEA00E3537F /* CALayerExtensions.swift */; };
 		BE6675FB1FFD93BC0095CF9B /* SubCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */; };
 		BE68537D1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */; };
 		BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */; };
@@ -103,6 +104,7 @@
 		BE51D2D420AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabelAndSwitchTableViewCell.swift; sourceTree = "<group>"; };
 		BE567CFC1FC79E5E001AE46F /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
 		BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewExtentions.swift; sourceTree = "<group>"; };
+		BE626D8021E66CEA00E3537F /* CALayerExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CALayerExtensions.swift; sourceTree = "<group>"; };
 		BE6675FA1FFD93BC0095CF9B /* SubCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubCategoryViewController.swift; sourceTree = "<group>"; };
 		BE68537C1FCC8AD600CA32C8 /* PlaylistCreationTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistCreationTableViewController.swift; sourceTree = "<group>"; };
 		BE68537E1FCC909800CA32C8 /* PlaylistTitleCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTitleCell.swift; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 			children = (
 				BE8646B2206B03050002205D /* UIImageExtensions.swift */,
 				BE5BE55021DE8DFE00C282AF /* UIViewExtentions.swift */,
+				BE626D8021E66CEA00E3537F /* CALayerExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -509,6 +512,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE68537F1FCC909800CA32C8 /* PlaylistTitleCell.swift in Sources */,
+				BE626D8121E66CEA00E3537F /* CALayerExtensions.swift in Sources */,
 				BE8646B3206B03050002205D /* UIImageExtensions.swift in Sources */,
 				BE51D2D520AB52EB00C2EFFF /* LabelAndSwitchTableViewCell.swift in Sources */,
 				BE81A25F1FD1D6EC0007A7E4 /* AzureDBDataHelper.swift in Sources */,

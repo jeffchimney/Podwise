@@ -30,7 +30,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3rX-yb-N0U">
-                                                    <rect key="frame" x="0.0" y="0.0" width="368" height="49.666666666666664"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="49.666666666666664"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RIa-gU-8ED">
                                                             <rect key="frame" x="8" y="14.333333333333336" width="43.666666666666664" height="21"/>
@@ -39,7 +39,7 @@
                                                             <nil key="highlightedColor"/>
                                                         </label>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="blY-hE-VZJ">
-                                                            <rect key="frame" x="330" y="10" width="30" height="30"/>
+                                                            <rect key="frame" x="337" y="10" width="30" height="30"/>
                                                             <constraints>
                                                                 <constraint firstAttribute="height" constant="30" id="TlS-o2-TDp"/>
                                                                 <constraint firstAttribute="width" constant="30" id="cXj-Ww-ToD"/>
@@ -192,7 +192,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Zq0-z3-Gxb">
-                                                    <rect key="frame" x="171.66666666666666" y="17.333333333333332" width="25" height="24.999999999999996"/>
+                                                    <rect key="frame" x="175" y="17.333333333333332" width="25" height="24.999999999999996"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="25" id="Th9-E5-sNL"/>
                                                         <constraint firstAttribute="width" constant="25" id="zAj-Zi-ADu"/>
@@ -1207,26 +1207,26 @@
                                         <rect key="frame" x="8" y="0.0" width="359" height="359"/>
                                         <subviews>
                                             <progressView opaque="NO" alpha="0.75" contentMode="scaleToFill" verticalHuggingPriority="750" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="aA6-hT-F5W">
-                                                <rect key="frame" x="154.66666666666666" y="8" width="50" height="2"/>
+                                                <rect key="frame" x="154.66666666666666" y="16" width="50" height="2"/>
                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" constant="50" id="2se-7i-WgM"/>
                                                 </constraints>
                                             </progressView>
                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yvE-SS-Ab0">
-                                                <rect key="frame" x="4" y="16" width="351" height="343"/>
+                                                <rect key="frame" x="30" y="50" width="299" height="299"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             </imageView>
                                         </subviews>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="3QL-Cn-5WQ" secondAttribute="height" multiplier="1:1" id="5Y6-Km-74k"/>
-                                            <constraint firstAttribute="trailing" secondItem="yvE-SS-Ab0" secondAttribute="trailing" constant="4" id="6NI-UC-j3y"/>
-                                            <constraint firstAttribute="bottom" secondItem="yvE-SS-Ab0" secondAttribute="bottom" id="D6i-aM-jnf"/>
+                                            <constraint firstAttribute="trailing" secondItem="yvE-SS-Ab0" secondAttribute="trailing" constant="30" id="6NI-UC-j3y"/>
+                                            <constraint firstAttribute="bottom" secondItem="yvE-SS-Ab0" secondAttribute="bottom" constant="10" id="D6i-aM-jnf"/>
                                             <constraint firstItem="aA6-hT-F5W" firstAttribute="centerX" secondItem="3QL-Cn-5WQ" secondAttribute="centerX" id="PbD-oI-auA"/>
-                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="leading" secondItem="3QL-Cn-5WQ" secondAttribute="leading" constant="4" id="QiY-yQ-lf4"/>
-                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="16" id="c07-fJ-3fz"/>
-                                            <constraint firstItem="aA6-hT-F5W" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="8" id="eLa-i5-GaU"/>
+                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="leading" secondItem="3QL-Cn-5WQ" secondAttribute="leading" constant="30" id="QiY-yQ-lf4"/>
+                                            <constraint firstItem="yvE-SS-Ab0" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="50" id="c07-fJ-3fz"/>
+                                            <constraint firstItem="aA6-hT-F5W" firstAttribute="top" secondItem="3QL-Cn-5WQ" secondAttribute="top" constant="16" id="eLa-i5-GaU"/>
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="prE-82-CXY">

@@ -26,6 +26,7 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
     var showNotesHCValue: CGFloat!
     var unformattedShowNotes: String = ""
     weak var sourceView: PlayerViewSourceProtocol!
+    private var shadowLayer: CAShapeLayer!
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var showNotesView: UITextView!
@@ -107,9 +108,11 @@ class PlayerViewController: UIViewController, UIGestureRecognizerDelegate, UIScr
         
         startUpdatingSlider()
         
-        artImageView.isUserInteractionEnabled = true
-        artImageView.layer.cornerRadius = 3
-        artImageView.layer.masksToBounds = true
+        //artImageView.isUserInteractionEnabled = true
+        //artImageView.layer.cornerRadius = 3
+        //artImageView.layer.masksToBounds = true
+        artImageView.layer.addShadow(radius: 5)
+        artImageView.layer.roundCorners(radius: 5)
         
         let layout = UICollectionViewFlowLayout()
         layout.itemSize = CGSize(width: view.frame.width, height: upNextTableView.frame.height)
